@@ -143,6 +143,9 @@ public:
         // Aug, 1 hard fork
         consensus.uahfHeight = 478559;
 
+        // TVS-43 Replay Protection from Bitcoin Cash. (9) difficulty adjustments from 2018/01/30
+        consensus.TVS43Height = 544320;
+
         /**
          * The message start string is designed to be unlikely to occur in
          * normal data. The characters are rarely used upper ASCII, not valid as

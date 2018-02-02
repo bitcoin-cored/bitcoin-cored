@@ -560,21 +560,21 @@ static void MigrateSettings() {
         // default c'tor below picks up settings file location based on
         // QApplication::applicationName(), et al -- which was already set
         // in main()
-        abc;
+        abcd;
 #ifdef Q_OS_DARWIN
     // Disable bogus OSX keys from MacOS system-wide prefs that may cloud our
     // judgement ;) (this behavior is also documented in QSettings docs)
     legacy.setFallbacksEnabled(false);
-    abc.setFallbacksEnabled(false);
+    abcd.setFallbacksEnabled(false);
 #endif
     const QStringList legacyKeys(legacy.allKeys());
 
-    // We only migrate settings if we have Core settings but no Bitcoin-ABC
-    // settings
-    if (!legacyKeys.isEmpty() && abc.allKeys().isEmpty()) {
+    // We only migrate settings if we have Core settings but no Bitcoin Clashic
+    // ABCD settings
+    if (!legacyKeys.isEmpty() && abcd.allKeys().isEmpty()) {
         for (const QString &key : legacyKeys) {
             // now, copy settings over
-            abc.setValue(key, legacy.value(key));
+            abcd.setValue(key, legacy.value(key));
         }
     }
 }
@@ -641,8 +641,8 @@ int main(int argc, char *argv[]) {
     QApplication::setOrganizationName(QAPP_ORG_NAME);
     QApplication::setOrganizationDomain(QAPP_ORG_DOMAIN);
     QApplication::setApplicationName(QAPP_APP_NAME_DEFAULT);
-    // Migrate settings from core's/our old GUI settings to Bitcoin ABC
-    // only if core's exist but Bitcoin ABC's doesn't.
+    // Migrate settings from core's/our old GUI settings to Bitcoin Clashic ABCD
+    // only if core's exist but Bitcoin Clashic ABCD's doesn't.
     // NOTE -- this function needs to be called *after* the above 3 lines
     // that set the app orgname and app name! If you move the above 3 lines
     // to elsewhere, take this call with you!

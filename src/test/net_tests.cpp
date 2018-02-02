@@ -195,11 +195,11 @@ BOOST_AUTO_TEST_CASE(test_userAgentLength) {
 
     BOOST_CHECK_EQUAL(userAgent(config).size(), MAX_SUBVERSION_LENGTH);
     BOOST_CHECK_EQUAL(userAgent(config),
-                      "/Bitcoin ABC:0.15.1(EB8.0; very very very very very "
+                      "/Bitcoin Clashic ABCD:0.15.101(EB8.0; very very very "
                       "very very very very very very very very very very very "
                       "very very very very very very very very very very very "
                       "very very very very very very very very very very very "
-                      "very very very very very very very ve)/");
+                      "very very very very very very very very very ve)/");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

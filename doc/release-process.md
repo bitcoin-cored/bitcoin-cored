@@ -1,5 +1,5 @@
-Bitcoin ABC Release Process
-===========================
+Bitcoin Clashic ABCD Release Process
+====================================
 
 
 ## Before Release
@@ -43,21 +43,21 @@ Bitcoin ABC Release Process
     
 7. Verify matching gitian builds, gather signatures
 
-8. Upload gitian build to [bitcoinabc.org](https://download.bitcoinabc.org/)
+8. Upload gitian build to [bitcoinclashic.org](https://bitcoinclashic.org/)
 
 9. Re-verify the uploads (make sure that downloading them, their checksums are ok)
 
-10. Create a [GitHub release](https://github.com/Bitcoin-ABC/bitcoin-abc/releases) 
+10. Create a [GitHub release](https://github.com/Bitcoin-Clashic/bitcoin-clashic/releases) 
 
 
 ## After Release
 
-11. Update version number on www.bitcoinabc.org
+11. Update version number on www.bitcoinclashic.org
 
 12. Publish signed checksums (various places, e.g. blog, reddit/r/BitcoinABC)
 
 13. Announce Release:
     - [Reddit](https://www.reddit.com/r/BitcoinABC/)
-    - Twitter @Bitcoin_ABC
-    - Public slack channels friendly to Bitcoin ABC announcements 
+    - Twitter @BitcoinClashic
+    - Public slack channels friendly to Bitcoin Clashic ABCD announcements 
       (eg. #abc-announce on BTCforks,  #hardfork on BTCchat)

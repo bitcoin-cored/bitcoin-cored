@@ -24,13 +24,13 @@ In case you want to build the disk image with `make deploy` (.dmg / optional), y
 
 NOTE: Building with Qt4 is still supported, however, could result in a broken UI. Building with Qt5 is recommended.
 
-Build Bitcoin ABC
------------------
+Build Bitcoin Clashic ABCD
+--------------------------
 
-1. Clone the Bitcoin ABC source code and cd into `bitcoin-abc`
+1. Clone the Bitcoin Clashic ABCD source code and cd into `bitcoin-clashic`
 
-        git clone github.com/Bitcoin-ABC/bitcoin-abc
-        cd bitcoin-abc
+        git clone github.com/Bitcoin-Clashic/bitcoin-clashic
+        cd bitcoin-clashic
 
 2.  Build bitcoin-abc:
 
@@ -53,7 +53,7 @@ Build Bitcoin ABC
 Running
 -------
 
-Bitcoin ABC is now available at `./src/bitcoind`
+Bitcoin Clashic ABCD is now available at `./src/bitcoind`
 
 Before running, it's recommended you create an RPC configuration file.
 
