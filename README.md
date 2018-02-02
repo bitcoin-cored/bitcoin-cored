@@ -16,7 +16,7 @@ What is Bitcoin Clashic ABCD?
 
 Bitcoin Clashic ABCD is the name of open source software which enables the use of Bitcoin.
 It is designed to facilite a hard fork to increase Bitcoin's block size limit.
-"ABCD" stands for "Always Be Clashic Dragons".
+"ABCD" stands for "Always Be Clashic D......".
 
 Bitcoin Clashic ABCD is a fork of the [Bitcoin ABC Project](https://bitcoinabc.org),
 which itself is another fork of the [Bitcoin Core](https://bitcoincore.org) software project.
