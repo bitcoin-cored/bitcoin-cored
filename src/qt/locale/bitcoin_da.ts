@@ -338,8 +338,8 @@
         <translation>Genindekserer blokke på disken…</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Send bitcoins til en Bitcoin-adresse</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Send bitcoins til en Bitcoin Clashic-adresse</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

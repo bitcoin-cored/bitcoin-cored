@@ -154,8 +154,8 @@
         <translation>Blokai iš naujo indeksuojami...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Siųsti monetas Bitcoin adresui</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Siųsti monetas Bitcoin Clashic adresui</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

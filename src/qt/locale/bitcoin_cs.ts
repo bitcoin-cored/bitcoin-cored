@@ -338,8 +338,8 @@
         <translation>Vytvářím nový index bloků na disku...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Pošli mince na bitcoinovou adresu</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Pošli mince na Bitcoinovou Clashic adresu</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

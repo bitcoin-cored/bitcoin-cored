@@ -122,8 +122,8 @@
         <translation>Address king pamag-Tanggap</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Magpadalang barya king Bitcoin address</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Magpadalang barya king Bitcoin Clashic address</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

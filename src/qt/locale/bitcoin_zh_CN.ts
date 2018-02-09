@@ -334,7 +334,7 @@
         <translation>正在为数据块重建索引...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
+        <source>Send coins to a Bitcoin Clashic address</source>
         <translation>向一个比特币地址发送比特币</translation>
     </message>
     <message>

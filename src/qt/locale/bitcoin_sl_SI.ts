@@ -154,8 +154,8 @@
         <translation>Poustvarjam kazalo blokov na disku ...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Izvedite plačilo na naslov Bitcoin</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Izvedite plačilo na naslov Bitcoin Clashic</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

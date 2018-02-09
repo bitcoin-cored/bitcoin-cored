@@ -146,8 +146,8 @@
         <translation>Дискдаги блоклар қайта индексланмоқда...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Тангаларни Bitcoin манзилига жўнатиш</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Тангаларни Bitcoin Clashic манзилига жўнатиш</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

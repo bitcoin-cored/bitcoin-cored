@@ -294,8 +294,8 @@
         <translation>Re-indicizzazione blocchi su disco...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Invia fondi ad un indirizzo Bitcoin</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Invia fondi ad un indirizzo Bitcoin Clashic</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

@@ -430,8 +430,8 @@
     </message>
     <message>
         <location line="-511"/>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Send coins to a Bitcoin address</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Send coins to a Bitcoin Clashic address</translation>
     </message>
     <message>
         <location line="+67"/>

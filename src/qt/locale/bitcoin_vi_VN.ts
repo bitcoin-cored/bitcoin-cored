@@ -166,8 +166,8 @@
         <translation>Đánh chỉ số (indexing) lại các khối (blocks) trên ổ đĩa ...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Gửi coins đến tài khoản Bitcoin</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Gửi coins đến tài khoản Bitcoin Clashic</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

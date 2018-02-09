@@ -142,8 +142,8 @@
         <translation>დისკზე ბლოკების რეინდექსაცია...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>მონეტების გაგზავნა Bitcoin-მისამართზე</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>მონეტების გაგზავნა Bitcoin Clashic-მისამართზე</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

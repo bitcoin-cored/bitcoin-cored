@@ -338,8 +338,8 @@
         <translation>ディスク上のブロックのインデックスを再作成中...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Bitcoin アドレスにコインを送る</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Bitcoin Clashic アドレスにコインを送る</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

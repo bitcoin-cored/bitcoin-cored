@@ -322,7 +322,7 @@
         <translation>디스크에서 블록 다시 색인중...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
+        <source>Send coins to a Bitcoin Clashic address</source>
         <translation>비트코인 주소로 코인 전송</translation>
     </message>
     <message>

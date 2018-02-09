@@ -142,8 +142,8 @@
         <translation>Cargando el index de bloques...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Enviar monedas a una dirección bitcoin</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Enviar monedas a una dirección Bitcoin Clashic</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
