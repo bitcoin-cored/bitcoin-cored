@@ -503,7 +503,7 @@ void BitcoinApplication::initializeResult(int retval) {
 
 #ifdef ENABLE_WALLET
         // Now that initialization/startup is done, process any command-line
-        // bitcoincash: URIs or payment requests:
+        // bitcoinclashic: URIs or payment requests:
         connect(paymentServer,
                 SIGNAL(receivedPaymentRequest(SendCoinsRecipient)), window,
                 SLOT(handlePaymentRequest(SendCoinsRecipient)));
@@ -734,8 +734,8 @@ int main(int argc, char *argv[]) {
     if (PaymentServer::ipcSendCommandLine()) exit(EXIT_SUCCESS);
 
     // Start up the payment server early, too, so impatient users that click on
-    // bitcoincash: links repeatedly have their payment requests routed to this
-    // process:
+    // bitcoinclashic: links repeatedly have their payment requests routed to
+    // this process:
     app.createPaymentServer();
 #endif
 

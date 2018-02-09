@@ -273,7 +273,7 @@ Exec=bitcoin-qt %u
 Terminal=false
 Type=Application
 Icon=bitcoin128
-MimeType=x-scheme-handler/bitcoincash;
+MimeType=x-scheme-handler/bitcoinclashic;
 Categories=Office;Finance;
 EOF
 # change touch date when modifying desktop

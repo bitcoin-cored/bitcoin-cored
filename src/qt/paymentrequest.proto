@@ -10,7 +10,7 @@
 syntax = "proto2";
 
 package payments;
-option java_package = "org.bitcoincash.protocols.payments";
+option java_package = "org.bitcoinclashic.protocols.payments";
 option java_outer_classname = "Protos";
 
 // Generalized form of "send payment to this/these bitcoin cash addresses"

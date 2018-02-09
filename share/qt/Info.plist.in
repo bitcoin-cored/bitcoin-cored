@@ -46,10 +46,10 @@
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
       <key>CFBundleURLName</key>
-      <string>org.bitcoincash.BitcoinPayment</string>
+      <string>org.bitcoinclashic.BitcoinPayment</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>bitcoincash</string>
+        <string>bitcoinclashic</string>
       </array>
     </dict>
   </array>
@@ -58,7 +58,7 @@
   <array>
     <dict>
       <key>UTTypeIdentifier</key>
-      <string>org.bitcoincash.paymentrequest</string>
+      <string>org.bitcoinclashic.paymentrequest</string>
       <key>UTTypeDescription</key>
       <string>Bitcoin Cash payment request</string>
       <key>UTTypeConformsTo</key>
@@ -68,10 +68,10 @@
       <key>UTTypeTagSpecification</key>
       <dict>
         <key>public.mime-type</key>
-        <string>application/bitcoincash-paymentrequest</string>
+        <string>application/bitcoinclashic-paymentrequest</string>
         <key>public.filename-extension</key>
         <array>
-          <string>bitcoincashpaymentrequest</string>
+          <string>bitcoinclashicpaymentrequest</string>
         </array>
       </dict>
     </dict>
@@ -84,7 +84,7 @@
       <string>Editor</string>
       <key>LSItemContentTypes</key>
       <array>
-        <string>org.bitcoincash.paymentrequest</string>
+        <string>org.bitcoinclashic.paymentrequest</string>
       </array>
       <key>LSHandlerRank</key>
       <string>Owner</string>
