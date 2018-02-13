@@ -21,10 +21,10 @@ MAX_GENERATED_BLOCK_SIZE_ERROR = (
     'Max generated block size (blockmaxsize) cannot exceed the excessive block size (excessiveblocksize)')
 
 
-class ABC_CmdLine_Test (BitcoinTestFramework):
+class ABCD_CmdLine_Test (BitcoinTestFramework):
 
     def __init__(self):
-        super(ABC_CmdLine_Test, self).__init__()
+        super(ABCD_CmdLine_Test, self).__init__()
         self.num_nodes = 1
         self.setup_clean_chain = False
 
@@ -53,7 +53,7 @@ class ABC_CmdLine_Test (BitcoinTestFramework):
                                    self.extra_args[0])
         self.check_excessive(2 * LEGACY_MAX_BLOCK_SIZE)
         # Check for EB correctness in the subver string
-        self.check_subversion("/Bitcoin ABC:.*\(EB2\.0; .*\)/")
+        self.check_subversion("/Bitcoin Clashic ABCD:.*\(EB2\.0; .*\)/")
 
         self.log.info("  Attempt to set below legacy limit of 1MB - try %d bytes" %
                       LEGACY_MAX_BLOCK_SIZE)
@@ -101,4 +101,4 @@ class ABC_CmdLine_Test (BitcoinTestFramework):
 
 
 if __name__ == '__main__':
-    ABC_CmdLine_Test().main()
+    ABCD_CmdLine_Test().main()

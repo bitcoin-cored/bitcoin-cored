@@ -3,7 +3,7 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-# Exercise the Bitcoin ABC RPC calls.
+# Exercise the Bitcoin ABCD RPC calls.
 
 import time
 import random
@@ -16,10 +16,10 @@ from test_framework.cdefs import (ONE_MEGABYTE,
                                   DEFAULT_MAX_BLOCK_SIZE)
 
 
-class ABC_RPC_Test (BitcoinTestFramework):
+class ABCD_RPC_Test (BitcoinTestFramework):
 
     def __init__(self):
-        super(ABC_RPC_Test, self).__init__()
+        super(ABCD_RPC_Test, self).__init__()
         self.num_nodes = 1
         self.tip = None
         self.setup_clean_chain = True
@@ -64,7 +64,7 @@ class ABC_RPC_Test (BitcoinTestFramework):
         ebs = getsize['excessiveBlockSize']
         assert_equal(ebs, 2 * ONE_MEGABYTE)
         # Check for EB correctness in the subver string
-        self.check_subversion("/Bitcoin ABC:.*\(EB2\.0; .*\)/")
+        self.check_subversion("/Bitcoin Clashic ABCD:.*\(EB2\.0; .*\)/")
 
         # Check setting to 13MB
         self.nodes[0].setexcessiveblock(13 * ONE_MEGABYTE)
@@ -72,7 +72,7 @@ class ABC_RPC_Test (BitcoinTestFramework):
         ebs = getsize['excessiveBlockSize']
         assert_equal(ebs, 13 * ONE_MEGABYTE)
         # Check for EB correctness in the subver string
-        self.check_subversion("/Bitcoin ABC:.*\(EB13\.0; .*\)/")
+        self.check_subversion("/Bitcoin Clashic ABCD:.*\(EB13\.0; .*\)/")
 
         # Check setting to 13.14MB
         self.nodes[0].setexcessiveblock(13140000)
@@ -80,7 +80,7 @@ class ABC_RPC_Test (BitcoinTestFramework):
         ebs = getsize['excessiveBlockSize']
         assert_equal(ebs, 13.14 * ONE_MEGABYTE)
         # check for EB correctness in the subver string
-        self.check_subversion("/Bitcoin ABC:.*\(EB13\.1; .*\)/")
+        self.check_subversion("/Bitcoin Clashic ABCD:.*\(EB13\.1; .*\)/")
 
     def test_cashservicebit(self):
         # Check that NODE_BITCOIN_CASH bit is set.
@@ -97,4 +97,4 @@ class ABC_RPC_Test (BitcoinTestFramework):
 
 
 if __name__ == '__main__':
-    ABC_RPC_Test().main()
+    ABCD_RPC_Test().main()

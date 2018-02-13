@@ -157,9 +157,9 @@ testScripts = [
     'rpcnamedargs.py',
     'listsinceblock.py',
     'p2p-leaktests.py',
-    'abc-cmdline.py',
-    'abc-p2p-fullblocktest.py',
-    'abc-rpc.py',
+    'abcd-cmdline.py',
+    'abcd-p2p-fullblocktest.py',
+    'abcd-rpc.py',
     'mempool-accept-txn.py',
 ]
 if ENABLE_ZMQ:
