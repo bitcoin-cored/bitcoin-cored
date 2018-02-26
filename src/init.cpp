@@ -1520,13 +1520,16 @@ bool AppInitParameterInteraction(Config &config) {
     if (GetBoolArg("-peerbloomfilters", DEFAULT_PEERBLOOMFILTERS))
         nLocalServices = ServiceFlags(nLocalServices | NODE_BLOOM);
 
-    // Signal Bitcoin Cash support.
+    // Signal Bitcoin Cash & Bitcoin Clashic support.
     // TODO: remove some time after the hardfork when no longer needed
     // to differentiate the network nodes.
-    nLocalServices = ServiceFlags(nLocalServices | NODE_BITCOIN_CASH);
+    nLocalServices = ServiceFlags(nLocalServices | NODE_BITCOIN_CASH |
+        NODE_BITCOIN_CLASHIC);
 
-    // Preferentially keep peers which service NODE_BITCOIN_CASH
-    nRelevantServices = ServiceFlags(nRelevantServices | NODE_BITCOIN_CASH);
+    // Preferentially keep peers which service NODE_BITCOIN_CASH and
+    // NODE_BITCOIN_CLASHIC. We'll drop Bitcoin Cash after the hard fork
+    nRelevantServices = ServiceFlags(nRelevantServices | NODE_BITCOIN_CASH |
+        NODE_BITCOIN_CLASHIC);
 
     nMaxTipAge = GetArg("-maxtipage", DEFAULT_MAX_TIP_AGE);
 

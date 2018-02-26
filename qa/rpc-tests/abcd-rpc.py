@@ -82,6 +82,7 @@ class ABCD_RPC_Test (BitcoinTestFramework):
         # check for EB correctness in the subver string
         self.check_subversion("/Bitcoin Clashic ABCD:.*\(EB13\.1; .*\)/")
 
+    // TODO: Remove this test after hardfork
     def test_cashservicebit(self):
         # Check that NODE_BITCOIN_CASH bit is set.
         # This can be seen in the 'localservices' entry of getnetworkinfo RPC.
@@ -89,6 +90,14 @@ class ABCD_RPC_Test (BitcoinTestFramework):
         nw_info = node.getnetworkinfo()
         assert_equal(int(nw_info['localservices'], 16) & NODE_BITCOIN_CASH,
                      NODE_BITCOIN_CASH)
+
+    def test_clashicservicebit(self):
+        # Check that NODE_BITCOIN_CLASHIC bit is set.
+        # This can be seen in the 'localservices' entry of getnetworkinfo RPC.
+        node = self.nodes[0]
+        nw_info = node.getnetworkinfo()
+        assert_equal(int(nw_info['localservices'], 16) & NODE_BITCOIN_CLASHIC,
+                     NODE_BITCOIN_CLASHIC)
 
     def run_test(self):
         self.genesis_hash = int(self.nodes[0].getbestblockhash(), 16)
