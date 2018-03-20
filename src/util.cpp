@@ -104,7 +104,7 @@ namespace program_options {
 } // namespace boost
 
 const char *const CLASHIC_CONF_FILENAME = "clashic.conf";
-const char *const CLASHIC_PID_FILENAME = "clashic.pid";
+const char *const CLASHIC_PID_FILENAME = "clashicd.pid";
 
 CCriticalSection cs_args;
 std::map<std::string, std::string> mapArgs;
