@@ -338,7 +338,7 @@ std::string HelpMessage(HelpMessageMode mode) {
                       .defaultAssumeValid.GetHex()));
     strUsage += HelpMessageOpt(
         "-conf=<file>", strprintf(_("Specify configuration file (default: %s)"),
-                                  BITCOIN_CONF_FILENAME));
+                                  CLASHIC_CONF_FILENAME));
     if (mode == HMM_BITCOIND) {
 #if HAVE_DECL_DAEMON
         strUsage += HelpMessageOpt(
@@ -387,7 +387,7 @@ std::string HelpMessage(HelpMessageMode mode) {
 #ifndef WIN32
     strUsage += HelpMessageOpt(
         "-pid=<file>",
-        strprintf(_("Specify pid file (default: %s)"), BITCOIN_PID_FILENAME));
+        strprintf(_("Specify pid file (default: %s)"), CLASHIC_PID_FILENAME));
 #endif
     strUsage += HelpMessageOpt(
         "-prune=<n>",
@@ -1658,7 +1658,7 @@ bool AppInitMain(Config &config, boost::thread_group &threadGroup,
     LogPrintf("Default data directory %s\n", GetDefaultDataDir().string());
     LogPrintf("Using data directory %s\n", GetDataDir().string());
     LogPrintf("Using config file %s\n",
-              GetConfigFile(GetArg("-conf", BITCOIN_CONF_FILENAME)).string());
+              GetConfigFile(GetArg("-conf", CLASHIC_CONF_FILENAME)).string());
     LogPrintf("Using at most %i automatic connections (%i file descriptors "
               "available)\n",
               nMaxConnections, nFD);

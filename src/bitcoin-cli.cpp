@@ -34,7 +34,7 @@ std::string HelpMessageCli() {
     strUsage += HelpMessageOpt("-?", _("This help message"));
     strUsage += HelpMessageOpt(
         "-conf=<file>", strprintf(_("Specify configuration file (default: %s)"),
-                                  BITCOIN_CONF_FILENAME));
+                                  CLASHIC_CONF_FILENAME));
     strUsage += HelpMessageOpt("-datadir=<dir>", _("Specify data directory"));
     AppendParamsHelpMessages(strUsage);
     strUsage += HelpMessageOpt(
@@ -127,7 +127,7 @@ static int AppInitRPC(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
     try {
-        ReadConfigFile(GetArg("-conf", BITCOIN_CONF_FILENAME));
+        ReadConfigFile(GetArg("-conf", CLASHIC_CONF_FILENAME));
     } catch (const std::exception &e) {
         fprintf(stderr, "Error reading configuration file: %s\n", e.what());
         return EXIT_FAILURE;
@@ -239,7 +239,7 @@ UniValue CallRPC(const std::string &strMethod, const UniValue &params) {
                 _("Could not locate RPC credentials. No authentication cookie "
                   "could be found, and no rpcpassword is set in the "
                   "configuration file (%s)"),
-                GetConfigFile(GetArg("-conf", BITCOIN_CONF_FILENAME))
+                GetConfigFile(GetArg("-conf", CLASHIC_CONF_FILENAME))
                     .string()
                     .c_str()));
         }

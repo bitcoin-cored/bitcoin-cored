@@ -103,8 +103,8 @@ namespace program_options {
 
 } // namespace boost
 
-const char *const BITCOIN_CONF_FILENAME = "bitcoin.conf";
-const char *const BITCOIN_PID_FILENAME = "bitcoind.pid";
+const char *const CLASHIC_CONF_FILENAME = "clashic.conf";
+const char *const CLASHIC_PID_FILENAME = "clashic.pid";
 
 CCriticalSection cs_args;
 std::map<std::string, std::string> mapArgs;
@@ -569,7 +569,7 @@ void ReadConfigFile(const std::string &confPath) {
 
 #ifndef WIN32
 boost::filesystem::path GetPidFile() {
-    boost::filesystem::path pathPidFile(GetArg("-pid", BITCOIN_PID_FILENAME));
+    boost::filesystem::path pathPidFile(GetArg("-pid", CLASHIC_PID_FILENAME));
     if (!pathPidFile.is_complete()) pathPidFile = GetDataDir() / pathPidFile;
     return pathPidFile;
 }

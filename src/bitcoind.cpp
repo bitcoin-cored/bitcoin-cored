@@ -110,7 +110,7 @@ bool AppInit(int argc, char *argv[]) {
             return false;
         }
         try {
-            ReadConfigFile(GetArg("-conf", BITCOIN_CONF_FILENAME));
+            ReadConfigFile(GetArg("-conf", CLASHIC_CONF_FILENAME));
         } catch (const std::exception &e) {
             fprintf(stderr, "Error reading configuration file: %s\n", e.what());
             return false;
