@@ -274,13 +274,6 @@ enum ServiceFlags : uint64_t {
     // TODO: remove (free up) the NODE_BITCOIN_CASH service bit once no longer
     // needed.
     NODE_BITCOIN_CASH = (1 << 5),
-    // NODE_BITCOIN_CLASHIC means the node supports Bitcoin Clashic and the
-    // associated consensus rule changes.
-    // This service bit is intended to be used prior until some time after the
-    // hardfork when the Bitcoin Clashic network has adequately separated.
-    // TODO: remove (free up) the NODE_BITCOIN_CLASHIC service bit once no longer
-    // needed.
-    NODE_BITCOIN_CLASHIC = (1 << 6),
 
     // Bits 24-31 are reserved for temporary experiments. Just pick a bit that
     // isn't getting used, or one not being used much, and notify the

@@ -151,10 +151,7 @@ public:
                 }
             }
         }
-        // TODO: remove everything but NODE_BITCOIN_CLASHIC after
-        // hardfork
         if (filter_whitelist.empty()) {
-            //filter_whitelist.insert(NODE_BITCOIN_CLASHIC); //final
             filter_whitelist.insert(NODE_NETWORK | NODE_BITCOIN_CASH);
             filter_whitelist.insert(NODE_NETWORK | NODE_BITCOIN_CASH |
                                     NODE_BLOOM);
@@ -162,15 +159,6 @@ public:
                                     NODE_XTHIN);
             filter_whitelist.insert(NODE_NETWORK | NODE_BITCOIN_CASH |
                                     NODE_BLOOM | NODE_XTHIN);
-            filter_whitelist.insert(NODE_NETWORK | NODE_BITCOIN_CASH |
-                                    NODE_BITCOIN_CLASHIC);
-            filter_whitelist.insert(NODE_NETWORK | NODE_BITCOIN_CASH |
-                                    NODE_BLOOM | NODE_BITCOIN_CLASHIC);
-            filter_whitelist.insert(NODE_NETWORK | NODE_BITCOIN_CASH |
-                                    NODE_XTHIN | NODE_BITCOIN_CLASHIC);
-            filter_whitelist.insert(NODE_NETWORK | NODE_BITCOIN_CASH |
-                                    NODE_BLOOM | NODE_XTHIN |
-                                    NODE_BITCOIN_CLASHIC);
         }
         if (host != nullptr && ns == nullptr) showHelp = true;
         if (showHelp) fprintf(stderr, help, argv[0]);
