@@ -1,5 +1,5 @@
-#ifndef BITCOIN_SEEDER_UTIL_H
-#define BITCOIN_SEEDER_UTIL_H
+#ifndef CLASHIC_SEEDER_UTIL_H
+#define CLASHIC_SEEDER_UTIL_H
 
 #include <cstdarg>
 #include <errno.h>

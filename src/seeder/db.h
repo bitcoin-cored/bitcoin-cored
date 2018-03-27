@@ -1,5 +1,5 @@
-#ifndef BITCOIN_SEEDER_DB_H
-#define BITCOIN_SEEDER_DB_H
+#ifndef CLASHIC_SEEDER_DB_H
+#define CLASHIC_SEEDER_DB_H
 
 #include "netbase.h"
 #include "protocol.h"

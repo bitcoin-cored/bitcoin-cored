@@ -14,11 +14,11 @@ AC_CONFIG_HEADERS([src/config/bitcoin-config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([build-aux/m4])
 
-BITCOIN_DAEMON_NAME=bitcoind
-BITCOIN_GUI_NAME=bitcoin-qt
-BITCOIN_CLI_NAME=bitcoin-cli
-BITCOIN_TX_NAME=bitcoin-tx
-BITCOIN_SEEDER_NAME=bitcoin-seeder
+BITCOIN_DAEMON_NAME=clashicd
+BITCOIN_GUI_NAME=clashic-qt
+BITCOIN_CLI_NAME=clashic-cli
+BITCOIN_TX_NAME=clashic-tx
+CLASHIC_SEEDER_NAME=clashic-seeder
 
 AC_CANONICAL_HOST
 
@@ -323,8 +323,8 @@ AC_ARG_WITH([daemon],
 AC_ARG_WITH([seeder],
   [AS_HELP_STRING([--with-seeder],
   [build seeder (default=yes)])],
-  [build_bitcoin_seeder=$withval],
-  [build_bitcoin_seeder=yes])
+  [build_clashic_seeder=$withval],
+  [build_clashic_seeder=yes])
 
 use_pkgconfig=yes
 case $host in
@@ -713,7 +713,7 @@ BITCOIN_QT_INIT
 dnl sets $bitcoin_enable_qt, $bitcoin_enable_qt_test, $bitcoin_enable_qt_dbus
 BITCOIN_QT_CONFIGURE([$use_pkgconfig], [qt5])
 
-if test x$build_bitcoin_utils$build_bitcoind$bitcoin_enable_qt$build_bitcoin_seeder$use_tests$use_bench = xnononononono; then
+if test x$build_bitcoin_utils$build_bitcoind$bitcoin_enable_qt$build_clashic_seeder$use_tests$use_bench = xnononononono; then
     use_boost=no
 else
     use_boost=yes
@@ -1019,9 +1019,9 @@ AC_MSG_CHECKING([whether to build bitcoind])
 AM_CONDITIONAL([BUILD_BITCOIND], [test x$build_bitcoind = xyes])
 AC_MSG_RESULT($build_bitcoind)
 
-AC_MSG_CHECKING([whether to build bitcoin-seeder])
-AM_CONDITIONAL([BUILD_BITCOIN_SEEDER], [test x$build_bitcoin_seeder = xyes])
-AC_MSG_RESULT($build_bitcoin_seeder)
+AC_MSG_CHECKING([whether to build clashic-seeder])
+AM_CONDITIONAL([BUILD_CLASHIC_SEEDER], [test x$build_clashic_seeder = xyes])
+AC_MSG_RESULT($build_clashic_seeder)
 
 AC_MSG_CHECKING([whether to build utils (bitcoin-cli bitcoin-tx)])
 AM_CONDITIONAL([BUILD_BITCOIN_UTILS], [test x$build_bitcoin_utils = xyes])
@@ -1192,7 +1192,7 @@ AC_SUBST(BITCOIN_DAEMON_NAME)
 AC_SUBST(BITCOIN_GUI_NAME)
 AC_SUBST(BITCOIN_CLI_NAME)
 AC_SUBST(BITCOIN_TX_NAME)
-AC_SUBST(BITCOIN_SEEDER_NAME)
+AC_SUBST(CLASHIC_SEEDER_NAME)
 
 AC_SUBST(RELDFLAGS)
 AC_SUBST(ERROR_CXXFLAGS)
