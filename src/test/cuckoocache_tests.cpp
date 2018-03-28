@@ -5,7 +5,7 @@
 #include "cuckoocache.h"
 #include "random.h"
 #include "script/sigcache.h"
-#include "test/test_bitcoin.h"
+#include "test/test_clashic.h"
 
 #include <thread>
 

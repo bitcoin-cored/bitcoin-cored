@@ -6,8 +6,8 @@ src/bitcoind
 src/bitcoin-cli
 src/clashic-seeder
 src/bitcoin-tx
-src/test/test_bitcoin
-src/test/test_bitcoin_fuzzy
+src/test/test_clashic
+src/test/test_clashic_fuzzy
 src/qt/test/test_bitcoin-qt
 
 # autoreconf

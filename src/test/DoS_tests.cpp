@@ -15,7 +15,7 @@
 #include "util.h"
 #include "validation.h"
 
-#include "test/test_bitcoin.h"
+#include "test/test_clashic.h"
 
 #include <cstdint>
 

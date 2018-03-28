@@ -6,7 +6,7 @@
 
 #include "base58.h"
 #include "key.h"
-#include "test/test_bitcoin.h"
+#include "test/test_clashic.h"
 #include "uint256.h"
 #include "util.h"
 #include "utilstrencodings.h"
