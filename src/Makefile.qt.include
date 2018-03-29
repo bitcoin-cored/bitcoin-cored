@@ -357,7 +357,7 @@ RES_IMAGES =
 
 RES_MOVIES = $(wildcard $(srcdir)/qt/res/movies/spinner-*.png)
 
-BITCOIN_RC = qt/res/bitcoin-qt-res.rc
+CLASHIC_RC = qt/res/clashic-qt-res.rc
 
 CLASHIC_QT_INCLUDES = -I$(builddir)/qt -I$(srcdir)/qt -I$(srcdir)/qt/forms \
   -I$(builddir)/qt/forms -DQT_NO_KEYWORDS
@@ -395,7 +395,7 @@ if TARGET_DARWIN
   qt_clashic_qt_SOURCES += $(BITCOIN_MM)
 endif
 if TARGET_WINDOWS
-  qt_clashic_qt_SOURCES += $(BITCOIN_RC)
+  qt_clashic_qt_SOURCES += $(CLASHIC_RC)
 endif
 qt_clashic_qt_LDADD = qt/libbitcoinqt.a $(LIBBITCOIN_SERVER)
 if ENABLE_WALLET
