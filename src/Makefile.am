@@ -80,8 +80,8 @@ if BUILD_CLASHIC_SEEDER
   bin_PROGRAMS += clashic-seeder
 endif
 
-if BUILD_BITCOIN_UTILS
-  bin_PROGRAMS += clashic-cli bitcoin-tx
+if BUILD_CLASHIC_UTILS
+  bin_PROGRAMS += clashic-cli clashic-tx
 endif
 
 .PHONY: FORCE check-symbols check-security
@@ -453,17 +453,17 @@ clashic_seeder_LDADD = \
 clashic_seeder_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 #
 
-# bitcoin-tx binary #
-bitcoin_tx_SOURCES = bitcoin-tx.cpp
-bitcoin_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-bitcoin_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-bitcoin_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# clashic-tx binary #
+clashic_tx_SOURCES = clashic-tx.cpp
+clashic_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+clashic_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+clashic_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-bitcoin_tx_SOURCES += bitcoin-tx-res.rc
+clashic_tx_SOURCES += clashic-tx-res.rc
 endif
 
-bitcoin_tx_LDADD = \
+clashic_tx_LDADD = \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_UTIL) \
@@ -471,7 +471,7 @@ bitcoin_tx_LDADD = \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBSECP256K1)
 
-bitcoin_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+clashic_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
 
 # bitcoinconsensus library #

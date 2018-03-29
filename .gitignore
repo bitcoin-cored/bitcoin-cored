@@ -5,7 +5,7 @@ src/bitcoin
 src/bitcoind
 src/clashic-cli
 src/clashic-seeder
-src/bitcoin-tx
+src/clashic-tx
 src/test/test_clashic
 src/test/test_clashic_fuzzy
 src/qt/test/test_clashic-qt

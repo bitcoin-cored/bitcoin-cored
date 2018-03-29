@@ -6,7 +6,7 @@ MANDIR=${MANDIR:-$TOPDIR/doc/man}
 
 BITCOIND=${BITCOIND:-$SRCDIR/bitcoind}
 CLASHICCLI=${CLASHICCLI:-$SRCDIR/clashic-cli}
-BITCOINTX=${BITCOINTX:-$SRCDIR/bitcoin-tx}
+CLASHICTX=${CLASHICTX:-$SRCDIR/clashic-tx}
 CLASHICQT=${CLASHICQT:-$SRCDIR/qt/clashic_qt}
 
 [ ! -x $BITCOIND ] && echo "$BITCOIND not found or not executable." && exit 1
@@ -20,7 +20,7 @@ BTCVER=($($CLASHICCLI --version | head -n1 | awk -F'[ -]' '{ print $6, $7 }'))
 echo "[COPYRIGHT]" > footer.h2m
 $BITCOIND --version | sed -n '1!p' >> footer.h2m
 
-for cmd in $BITCOIND $CLASHICCLI $BITCOINTX $CLASHICQT; do
+for cmd in $BITCOIND $CLASHICCLI $CLASHICTX $CLASHICQT; do
   cmdname="${cmd##*/}"
   help2man -N --version-string=${BTCVER[0]} --include=footer.h2m -o ${MANDIR}/${cmdname}.1 ${cmd}
   sed -i "s/\\\-${BTCVER[1]}//g" ${MANDIR}/${cmdname}.1

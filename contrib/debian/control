@@ -54,17 +54,17 @@ Description: peer-to-peer network based digital currency - Qt GUI
  .
  This package provides Clashic-Qt, a GUI for Bitcoin Clashic based on Qt.
 
-Package: bitcoin-tx
+Package: clashic-tx
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer digital currency - standalone transaction tool
- Bitcoin is an experimental new digital currency that enables instant
+ Bitcoin Clashic is an experimental new digital currency that enables instant
  payments to anyone, anywhere in the world. Bitcoin uses peer-to-peer
  technology to operate with no central authority: managing transactions
  and issuing money are carried out collectively by the network. Bitcoin
  Clashic ABCD is the name of the open source software which enables the
  use of this currency.
  .
- This package provides bitcoin-tx, a command-line transaction creation
+ This package provides clashic-tx, a command-line transaction creation
  tool which can be used without a bitcoin daemon.  Some means of
  exchanging minimal transaction data with peers is still required.

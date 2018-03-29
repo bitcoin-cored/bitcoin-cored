@@ -8,6 +8,6 @@ if ENABLE_QT
   dist_man1_MANS+=clashic-qt.1
 endif
 
-if BUILD_BITCOIN_UTILS
-  dist_man1_MANS+=clashic-cli.1 bitcoin-tx.1
+if BUILD_CLASHIC_UTILS
+  dist_man1_MANS+=clashic-cli.1 clashic-tx.1
 endif
