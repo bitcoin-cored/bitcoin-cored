@@ -133,7 +133,7 @@ bool AppInit(int argc, char *argv[]) {
 
         if (fCommandLine) {
             fprintf(stderr, "Error: There is no RPC client functionality in "
-                            "bitcoind anymore. Use the bitcoin-cli utility "
+                            "bitcoind anymore. Use the clashic-cli utility "
                             "instead.\n");
             exit(EXIT_FAILURE);
         }

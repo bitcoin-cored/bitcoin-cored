@@ -56,13 +56,13 @@ All three configurations assume several paths that might need to be adjusted.
 Binary:              `/usr/bin/bitcoind`  
 Configuration file:  `/etc/bitcoin/bitcoin.conf`  
 Data directory:      `/var/lib/bitcoind`  
-PID file:            `/var/run/bitcoind/bitcoind.pid` (OpenRC and Upstart) or `/var/lib/bitcoind/bitcoind.pid` (systemd)  
+PID file:            `/var/run/clashicd/clashicd.pid` (OpenRC and Upstart) or `/var/lib/clashicd/clashicd.pid` (systemd)  
 Lock file:           `/var/lock/subsys/bitcoind` (CentOS)  
 
 The configuration file, PID directory (if applicable) and data directory
 should all be owned by the bitcoin user and group.  It is advised for security
 reasons to make the configuration file and data directory only readable by the
-bitcoin user and group.  Access to bitcoin-cli and other bitcoind rpc clients
+bitcoin user and group.  Access to clashic-cli and other bitcoind rpc clients
 can then be controlled by group membership.
 
 3b) Mac OS X

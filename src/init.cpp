@@ -137,7 +137,7 @@ bool ShutdownRequested() {
 /**
  * This is a minimally invasive approach to shutdown on LevelDB read errors from
  * the chainstate, while keeping user interface out of the common library, which
- * is shared between bitcoind, and bitcoin-qt and non-server tools.
+ * is shared between bitcoind, and clashic-qt and non-server tools.
  */
 class CCoinsViewErrorCatcher : public CCoinsViewBacked {
 public:
@@ -660,7 +660,7 @@ std::string HelpMessage(HelpMessageMode mode) {
         "addrman, alert, bench, cmpctblock, coindb, db, http, libevent, lock, "
         "mempool, mempoolrej, net, proxy, prune, rand, reindex, rpc, "
         "selectcoins, tor, zmq"; // Don't translate these and qt below
-    if (mode == HMM_BITCOIN_QT) debugCategories += ", qt";
+    if (mode == HMM_CLASHIC_QT) debugCategories += ", qt";
     strUsage += HelpMessageOpt(
         "-debug=<category>",
         strprintf(_("Output debugging information (default: %u, supplying "

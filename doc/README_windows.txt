@@ -11,7 +11,7 @@ with each other, with the help of a P2P network to check for double-spending.
 
 Setup
 -----
-Unpack the files into a directory and run bitcoin-qt.exe.
+Unpack the files into a directory and run clashic-qt.exe.
 
 Bitcoin Clashic ABCD is based on Bitcoin Core, which is the original Bitcoin
 client and builds the backbone of the network. It downloads and stores the

@@ -100,14 +100,14 @@ static int AppInitRPC(int argc, char *argv[]) {
         if (!IsArgSet("-version")) {
             strUsage +=
                 "\n" + _("Usage:") + "\n" +
-                "  bitcoin-cli [options] <command> [params]  " +
+                "  clashic-cli [options] <command> [params]  " +
                 strprintf(_("Send command to %s"), _(PACKAGE_NAME)) + "\n" +
-                "  bitcoin-cli [options] -named <command> [name=value] ... " +
+                "  clashic-cli [options] -named <command> [name=value] ... " +
                 strprintf(_("Send command to %s (with named arguments)"),
                           _(PACKAGE_NAME)) +
-                "\n" + "  bitcoin-cli [options] help                " +
+                "\n" + "  clashic-cli [options] help                " +
                 _("List commands") + "\n" +
-                "  bitcoin-cli [options] help <command>      " +
+                "  clashic-cli [options] help <command>      " +
                 _("Get help for a command") + "\n";
 
             strUsage += "\n" + HelpMessageCli();

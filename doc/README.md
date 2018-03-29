@@ -9,18 +9,18 @@ To download Bitcoin Clashic ABCD, visit [bitcoinclashic.org](http://bitcoinclash
 
 Running
 ---------------------
-The following are some helpful notes on how to run Bitcoin on your native platform.
+The following are some helpful notes on how to run Clashic on your native platform.
 
 ### Unix
 
 Unpack the files into a directory and run:
 
-- `bin/bitcoin-qt` (GUI) or
+- `bin/clashic-qt` (GUI) or
 - `bin/bitcoind` (headless)
 
 ### Windows
 
-Unpack the files into a directory, and then run bitcoin-qt.exe.
+Unpack the files into a directory, and then run clashic-qt.exe.
 
 ### OS X
 

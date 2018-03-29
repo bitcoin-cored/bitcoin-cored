@@ -23,9 +23,9 @@ Build-Depends: debhelper,
  libprotobuf-dev, protobuf-compiler,
  python
 Standards-Version: 3.9.2
-Homepage: https://bitcoincore.org/
-Vcs-Git: git://github.com/bitcoin/bitcoin.git
-Vcs-Browser: https://github.com/bitcoin/bitcoin
+Homepage: http://bitcoinclashic.org/
+Vcs-Git: git://github.com/Bitcoin-Clashic/bitcoin-clashic.git
+Vcs-Browser: https://github.com/Bitcoin-Clashic/bitcoin-clashic
 
 Package: bitcoind
 Architecture: any
@@ -39,20 +39,20 @@ Description: peer-to-peer network based digital currency - daemon
  use of this currency.
  .
  This package provides the daemon, bitcoind, and the CLI tool
- bitcoin-cli to interact with the daemon.
+ clashic-cli to interact with the daemon.
 
-Package: bitcoin-qt
+Package: clashic-qt
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - Qt GUI
- Bitcoin is an experimental new digital currency that enables instant
+ Bitcoin Clashic is an experimental new digital currency that enables instant
  payments to anyone, anywhere in the world. Bitcoin uses peer-to-peer
  technology to operate with no central authority: managing transactions
  and issuing money are carried out collectively by the network. Bitcoin
  Clashic ABCD is the name of the open source software which enables the
  use of this currency.
  .
- This package provides Bitcoin-Qt, a GUI for Bitcoin based on Qt.
+ This package provides Clashic-Qt, a GUI for Bitcoin Clashic based on Qt.
 
 Package: bitcoin-tx
 Architecture: any
