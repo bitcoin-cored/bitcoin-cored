@@ -8,7 +8,7 @@ src/clashic-seeder
 src/bitcoin-tx
 src/test/test_clashic
 src/test/test_clashic_fuzzy
-src/qt/test/test_bitcoin-qt
+src/qt/test/test_clashic-qt
 
 # autoreconf
 Makefile.in
