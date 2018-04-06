@@ -1,0 +1,33 @@
+# /etc/conf.d/clashicd: config file for /etc/init.d/clashicd
+
+# Config file location
+#CLASHICD_CONFIGFILE="/etc/clashic/clashic.conf"
+
+# What directory to write pidfile to?  (created and owned by $CLASHICD_USER)
+#CLASHICD_PIDDIR="/var/run/clashicd"
+
+# What filename to give the pidfile
+#CLASHICD_PIDFILE="${CLASHICD_PIDDIR}/clashicd.pid"
+
+# Where to write clashicd data (be mindful that the blockchain is large)
+#CLASHICD_DATADIR="/var/lib/clashicd"
+
+# User and group to own clashicd process
+#CLASHICD_USER="bitcoin"
+#CLASHICD_GROUP="bitcoin"
+
+# Path to clashicd executable
+#CLASHICD_BIN="/usr/bin/clashicd"
+
+# Nice value to run clashicd under
+#CLASHICD_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+CLASHICD_OPTS="-disablewallet"
+
+# The timeout in seconds OpenRC will wait for clashicd to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+CLASHICD_SIGTERM_TIMEOUT=60

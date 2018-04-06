@@ -149,7 +149,7 @@ libqrencode (optional) can be installed with:
 
 Notes
 -----
-The release is built with GCC and then "strip bitcoind" to strip the debug
+The release is built with GCC and then "strip clashicd" to strip the debug
 symbols, which reduces the executable size by about 90%.
 
 
@@ -170,7 +170,7 @@ Berkeley DB
 It is recommended to use Berkeley DB 4.8. If you have to build it yourself:
 
 ```bash
-BITCOIN_ROOT=$(pwd)
+CLASHIC_ROOT=$(pwd)
 
 # Pick some path to install BDB to, here we install in /usr/local/db4
 BDB_PREFIX="/usr/local/db4"
@@ -191,7 +191,7 @@ sudo ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PR
 sudo make install
 
 # Configure Bitcoin Clashic ABCD to use our own-built instance of BDB
-cd $BITCOIN_ROOT
+cd $CLASHIC_ROOT
 ./autogen.sh
 ./configure LDFLAGS="-L${BDB_PREFIX}/lib/" CPPFLAGS="-I${BDB_PREFIX}/include/" # (other args...)
 ```
@@ -209,8 +209,8 @@ If you need to build Boost yourself:
 
 Security
 --------
-To help make your bitcoin installation more secure by making certain attacks impossible to
-exploit even if a vulnerability is found, binaries are hardened by default.
+To help make your bitcoin-abcd installation more secure by making certain attacks
+impossible to exploit even if a vulnerability is found, binaries are hardened by default.
 This can be disabled with:
 
 Hardening Flags:
@@ -233,7 +233,7 @@ Hardening enables the following features:
 
     To test that you have built PIE executable, install scanelf, part of paxutils, and use:
 
-    	scanelf -e ./bitcoin
+    	scanelf -e ./clashic
 
     The output should contain:
 
@@ -242,13 +242,13 @@ Hardening enables the following features:
 
 * Non-executable Stack
     If the stack is executable then trivial stack based buffer overflow exploits are possible if
-    vulnerable buffers are found. By default, bitcoin should be built with a non-executable stack
+    vulnerable buffers are found. By default, bitcoin-abcd should be built with a non-executable stack
     but if one of the libraries it uses asks for an executable stack or someone makes a mistake
     and uses a compiler extension which requires an executable stack, it will silently build an
     executable without the non-executable stack protection.
 
     To verify that the stack is non-executable after compiling use:
-    `scanelf -e ./bitcoin`
+    `scanelf -e ./clashic`
 
     the output should contain:
 	STK/REL/PTL
@@ -258,8 +258,8 @@ Hardening enables the following features:
 
 Disable-wallet mode
 --------------------
-When the intention is to run only a P2P node without a wallet, bitcoin may be compiled in
-disable-wallet mode with:
+When the intention is to run only a P2P node without a wallet, bitcoin-abcd may 
+be compiled in disable-wallet mode with:
 
     ./configure --disable-wallet
 
@@ -290,7 +290,7 @@ Note:
 Enabling wallet support requires either compiling against a Berkeley DB newer than 4.8 (package `db`) using `--with-incompatible-bdb`,
 or building and depending on a local version of Berkeley DB 4.8. The readily available Arch Linux packages are currently built using
 `--with-incompatible-bdb` according to the [PKGBUILD](https://projects.archlinux.org/svntogit/community.git/tree/bitcoin/trunk/PKGBUILD).
-As mentioned above, when maintaining portability of the wallet between the standard Bitcoin Core distributions and independently built
+As mentioned above, when maintaining portability of the wallet between the standard Bitcoin ABCD distributions and independently built
 node software is desired, Berkeley DB 4.8 must be used.
 
 
@@ -336,7 +336,7 @@ For the wallet (optional):
 This will give a warning "configure: WARNING: Found Berkeley DB other
 than 4.8; wallets opened by this build will not be portable!", but as FreeBSD never
 had a binary release, this may not matter. If backwards compatibility
-with 4.8-built Bitcoin Core is needed follow the steps under "Berkeley DB" above.
+with 4.8-built Bitcoin ABCD is needed follow the steps under "Berkeley DB" above.
 
 Also, if you intend to run the regression tests (qa tests):
 

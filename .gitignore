@@ -1,8 +1,8 @@
 *.tar.gz
 
 *.exe
-src/bitcoin
-src/bitcoind
+src/clashic
+src/clashicd
 src/clashic-cli
 src/clashic-seeder
 src/clashic-tx
@@ -76,7 +76,7 @@ src/qt/test/moc*.cpp
 *.qm
 Makefile
 clashic-qt
-Bitcoin-Qt.app
+Clashic-Qt.app
 
 # Unit-tests
 Makefile.test

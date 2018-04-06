@@ -1,5 +1,5 @@
 //
-// Simple Bitcoin Cash Payment Protocol messages
+// Simple Bitcoin Clashic Payment Protocol messages
 // based on Simple Bitcoin Payment Protocol
 //
 // Use fields 100+ for extensions;
@@ -10,10 +10,10 @@
 syntax = "proto2";
 
 package payments;
-option java_package = "org.bitcoinclashic.protocols.payments";
+option java_package = "org.clashic.protocols.payments";
 option java_outer_classname = "Protos";
 
-// Generalized form of "send payment to this/these bitcoin cash addresses"
+// Generalized form of "send payment to this/these bitcoin clashic addresses"
 message Output {
 	optional uint64 amount = 1 [default = 0]; // amount is integer-number-of-satoshis
 	required bytes script = 2; // usually one of the standard Script forms

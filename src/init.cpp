@@ -137,7 +137,7 @@ bool ShutdownRequested() {
 /**
  * This is a minimally invasive approach to shutdown on LevelDB read errors from
  * the chainstate, while keeping user interface out of the common library, which
- * is shared between bitcoind, and clashic-qt and non-server tools.
+ * is shared between clashicd, and clashic-qt and non-server tools.
  */
 class CCoinsViewErrorCatcher : public CCoinsViewBacked {
 public:
@@ -339,7 +339,7 @@ std::string HelpMessage(HelpMessageMode mode) {
     strUsage += HelpMessageOpt(
         "-conf=<file>", strprintf(_("Specify configuration file (default: %s)"),
                                   CLASHIC_CONF_FILENAME));
-    if (mode == HMM_BITCOIND) {
+    if (mode == HMM_CLASHICD) {
 #if HAVE_DECL_DAEMON
         strUsage += HelpMessageOpt(
             "-daemon",
@@ -1043,7 +1043,7 @@ void ThreadImport(const Config &config,
 }
 
 /** Sanity checks
- *  Ensure that Bitcoin is running in a usable environment with all
+ *  Ensure that Bitcoin ABCD is running in a usable environment with all
  *  necessary library support.
  */
 bool InitSanityCheck(void) {
@@ -1580,7 +1580,7 @@ bool AppInitParameterInteraction(Config &config) {
 static bool LockDataDirectory(bool probeOnly) {
     std::string strDataDir = GetDataDir().string();
 
-    // Make sure only a single Bitcoin process is using the data directory.
+    // Make sure only a single Bitcoin ABCD process is using the data directory.
     boost::filesystem::path pathLockFile = GetDataDir() / ".lock";
     // empty lock file; created if it doesn't exist.
     FILE *file = fopen(pathLockFile.string().c_str(), "a");

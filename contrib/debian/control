@@ -27,7 +27,7 @@ Homepage: http://bitcoinclashic.org/
 Vcs-Git: git://github.com/Bitcoin-Clashic/bitcoin-clashic.git
 Vcs-Browser: https://github.com/Bitcoin-Clashic/bitcoin-clashic
 
-Package: bitcoind
+Package: clashicd
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - daemon
@@ -38,7 +38,7 @@ Description: peer-to-peer network based digital currency - daemon
  Clashic ABCD is the name of the open source software which enables the 
  use of this currency.
  .
- This package provides the daemon, bitcoind, and the CLI tool
+ This package provides the daemon, clashicd, and the CLI tool
  clashic-cli to interact with the daemon.
 
 Package: clashic-qt
@@ -66,5 +66,5 @@ Description: peer-to-peer digital currency - standalone transaction tool
  use of this currency.
  .
  This package provides clashic-tx, a command-line transaction creation
- tool which can be used without a bitcoin daemon.  Some means of
+ tool which can be used without a bitcoin clashic daemon.  Some means of
  exchanging minimal transaction data with peers is still required.

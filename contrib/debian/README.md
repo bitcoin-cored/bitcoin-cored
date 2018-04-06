@@ -1,8 +1,8 @@
 
 Debian
 ====================
-This directory contains files used to package bitcoind/clashic-qt
-for Debian-based Linux systems. If you compile bitcoind/clashic-qt yourself, there are some useful files here.
+This directory contains files used to package clashicd/clashic-qt
+for Debian-based Linux systems. If you compile clashicd/clashic-qt yourself, there are some useful files here.
 
 ## bitcoinclashic: URI support ##
 

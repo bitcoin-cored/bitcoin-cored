@@ -16,7 +16,7 @@ The following are some helpful notes on how to run Clashic on your native platfo
 Unpack the files into a directory and run:
 
 - `bin/clashic-qt` (GUI) or
-- `bin/bitcoind` (headless)
+- `bin/clashicd` (headless)
 
 ### Windows
 
@@ -24,7 +24,7 @@ Unpack the files into a directory, and then run clashic-qt.exe.
 
 ### OS X
 
-Drag bitcoin-abc to your applications folder, and then run bitcoin-abc.
+Drag bitcoin-abcd to your applications folder, and then run bitcoin-abcd.
 
 ### Need Help?
 

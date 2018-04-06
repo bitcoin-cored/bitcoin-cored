@@ -5,9 +5,9 @@ and tests weren't explicitly disabled.
 
 After configuring, they can be run with `make check`.
 
-To run the bitcoind tests manually, launch `src/test/test_clashic`.
+To run the clashicd tests manually, launch `src/test/test_clashic`.
 
-To add more bitcoind tests, add `BOOST_AUTO_TEST_CASE` functions to the existing
+To add more clashicd tests, add `BOOST_AUTO_TEST_CASE` functions to the existing
 .cpp files in the `test/` directory or add new .cpp files that
 implement new BOOST_AUTO_TEST_SUITE sections.
 
@@ -32,7 +32,7 @@ Run `test_clashic --help` for the full list.
 ### Note on adding test cases
 
 The sources in this directory are unit test cases.  Boost includes a
-unit testing framework, and since bitcoin already uses boost, it makes
+unit testing framework, and since bitcoin-abcd already uses boost, it makes
 sense to simply use this framework rather than require developers to
 configure some other framework (we want as few impediments to creating
 unit tests as possible).

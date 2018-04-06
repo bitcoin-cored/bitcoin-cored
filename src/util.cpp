@@ -542,7 +542,7 @@ boost::filesystem::path GetConfigFile(const std::string &confPath) {
 void ReadConfigFile(const std::string &confPath) {
     boost::filesystem::ifstream streamConfig(GetConfigFile(confPath));
 
-    // No bitcoin.conf file is OK
+    // No clashic.conf file is OK
     if (!streamConfig.good()) return;
 
     {
@@ -555,7 +555,7 @@ void ReadConfigFile(const std::string &confPath) {
              end;
              it != end; ++it) {
             // Don't overwrite existing settings so command line settings
-            // override bitcoin.conf
+            // override clashic.conf
             std::string strKey = std::string("-") + it->string_key;
             std::string strValue = it->value[0];
             InterpretNegativeSetting(strKey, strValue);
