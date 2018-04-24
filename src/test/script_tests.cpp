@@ -18,7 +18,7 @@
 #include "utilstrencodings.h"
 
 #if defined(HAVE_CONSENSUS_LIB)
-#include "script/bitcoinconsensus.h"
+#include "script/clashicconsensus.h"
 #endif
 
 #include <cstdint>

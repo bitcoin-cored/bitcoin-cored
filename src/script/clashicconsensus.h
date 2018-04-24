@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_BITCOINCONSENSUS_H
-#define BITCOIN_BITCOINCONSENSUS_H
+#ifndef BITCOIN_CLASHICCONSENSUS_H
+#define BITCOIN_CLASHICCONSENSUS_H
 
 #include <cstdint>
 
@@ -21,7 +21,7 @@
 #elif defined(HAVE_FUNC_ATTRIBUTE_VISIBILITY)
 #define EXPORT_SYMBOL __attribute__((visibility("default")))
 #endif
-#elif defined(MSC_VER) && !defined(STATIC_LIBBITCOINCONSENSUS)
+#elif defined(MSC_VER) && !defined(STATIC_LIBCLASHICCONSENSUS)
 #define EXPORT_SYMBOL __declspec(dllimport)
 #endif
 
@@ -91,4 +91,4 @@ EXPORT_SYMBOL unsigned int bitcoinconsensus_version();
 
 #undef EXPORT_SYMBOL
 
-#endif // BITCOIN_BITCOINCONSENSUS_H
+#endif // BITCOIN_CLASHICCONSENSUS_H

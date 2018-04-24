@@ -109,5 +109,5 @@ qa/cache/*
 
 /doc/doxygen/
 
-libbitcoinconsensus.pc
+libclashicconsensus.pc
 contrib/devtools/split-debug.sh
