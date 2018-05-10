@@ -189,9 +189,9 @@ public:
         // Amaury SÉCHET
         vSeeds.push_back(
             CDNSSeedData("deadalnix.me", "seed.deadalnix.me", true));
-        // criptolayer.net
+        // clashic.cash maintained by Clashicly
         vSeeds.push_back(
-            CDNSSeedData("criptolayer.net", "seeder.criptolayer.net", true));
+            CDNSSeedData("clashic.cash", "seeder.clashic.cash", true));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<uint8_t>(1, 0);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<uint8_t>(1, 5);
