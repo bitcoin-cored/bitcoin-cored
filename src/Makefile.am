@@ -24,8 +24,8 @@ BITCOIN_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BDB_CPPFLAGS) $(BOOST_CPPFLAG
 BITCOIN_INCLUDES += -I$(srcdir)/secp256k1/include
 BITCOIN_INCLUDES += $(UNIVALUE_CFLAGS)
 
-BITCOIN_SEEDER_INCLUDES = -I$(srcdir)/seeder
-BITCOIN_SEEDER_INCLUDES += $(BITCOIN_INCLUDES)
+CLASHIC_SEEDER_INCLUDES = -I$(srcdir)/seeder
+CLASHIC_SEEDER_INCLUDES += $(BITCOIN_INCLUDES)
 
 LIBBITCOIN_SERVER=libbitcoin_server.a
 LIBBITCOIN_COMMON=libbitcoin_common.a
@@ -39,11 +39,11 @@ LIBSECP256K1=secp256k1/libsecp256k1.la
 if ENABLE_ZMQ
 LIBBITCOIN_ZMQ=libbitcoin_zmq.a
 endif
-if BUILD_BITCOIN_LIBS
-LIBBITCOINCONSENSUS=libbitcoinconsensus.la
+if BUILD_CLASHIC_LIBS
+LIBCLASHICCONSENSUS=libclashicconsensus.la
 endif
-if BUILD_BITCOIN_SEEDER
-LIBBITCOIN_SEEDER=libbitcoin_seeder.a
+if BUILD_CLASHIC_SEEDER
+LIBCLASHIC_SEEDER=libclashic_seeder.a
 endif
 if ENABLE_WALLET
 LIBBITCOIN_WALLET=libbitcoin_wallet.a
@@ -61,31 +61,31 @@ EXTRA_LIBRARIES += \
   $(LIBBITCOIN_CONSENSUS) \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_CLI) \
-  $(LIBBITCOIN_SEEDER) \
+  $(LIBCLASHIC_SEEDER) \
   $(LIBBITCOIN_WALLET) \
   $(LIBBITCOIN_ZMQ)
 
-lib_LTLIBRARIES = $(LIBBITCOINCONSENSUS)
+lib_LTLIBRARIES = $(LIBCLASHICCONSENSUS)
 
 bin_PROGRAMS =
 noinst_PROGRAMS =
 TESTS =
 BENCHMARKS =
 
-if BUILD_BITCOIND
-  bin_PROGRAMS += bitcoind
+if BUILD_CLASHICD
+  bin_PROGRAMS += clashicd
 endif
 
-if BUILD_BITCOIN_SEEDER
-  bin_PROGRAMS += bitcoin-seeder
+if BUILD_CLASHIC_SEEDER
+  bin_PROGRAMS += clashic-seeder
 endif
 
-if BUILD_BITCOIN_UTILS
-  bin_PROGRAMS += bitcoin-cli bitcoin-tx
+if BUILD_CLASHIC_UTILS
+  bin_PROGRAMS += clashic-cli clashic-tx
 endif
 
 .PHONY: FORCE check-symbols check-security
-# bitcoin core #
+# bitcoin abcd #
 BITCOIN_CORE_H = \
   addrdb.h \
   addrman.h \
@@ -189,7 +189,7 @@ obj/build.h: FORCE
 	  $(abs_top_srcdir)
 libbitcoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
-# server: shared between bitcoind and bitcoin-qt
+# server: shared between clashicd and clashic-qt
 libbitcoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
 libbitcoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_server_a_SOURCES = \
@@ -244,7 +244,7 @@ libbitcoin_zmq_a_SOURCES = \
 endif
 
 
-# wallet: shared between bitcoind and bitcoin-qt, but only linked
+# wallet: shared between clashicd and clashic-qt, but only linked
 # when wallet enabled
 libbitcoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
@@ -300,7 +300,7 @@ libbitcoin_consensus_a_SOURCES = \
   primitives/transaction.h \
   pubkey.cpp \
   pubkey.h \
-  script/bitcoinconsensus.cpp \
+  script/clashicconsensus.cpp \
   script/interpreter.cpp \
   script/interpreter.h \
   script/script.cpp \
@@ -315,7 +315,7 @@ libbitcoin_consensus_a_SOURCES = \
   utilstrencodings.h \
   version.h
 
-# common: shared between bitcoind, and bitcoin-qt and non-server tools
+# common: shared between clashicd, and clashic-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_common_a_SOURCES = \
@@ -365,7 +365,7 @@ if GLIBC_BACK_COMPAT
 libbitcoin_util_a_SOURCES += compat/glibc_compat.cpp
 endif
 
-# cli: shared between bitcoin-cli and bitcoin-qt
+# cli: shared between clashic-cli and clashic-qt
 libbitcoin_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_cli_a_SOURCES = \
@@ -373,9 +373,9 @@ libbitcoin_cli_a_SOURCES = \
   $(BITCOIN_CORE_H)
 
 # seeder library
-libbitcoin_seeder_a_CPPFLAGS = $(AM_CPPFLAGS) $(PIE_FLAGS) $(BITCOIN_SEEDER_INCLUDES)
-libbitcoin_seeder_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libbitcoin_seeder_a_SOURCES = \
+libclashic_seeder_a_CPPFLAGS = $(AM_CPPFLAGS) $(PIE_FLAGS) $(CLASHIC_SEEDER_INCLUDES)
+libclashic_seeder_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libclashic_seeder_a_SOURCES = \
   seeder/bitcoin.cpp \
   seeder/bitcoin.h \
   seeder/compat.h \
@@ -394,17 +394,17 @@ libbitcoin_seeder_a_SOURCES = \
 nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
-# bitcoind binary #
-bitcoind_SOURCES = bitcoind.cpp
-bitcoind_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-bitcoind_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-bitcoind_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# clashicd binary #
+clashicd_SOURCES = clashicd.cpp
+clashicd_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+clashicd_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+clashicd_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-bitcoind_SOURCES += bitcoind-res.rc
+clashicd_SOURCES += clashicd-res.rc
 endif
 
-bitcoind_LDADD = \
+clashicd_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_COMMON) \
   $(LIBUNIVALUE) \
@@ -418,52 +418,52 @@ bitcoind_LDADD = \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-bitcoind_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+clashicd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 
-# bitcoin-cli binary #
-bitcoin_cli_SOURCES = bitcoin-cli.cpp
-bitcoin_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
-bitcoin_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-bitcoin_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# clashic-cli binary #
+clashic_cli_SOURCES = clashic-cli.cpp
+clashic_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+clashic_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+clashic_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-bitcoin_cli_SOURCES += bitcoin-cli-res.rc
+clashic_cli_SOURCES += clashic-cli-res.rc
 endif
 
-bitcoin_cli_LDADD = \
+clashic_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO)
 
-bitcoin_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+clashic_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 #
 
-# bitcoin-seeder binary #
-bitcoin_seeder_SOURCES = seeder/main.cpp
-bitcoin_seeder_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_SEEDER_INCLUDES)
-bitcoin_seeder_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-bitcoin_seeder_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# clashic-seeder binary #
+clashic_seeder_SOURCES = seeder/main.cpp
+clashic_seeder_CPPFLAGS = $(AM_CPPFLAGS) $(CLASHIC_SEEDER_INCLUDES)
+clashic_seeder_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+clashic_seeder_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
-bitcoin_seeder_LDADD = \
-  $(LIBBITCOIN_SEEDER) \
+clashic_seeder_LDADD = \
+  $(LIBCLASHIC_SEEDER) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO)
 
-bitcoin_seeder_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+clashic_seeder_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 #
 
-# bitcoin-tx binary #
-bitcoin_tx_SOURCES = bitcoin-tx.cpp
-bitcoin_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-bitcoin_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-bitcoin_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# clashic-tx binary #
+clashic_tx_SOURCES = clashic-tx.cpp
+clashic_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+clashic_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+clashic_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-bitcoin_tx_SOURCES += bitcoin-tx-res.rc
+clashic_tx_SOURCES += clashic-tx-res.rc
 endif
 
-bitcoin_tx_LDADD = \
+clashic_tx_LDADD = \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_UTIL) \
@@ -471,22 +471,22 @@ bitcoin_tx_LDADD = \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBSECP256K1)
 
-bitcoin_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+clashic_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
 
-# bitcoinconsensus library #
-if BUILD_BITCOIN_LIBS
-include_HEADERS = script/bitcoinconsensus.h
-libbitcoinconsensus_la_SOURCES = $(crypto_libbitcoin_crypto_a_SOURCES) $(libbitcoin_consensus_a_SOURCES)
+# clashicconsensus library #
+if BUILD_CLASHIC_LIBS
+include_HEADERS = script/clashicconsensus.h
+libclashicconsensus_la_SOURCES = $(crypto_libclashic_crypto_a_SOURCES) $(libclashic_consensus_a_SOURCES)
 
 if GLIBC_BACK_COMPAT
-  libbitcoinconsensus_la_SOURCES += compat/glibc_compat.cpp
+  libclashicconsensus_la_SOURCES += compat/glibc_compat.cpp
 endif
 
-libbitcoinconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
-libbitcoinconsensus_la_LIBADD = $(LIBSECP256K1)
-libbitcoinconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
-libbitcoinconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libclashicconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
+libclashicconsensus_la_LIBADD = $(LIBSECP256K1)
+libclashicconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
+libclashicconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 
 endif
 #

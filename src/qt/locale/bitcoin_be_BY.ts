@@ -298,7 +298,7 @@
         <translation>Пераіндэксацыя блокаў на дыску...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
+        <source>Send coins to a Bitcoin Clashic address</source>
         <translation>Даслаць манеты на Біткойн-адрас</translation>
     </message>
     <message>

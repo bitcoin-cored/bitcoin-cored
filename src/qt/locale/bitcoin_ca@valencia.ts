@@ -298,8 +298,8 @@
         <translation>S'estan reindexant els blocs al disc...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Envia monedes a una adreça Bitcoin</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Envia monedes a una adreça Bitcoin Clashic</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

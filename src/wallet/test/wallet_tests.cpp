@@ -6,7 +6,7 @@
 
 #include "config.h"
 #include "rpc/server.h"
-#include "test/test_bitcoin.h"
+#include "test/test_clashic.h"
 #include "validation.h"
 #include "wallet/rpcdump.h"
 #include "wallet/test/wallet_test_fixture.h"
@@ -226,13 +226,13 @@ BOOST_AUTO_TEST_CASE(coin_selection_tests) {
         add_coin(4 * COIN.GetSatoshis());
         BOOST_CHECK(wallet.SelectCoinsMinConf(95 * CENT.GetSatoshis(), 1, 1, 0,
                                               vCoins, setCoinsRet, nValueRet));
-        // we should get 1 BCC in 1 coin
+        // we should get 1 BCL in 1 coin
         BOOST_CHECK_EQUAL(nValueRet, 1 * COIN);
         BOOST_CHECK_EQUAL(setCoinsRet.size(), 1U);
 
         BOOST_CHECK(wallet.SelectCoinsMinConf(195 * CENT.GetSatoshis(), 1, 1, 0,
                                               vCoins, setCoinsRet, nValueRet));
-        // we should get 2 BCC in 1 coin
+        // we should get 2 BCL in 1 coin
         BOOST_CHECK_EQUAL(nValueRet, 2 * COIN.GetSatoshis());
         BOOST_CHECK_EQUAL(setCoinsRet.size(), 1U);
 

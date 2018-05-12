@@ -322,8 +322,8 @@
         <translation>Ponowne indeksowanie bloków na dysku...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Wyślij monety na adres bitcoinowy</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Wyślij monety na adres Bitcoinowy Clashic</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

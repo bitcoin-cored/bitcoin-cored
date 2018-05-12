@@ -338,8 +338,8 @@
         <translation>Идёт переиндексация блоков на диске...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Отправить монеты на указанный адрес Bitcoin</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Отправить монеты на указанный адрес Bitcoin Clashic</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

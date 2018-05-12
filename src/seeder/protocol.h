@@ -7,8 +7,8 @@
 #error This header can only be compiled as C++.
 #endif
 
-#ifndef BITCOIN_SEEDER_PROTOCOL_H
-#define BITCOIN_SEEDER_PROTOCOL_H
+#ifndef CLASHIC_SEEDER_PROTOCOL_H
+#define CLASHIC_SEEDER_PROTOCOL_H
 
 #include "netbase.h"
 #include "serialize.h"
@@ -19,7 +19,7 @@
 
 extern bool fTestNet;
 static inline unsigned short GetDefaultPort(const bool testnet = fTestNet) {
-    return testnet ? 18333 : 8333;
+    return testnet ? 20333 : 10333;
 }
 
 //

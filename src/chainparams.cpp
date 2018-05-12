@@ -143,6 +143,9 @@ public:
         // Aug, 1 hard fork
         consensus.uahfHeight = 478559;
 
+        // TVS-43 Replay Protection from Bitcoin Cash. (9) difficulty adjustments from 2018/01/30
+        consensus.TVS43Height = 544320;
+
         /**
          * The message start string is designed to be unlikely to occur in
          * normal data. The characters are rarely used upper ASCII, not valid as
@@ -156,7 +159,7 @@ public:
         pchCashMessageStart[1] = 0xe1;
         pchCashMessageStart[2] = 0xf3;
         pchCashMessageStart[3] = 0xe8;
-        nDefaultPort = 8333;
+        nDefaultPort = 10333;
         nPruneAfterHeight = 100000;
 
         genesis = CreateGenesisBlock(1231006505, 2083236893, 0x1d00ffff, 1,
@@ -186,9 +189,9 @@ public:
         // Amaury SÉCHET
         vSeeds.push_back(
             CDNSSeedData("deadalnix.me", "seed.deadalnix.me", true));
-        // criptolayer.net
+        // clashic.cash maintained by Clashicly
         vSeeds.push_back(
-            CDNSSeedData("criptolayer.net", "seeder.criptolayer.net", true));
+            CDNSSeedData("clashic.cash", "seeder.clashic.cash", true));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<uint8_t>(1, 0);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<uint8_t>(1, 5);
@@ -320,7 +323,7 @@ public:
         pchCashMessageStart[1] = 0xe5;
         pchCashMessageStart[2] = 0xf3;
         pchCashMessageStart[3] = 0xf4;
-        nDefaultPort = 18333;
+        nDefaultPort = 20333;
         nPruneAfterHeight = 1000;
 
         genesis =
@@ -439,7 +442,7 @@ public:
         pchCashMessageStart[1] = 0xb5;
         pchCashMessageStart[2] = 0xbf;
         pchCashMessageStart[3] = 0xfa;
-        nDefaultPort = 18444;
+        nDefaultPort = 20444;
         nPruneAfterHeight = 1000;
 
         genesis = CreateGenesisBlock(1296688602, 2, 0x207fffff, 1, 50 * COIN);

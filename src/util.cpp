@@ -103,8 +103,8 @@ namespace program_options {
 
 } // namespace boost
 
-const char *const BITCOIN_CONF_FILENAME = "bitcoin.conf";
-const char *const BITCOIN_PID_FILENAME = "bitcoind.pid";
+const char *const CLASHIC_CONF_FILENAME = "clashic.conf";
+const char *const CLASHIC_PID_FILENAME = "clashicd.pid";
 
 CCriticalSection cs_args;
 std::map<std::string, std::string> mapArgs;
@@ -469,13 +469,13 @@ void PrintExceptionContinue(const std::exception *pex, const char *pszThread) {
 
 boost::filesystem::path GetDefaultDataDir() {
     namespace fs = boost::filesystem;
-// Windows < Vista: C:\Documents and Settings\Username\Application Data\Bitcoin
-// Windows >= Vista: C:\Users\Username\AppData\Roaming\Bitcoin
-// Mac: ~/Library/Application Support/Bitcoin
-// Unix: ~/.bitcoin
+// Windows < Vista: C:\Documents and Settings\Username\Application Data\Clashic
+// Windows >= Vista: C:\Users\Username\AppData\Roaming\Clashic
+// Mac: ~/Library/Application Support/Clashic
+// Unix: ~/.clashic
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "Bitcoin";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "Clashic";
 #else
     fs::path pathRet;
     char *pszHome = getenv("HOME");
@@ -485,10 +485,10 @@ boost::filesystem::path GetDefaultDataDir() {
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/Bitcoin";
+    return pathRet / "Library/Application Support/Clashic";
 #else
     // Unix
-    return pathRet / ".bitcoin";
+    return pathRet / ".clashic";
 #endif
 #endif
 }
@@ -542,7 +542,7 @@ boost::filesystem::path GetConfigFile(const std::string &confPath) {
 void ReadConfigFile(const std::string &confPath) {
     boost::filesystem::ifstream streamConfig(GetConfigFile(confPath));
 
-    // No bitcoin.conf file is OK
+    // No clashic.conf file is OK
     if (!streamConfig.good()) return;
 
     {
@@ -555,7 +555,7 @@ void ReadConfigFile(const std::string &confPath) {
              end;
              it != end; ++it) {
             // Don't overwrite existing settings so command line settings
-            // override bitcoin.conf
+            // override clashic.conf
             std::string strKey = std::string("-") + it->string_key;
             std::string strValue = it->value[0];
             InterpretNegativeSetting(strKey, strValue);
@@ -569,7 +569,7 @@ void ReadConfigFile(const std::string &confPath) {
 
 #ifndef WIN32
 boost::filesystem::path GetPidFile() {
-    boost::filesystem::path pathPidFile(GetArg("-pid", BITCOIN_PID_FILENAME));
+    boost::filesystem::path pathPidFile(GetArg("-pid", CLASHIC_PID_FILENAME));
     if (!pathPidFile.is_complete()) pathPidFile = GetDataDir() / pathPidFile;
     return pathPidFile;
 }

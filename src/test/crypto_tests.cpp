@@ -11,7 +11,7 @@
 #include "crypto/sha256.h"
 #include "crypto/sha512.h"
 #include "random.h"
-#include "test/test_bitcoin.h"
+#include "test/test_clashic.h"
 #include "test/test_random.h"
 #include "utilstrencodings.h"
 

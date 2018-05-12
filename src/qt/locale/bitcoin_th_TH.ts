@@ -178,8 +178,8 @@
         <translation>กำลังทำดัชนี ที่เก็บบล็อก ใหม่ ในดิสก์...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>ส่ง coins ไปยัง ที่เก็บ Bitcoin</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>ส่ง coins ไปยัง ที่เก็บ Bitcoin Clashic</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

@@ -126,8 +126,8 @@
         <translation>Abrir &amp;URL...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Enviando monedas a una dirección de Bitcoin</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Enviando monedas a una dirección de Bitcoin Clashic</translation>
     </message>
     <message>
         <source>Change the passphrase used for wallet encryption</source>

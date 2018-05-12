@@ -298,8 +298,8 @@
         <translation>Besig met herindeksering van blokke op hardeskyf...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Stuur munte na 'n Bitcoin adres</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Stuur munte na 'n Bitcoin Clashic adres</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

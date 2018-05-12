@@ -137,7 +137,7 @@ bool ShutdownRequested() {
 /**
  * This is a minimally invasive approach to shutdown on LevelDB read errors from
  * the chainstate, while keeping user interface out of the common library, which
- * is shared between bitcoind, and bitcoin-qt and non-server tools.
+ * is shared between clashicd, and clashic-qt and non-server tools.
  */
 class CCoinsViewErrorCatcher : public CCoinsViewBacked {
 public:
@@ -338,8 +338,8 @@ std::string HelpMessage(HelpMessageMode mode) {
                       .defaultAssumeValid.GetHex()));
     strUsage += HelpMessageOpt(
         "-conf=<file>", strprintf(_("Specify configuration file (default: %s)"),
-                                  BITCOIN_CONF_FILENAME));
-    if (mode == HMM_BITCOIND) {
+                                  CLASHIC_CONF_FILENAME));
+    if (mode == HMM_CLASHICD) {
 #if HAVE_DECL_DAEMON
         strUsage += HelpMessageOpt(
             "-daemon",
@@ -387,7 +387,7 @@ std::string HelpMessage(HelpMessageMode mode) {
 #ifndef WIN32
     strUsage += HelpMessageOpt(
         "-pid=<file>",
-        strprintf(_("Specify pid file (default: %s)"), BITCOIN_PID_FILENAME));
+        strprintf(_("Specify pid file (default: %s)"), CLASHIC_PID_FILENAME));
 #endif
     strUsage += HelpMessageOpt(
         "-prune=<n>",
@@ -660,7 +660,7 @@ std::string HelpMessage(HelpMessageMode mode) {
         "addrman, alert, bench, cmpctblock, coindb, db, http, libevent, lock, "
         "mempool, mempoolrej, net, proxy, prune, rand, reindex, rpc, "
         "selectcoins, tor, zmq"; // Don't translate these and qt below
-    if (mode == HMM_BITCOIN_QT) debugCategories += ", qt";
+    if (mode == HMM_CLASHIC_QT) debugCategories += ", qt";
     strUsage += HelpMessageOpt(
         "-debug=<category>",
         strprintf(_("Output debugging information (default: %u, supplying "
@@ -863,8 +863,8 @@ std::string HelpMessage(HelpMessageMode mode) {
 
 std::string LicenseInfo() {
     const std::string URL_SOURCE_CODE =
-        "<https://github.com/Bitcoin-ABC/bitcoin-abc>";
-    const std::string URL_WEBSITE = "<https://www.bitcoinabc.org>";
+        "<https://github.com/Bitcoin-Clashic/bitcoin-clashic>";
+    const std::string URL_WEBSITE = "<http://www.bitcoinclashic.org>";
 
     return CopyrightHolders(
                strprintf(_("Copyright (C) %i-%i"), 2009, COPYRIGHT_YEAR) +
@@ -1043,7 +1043,7 @@ void ThreadImport(const Config &config,
 }
 
 /** Sanity checks
- *  Ensure that Bitcoin is running in a usable environment with all
+ *  Ensure that Bitcoin ABCD is running in a usable environment with all
  *  necessary library support.
  */
 bool InitSanityCheck(void) {
@@ -1580,7 +1580,7 @@ bool AppInitParameterInteraction(Config &config) {
 static bool LockDataDirectory(bool probeOnly) {
     std::string strDataDir = GetDataDir().string();
 
-    // Make sure only a single Bitcoin process is using the data directory.
+    // Make sure only a single Bitcoin ABCD process is using the data directory.
     boost::filesystem::path pathLockFile = GetDataDir() / ".lock";
     // empty lock file; created if it doesn't exist.
     FILE *file = fopen(pathLockFile.string().c_str(), "a");
@@ -1655,7 +1655,7 @@ bool AppInitMain(Config &config, boost::thread_group &threadGroup,
     LogPrintf("Default data directory %s\n", GetDefaultDataDir().string());
     LogPrintf("Using data directory %s\n", GetDataDir().string());
     LogPrintf("Using config file %s\n",
-              GetConfigFile(GetArg("-conf", BITCOIN_CONF_FILENAME)).string());
+              GetConfigFile(GetArg("-conf", CLASHIC_CONF_FILENAME)).string());
     LogPrintf("Using at most %i automatic connections (%i file descriptors "
               "available)\n",
               nMaxConnections, nFD);

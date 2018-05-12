@@ -158,7 +158,7 @@
         <translation>Переіндексація блоків на диску ...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
+        <source>Send coins to a Bitcoin Clashic address</source>
         <translation>Відправити монети на вказану адресу</translation>
     </message>
     <message>

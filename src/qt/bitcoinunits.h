@@ -52,11 +52,11 @@ public:
     explicit BitcoinUnits(QObject *parent);
 
     /**
-     * Bitcoin units (Bitcoin Cash unit work the same as Bitoin).
+     * Bitcoin units (Bitcoin Clashic unit work the same as Bitcoin).
      * @note Source: https://en.bitcoin.it/wiki/Units.
      * Please add only sensible ones.
      */
-    enum Unit { BCC, mBCC, uBCC };
+    enum Unit { BCL, mBCL, uBCL };
 
     enum SeparatorStyle { separatorNever, separatorStandard, separatorAlways };
 

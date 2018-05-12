@@ -158,8 +158,8 @@
         <translation>Lemezen lévő blokkok újraindexelése...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Bitcoin küldése megadott címre</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Bitcoin Clashic küldése megadott címre</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

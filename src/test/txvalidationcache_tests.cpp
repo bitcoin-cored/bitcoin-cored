@@ -13,7 +13,7 @@
 #include "script/sign.h"
 #include "script/standard.h"
 #include "test/sigutil.h"
-#include "test/test_bitcoin.h"
+#include "test/test_clashic.h"
 #include "txmempool.h"
 #include "utiltime.h"
 #include "validation.h"

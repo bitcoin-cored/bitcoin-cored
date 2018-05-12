@@ -10,7 +10,7 @@
 #include "script/script.h"
 #include "script/script_error.h"
 #include "script/sign.h"
-#include "test/test_bitcoin.h"
+#include "test/test_clashic.h"
 #include "uint256.h"
 
 #include <boost/test/unit_test.hpp>

@@ -1,5 +1,5 @@
-#ifndef BITCOIN_SEEDER_DNS_H
-#define BITCOIN_SEEDER_DNS_H 1
+#ifndef CLASHIC_SEEDER_DNS_H
+#define CLASHIC_SEEDER_DNS_H 1
 
 #include <stdint.h>
 

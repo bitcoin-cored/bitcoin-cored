@@ -166,8 +166,8 @@
         <translation>Ladataan lohkoindeksiä...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Lähetä kolikoita Bitcoin-osoitteeseen</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Lähetä kolikoita Bitcoin Clashic-osoitteeseen</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

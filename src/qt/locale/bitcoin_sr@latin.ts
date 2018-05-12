@@ -158,8 +158,8 @@
         <translation>Otvori &amp;URI...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Pošalji novčiće na Bitcoin adresu</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Pošalji novčiće na Bitcoin Clashic adresu</translation>
     </message>
     <message>
         <source>&amp;Verify message...</source>

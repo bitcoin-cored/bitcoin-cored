@@ -24,15 +24,15 @@ In case you want to build the disk image with `make deploy` (.dmg / optional), y
 
 NOTE: Building with Qt4 is still supported, however, could result in a broken UI. Building with Qt5 is recommended.
 
-Build Bitcoin ABC
------------------
+Build Bitcoin Clashic ABCD
+--------------------------
 
-1. Clone the Bitcoin ABC source code and cd into `bitcoin-abc`
+1. Clone the Bitcoin Clashic ABCD source code and cd into `bitcoin-clashic`
 
-        git clone github.com/Bitcoin-ABC/bitcoin-abc
-        cd bitcoin-abc
+        git clone github.com/Bitcoin-Clashic/bitcoin-clashic
+        cd bitcoin-clashic
 
-2.  Build bitcoin-abc:
+2.  Build bitcoin-abcd:
 
     Configure and build the headless bitcoin binaries as well as the GUI (if Qt is found).
 
@@ -53,15 +53,15 @@ Build Bitcoin ABC
 Running
 -------
 
-Bitcoin ABC is now available at `./src/bitcoind`
+Bitcoin Clashic ABCD is now available at `./src/clashicd`
 
 Before running, it's recommended you create an RPC configuration file.
 
-    echo -e "rpcuser=bitcoinrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/Bitcoin/bitcoin.conf"
+    echo -e "rpcuser=bitcoinrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/Clashic/clashic.conf"
 
-    chmod 600 "/Users/${USER}/Library/Application Support/Bitcoin/bitcoin.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/Clashic/clashic.conf"
 
-The first time you run bitcoind, it will start downloading the blockchain. This process could take several hours.
+The first time you run clashicd, it will start downloading the blockchain. This process could take several hours.
 
 You can monitor the download process by looking at the debug.log file:
 
@@ -70,20 +70,20 @@ You can monitor the download process by looking at the debug.log file:
 Other commands:
 -------
 
-    ./src/bitcoind -daemon # Starts the bitcoin daemon.
-    ./src/bitcoin-cli --help # Outputs a list of command-line options.
-    ./src/bitcoin-cli help # Outputs a list of RPC commands when the daemon is running.
+    ./src/clashicd -daemon # Starts the clashic daemon.
+    ./src/clashic-cli --help # Outputs a list of command-line options.
+    ./src/clashic-cli help # Outputs a list of RPC commands when the daemon is running.
 
 Using Qt Creator as IDE
 ------------------------
-You can use Qt Creator as an IDE, for bitcoin development.
+You can use Qt Creator as an IDE, for clashic development.
 Download and install the community edition of [Qt Creator](https://www.qt.io/download/).
 Uncheck everything except Qt Creator during the installation process.
 
 1. Make sure you installed everything through Homebrew mentioned above
 2. Do a proper ./configure --enable-debug
 3. In Qt Creator do "New Project" -> Import Project -> Import Existing Project
-4. Enter "bitcoin-qt" as project name, enter src/qt as location
+4. Enter "clashic-qt" as project name, enter src/qt as location
 5. Leave the file selection as it is
 6. Confirm the "summary page"
 7. In the "Projects" tab select "Manage Kits..."

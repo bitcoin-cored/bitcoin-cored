@@ -1,30 +1,30 @@
-Bitcoin ABC
+Bitcoin Clashic ABCD
 =====================
 
 Setup
 ---------------------
-Bitcoin ABC is a fork of Bitcoin Core, which is the original Bitcoin client and builds the backbone of the network. It downloads and stores the entire history of Bitcoin transactions (which is currently several GBs); depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
+Bitcoin Clashic ABCD is a fork of Bitcoin Core, which is the original Bitcoin client and builds the backbone of the network. It downloads and stores the entire history of Bitcoin transactions (which is currently several GBs); depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
 
-To download Bitcoin ABC, visit [bitcoinabc.org](https://download.bitcoinabc.org/).
+To download Bitcoin Clashic ABCD, visit [bitcoinclashic.org](http://bitcoinclashic.org/).
 
 Running
 ---------------------
-The following are some helpful notes on how to run Bitcoin on your native platform.
+The following are some helpful notes on how to run Clashic on your native platform.
 
 ### Unix
 
 Unpack the files into a directory and run:
 
-- `bin/bitcoin-qt` (GUI) or
-- `bin/bitcoind` (headless)
+- `bin/clashic-qt` (GUI) or
+- `bin/clashicd` (headless)
 
 ### Windows
 
-Unpack the files into a directory, and then run bitcoin-qt.exe.
+Unpack the files into a directory, and then run clashic-qt.exe.
 
 ### OS X
 
-Drag bitcoin-abc to your applications folder, and then run bitcoin-abc.
+Drag bitcoin-abcd to your applications folder, and then run bitcoin-abcd.
 
 ### Need Help?
 

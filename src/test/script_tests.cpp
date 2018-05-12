@@ -13,12 +13,12 @@
 #include "script/sign.h"
 #include "test/scriptflags.h"
 #include "test/sigutil.h"
-#include "test/test_bitcoin.h"
+#include "test/test_clashic.h"
 #include "util.h"
 #include "utilstrencodings.h"
 
 #if defined(HAVE_CONSENSUS_LIB)
-#include "script/bitcoinconsensus.h"
+#include "script/clashicconsensus.h"
 #endif
 
 #include <cstdint>

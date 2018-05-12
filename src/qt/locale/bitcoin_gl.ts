@@ -130,8 +130,8 @@
         <translation>Reindexando bloques no disco...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Enviar moedas a unha dirección Bitcoin</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Enviar moedas a unha dirección Bitcoin Clashic</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

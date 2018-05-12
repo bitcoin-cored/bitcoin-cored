@@ -1,9 +1,9 @@
-Contributing to Bitcoin ABC
-===========================
+Contributing to Bitcoin Clashic ABCD
+====================================
 
-The Bitcoin ABC project welcomes contributors!
+The Bitcoin Clashic ABCD project welcomes contributors!
 
-To contribute, sign up at: https://reviews.bitcoinabc.org/
+To contribute, checkout http://bitcoinclashic.org
 
 
 Copyright

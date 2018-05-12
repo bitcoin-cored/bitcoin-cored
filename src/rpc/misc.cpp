@@ -576,7 +576,7 @@ static UniValue echo(const Config &config, const JSONRPCRequest &request) {
             "testing.\n"
             "\nThe difference between echo and echojson is that echojson has "
             "argument conversion enabled in the client-side table in"
-            "bitcoin-cli and the GUI. There is no server-side difference.");
+            "clashic-cli and the GUI. There is no server-side difference.");
 
     return request.params;
 }

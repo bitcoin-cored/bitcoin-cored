@@ -323,8 +323,8 @@ Alihkan fail data ke dalam tab semasa</translation>
         <translation>Reindexi blok pada cakera...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin address</source>
-        <translation>Menghantar koin kepada alamat Bitcoin</translation>
+        <source>Send coins to a Bitcoin Clashic address</source>
+        <translation>Menghantar koin kepada alamat Bitcoin Clashic</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

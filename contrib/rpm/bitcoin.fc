@@ -1,8 +1,8 @@
-/usr/bin/bitcoin-cli		--	gen_context(system_u:object_r:bitcoin_exec_t,s0)
-/usr/sbin/bitcoind		--	gen_context(system_u:object_r:bitcoin_exec_t,s0)
-/usr/lib(64)?/bitcoin/bitcoind		--	gen_context(system_u:object_r:bitcoin_exec_t,s0)
+/usr/bin/clashic-cli		--	gen_context(system_u:object_r:clashic_exec_t,s0)
+/usr/sbin/clashicd		--	gen_context(system_u:object_r:clashic_exec_t,s0)
+/usr/lib(64)?/clashic/clashicd		--	gen_context(system_u:object_r:clashic_exec_t,s0)
 
-/etc/bitcoin(/.*)?		gen_context(system_u:object_r:bitcoin_conf_t,s0)
-/var/lib/bitcoin(/.*)?		gen_context(system_u:object_r:bitcoin_var_lib_t,s0)
+/etc/clashic(/.*)?		gen_context(system_u:object_r:clashic_conf_t,s0)
+/var/lib/clashicd(/.*)?		gen_context(system_u:object_r:clashic_var_lib_t,s0)
 
-(/var)?/run/bitcoind(/.*)?   gen_context(system_u:object_r:bitcoin_var_run_t,s0)
+(/var)?/run/clashicd(/.*)?   gen_context(system_u:object_r:clashic_var_run_t,s0)

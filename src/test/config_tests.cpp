@@ -5,7 +5,7 @@
 #include "config.h"
 #include "chainparams.h"
 #include "consensus/consensus.h"
-#include "test/test_bitcoin.h"
+#include "test/test_clashic.h"
 
 #include <boost/test/unit_test.hpp>
 

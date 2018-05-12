@@ -9,7 +9,7 @@
 #include "script/script.h"
 #include "serialize.h"
 #include "streams.h"
-#include "test/test_bitcoin.h"
+#include "test/test_clashic.h"
 #include "test/test_random.h"
 #include "util.h"
 #include "utilstrencodings.h"

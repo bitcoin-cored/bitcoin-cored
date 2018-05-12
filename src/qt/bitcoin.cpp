@@ -503,7 +503,7 @@ void BitcoinApplication::initializeResult(int retval) {
 
 #ifdef ENABLE_WALLET
         // Now that initialization/startup is done, process any command-line
-        // bitcoincash: URIs or payment requests:
+        // bitcoinclashic: URIs or payment requests:
         connect(paymentServer,
                 SIGNAL(receivedPaymentRequest(SendCoinsRecipient)), window,
                 SLOT(handlePaymentRequest(SendCoinsRecipient)));
@@ -560,21 +560,21 @@ static void MigrateSettings() {
         // default c'tor below picks up settings file location based on
         // QApplication::applicationName(), et al -- which was already set
         // in main()
-        abc;
+        abcd;
 #ifdef Q_OS_DARWIN
     // Disable bogus OSX keys from MacOS system-wide prefs that may cloud our
     // judgement ;) (this behavior is also documented in QSettings docs)
     legacy.setFallbacksEnabled(false);
-    abc.setFallbacksEnabled(false);
+    abcd.setFallbacksEnabled(false);
 #endif
     const QStringList legacyKeys(legacy.allKeys());
 
-    // We only migrate settings if we have Core settings but no Bitcoin-ABC
-    // settings
-    if (!legacyKeys.isEmpty() && abc.allKeys().isEmpty()) {
+    // We only migrate settings if we have Core settings but no Bitcoin Clashic
+    // ABCD settings
+    if (!legacyKeys.isEmpty() && abcd.allKeys().isEmpty()) {
         for (const QString &key : legacyKeys) {
             // now, copy settings over
-            abc.setValue(key, legacy.value(key));
+            abcd.setValue(key, legacy.value(key));
         }
     }
 }
@@ -641,8 +641,8 @@ int main(int argc, char *argv[]) {
     QApplication::setOrganizationName(QAPP_ORG_NAME);
     QApplication::setOrganizationDomain(QAPP_ORG_DOMAIN);
     QApplication::setApplicationName(QAPP_APP_NAME_DEFAULT);
-    // Migrate settings from core's/our old GUI settings to Bitcoin ABC
-    // only if core's exist but Bitcoin ABC's doesn't.
+    // Migrate settings from core's/our old GUI settings to Bitcoin Clashic ABCD
+    // only if core's exist but Bitcoin Clashic ABCD's doesn't.
     // NOTE -- this function needs to be called *after* the above 3 lines
     // that set the app orgname and app name! If you move the above 3 lines
     // to elsewhere, take this call with you!
@@ -669,7 +669,7 @@ int main(int argc, char *argv[]) {
     /// directory. User language is set up: pick a data directory.
     if (!Intro::pickDataDirectory()) return EXIT_SUCCESS;
 
-    /// 6. Determine availability of data directory and parse bitcoin.conf
+    /// 6. Determine availability of data directory and parse clashic.conf
     /// - Do not call GetDataDir(true) before this step finishes.
     if (!boost::filesystem::is_directory(GetDataDir(false))) {
         QMessageBox::critical(
@@ -680,7 +680,7 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
     try {
-        ReadConfigFile(GetArg("-conf", BITCOIN_CONF_FILENAME));
+        ReadConfigFile(GetArg("-conf", CLASHIC_CONF_FILENAME));
     } catch (const std::exception &e) {
         QMessageBox::critical(
             0, QObject::tr(PACKAGE_NAME),
@@ -734,8 +734,8 @@ int main(int argc, char *argv[]) {
     if (PaymentServer::ipcSendCommandLine()) exit(EXIT_SUCCESS);
 
     // Start up the payment server early, too, so impatient users that click on
-    // bitcoincash: links repeatedly have their payment requests routed to this
-    // process:
+    // bitcoinclashic: links repeatedly have their payment requests routed to
+    // this process:
     app.createPaymentServer();
 #endif
 

@@ -303,8 +303,8 @@ WalletModel::sendCoins(WalletModelTransaction &transaction) {
                 rcp.paymentRequest.SerializeToString(&value);
                 newTx->vOrderForm.push_back(make_pair(key, value));
             } else if (!rcp.message.isEmpty()) {
-                // Message from normal bitcoincash:URI
-                // (bitcoincash:123...?message=example)
+                // Message from normal bitcoinclashic:URI
+                // (bitcoinclashic:123...?message=example)
                 newTx->vOrderForm.push_back(
                     make_pair("Message", rcp.message.toStdString()));
             }
