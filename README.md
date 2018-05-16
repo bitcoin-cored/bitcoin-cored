@@ -1,7 +1,7 @@
 Bitcoin Core Squared
 ====================
 
-http://bitcoincore.cm/
+https://bitcoincore.cm/
 
 What is Bitcoin?
 ----------------
