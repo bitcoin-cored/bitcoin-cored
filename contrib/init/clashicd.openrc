@@ -1,0 +1,92 @@
+#!/sbin/runscript
+
+# backward compatibility for existing gentoo layout 
+#
+if [ -d "/var/lib/clashicd/.clashic" ]; then
+	CLASHICD_DEFAULT_DATADIR="/var/lib/clashicd/.clashic"
+else
+	CLASHICD_DEFAULT_DATADIR="/var/lib/clashicd"
+fi
+
+CLASHICD_CONFIGFILE=${CLASHICD_CONFIGFILE:-/etc/clashic/clashic.conf}
+CLASHICD_PIDDIR=${CLASHICD_PIDDIR:-/var/run/clashicd}
+CLASHICD_PIDFILE=${CLASHICD_PIDFILE:-${CLASHICD_PIDDIR}/clashicd.pid}
+CLASHICD_DATADIR=${CLASHICD_DATADIR:-${CLASHICD_DEFAULT_DATADIR}}
+CLASHICD_USER=${CLASHICD_USER:-${BITCOIN_USER:-bitcoin}}
+CLASHICD_GROUP=${CLASHICD_GROUP:-bitcoin}
+CLASHICD_BIN=${CLASHICD_BIN:-/usr/bin/clashicd}
+CLASHICD_NICE=${CLASHICD_NICE:-${NICELEVEL:-0}}
+CLASHICD_OPTS="${CLASHICD_OPTS:-${BITCOIN_OPTS}}"
+
+name="Bitcoin Clashic ABCD Daemon"
+description="Bitcoin cryptocurrency P2P network daemon"
+
+command="/usr/bin/clashicd"
+command_args="-pid=\"${CLASHICD_PIDFILE}\" \
+		-conf=\"${CLASHICD_CONFIGFILE}\" \
+		-datadir=\"${CLASHICD_DATADIR}\" \
+		-daemon \
+		${CLASHICD_OPTS}"
+
+required_files="${CLASHICD_CONFIGFILE}"
+start_stop_daemon_args="-u ${CLASHICD_USER} \
+			-N ${CLASHICD_NICE} -w 2000"
+pidfile="${CLASHICD_PIDFILE}"
+
+# The retry schedule to use when stopping the daemon. Could be either
+# a timeout in seconds or multiple signal/timeout pairs (like
+# "SIGKILL/180 SIGTERM/300")
+retry="${CLASHICD_SIGTERM_TIMEOUT}"
+
+depend() {
+	need localmount net
+}
+
+# verify
+# 1) that the datadir exists and is writable (or create it)
+# 2) that a directory for the pid exists and is writable
+# 3) ownership and permissions on the config file
+start_pre() {
+	checkpath \
+	-d \
+	--mode 0750 \
+	--owner "${CLASHICD_USER}:${CLASHICD_GROUP}" \
+	"${CLASHICD_DATADIR}"
+
+	checkpath \
+	-d \
+	--mode 0755 \
+	--owner "${CLASHICD_USER}:${CLASHICD_GROUP}" \
+	"${CLASHICD_PIDDIR}"
+
+	checkpath -f \
+	-o ${CLASHICD_USER}:${CLASHICD_GROUP} \
+	-m 0660 \
+	${CLASHICD_CONFIGFILE}
+
+	checkconfig || return 1
+}
+
+checkconfig()
+{
+	if ! grep -qs '^rpcpassword=' "${CLASHICD_CONFIGFILE}" ; then
+		eerror ""
+		eerror "ERROR: You must set a secure rpcpassword to run clashicd."
+		eerror "The setting must appear in ${CLASHICD_CONFIGFILE}"
+		eerror ""
+		eerror "This password is security critical to securing wallets "
+		eerror "and must not be the same as the rpcuser setting."
+		eerror "You can generate a suitable random password using the following"
+		eerror "command from the shell:"
+		eerror ""
+		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
+		eerror ""
+		eerror "It is also recommended that you also set alertnotify so you are "
+		eerror "notified of problems:"
+		eerror ""
+		eerror "ie: alertnotify=echo %%s | mail -s \"Bitcoin Clashic Alert\"" \
+			"admin@foo.com"
+		eerror ""
+		return 1
+	fi
+}
