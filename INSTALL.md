@@ -1,5 +1,6 @@
-Building Bitcoin
-================
+Building Bitcoin Core Squared
+=============================
 
 See doc/build-*.md for instructions on building the various
-elements of the Bitcoin ABC implementation of Bitcoin.
+elements of the Bitcoin Core Squared implementation of Bitcoin
+Core.
