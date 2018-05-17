@@ -27,4 +27,11 @@ uint32_t CalculateNextWorkRequired(const CBlockIndex *pindexPrev,
  */
 bool CheckProofOfWork(uint256 hash, uint32_t nBits, const Consensus::Params &);
 
+/**
+ * Bitcoin Core's difficulty adjustment mechanism.
+ */
+uint32_t GetNextCoreWorkRequired(const CBlockIndex *pindexPrev,
+                                 const CBlockHeader *pblock,
+                                 const Consensus::Params &params);
+
 #endif // BITCOIN_POW_H
