@@ -18,6 +18,7 @@
 #include "primitives/block.h"
 #include "primitives/transaction.h"
 #include "script/script.h"
+#include "script/sighashtype.h"
 #include "script/sign.h"
 #include "timedata.h"
 #include "txmempool.h"
@@ -2964,7 +2965,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient> &vecSend,
         }
 
         if (sign) {
-            uint32_t nHashType = SIGHASH_ALL | SIGHASH_FORKID;
+            SigHashType sigHashType = SigHashType().withForkId(true);
 
             CTransaction txNewConst(txNew);
             int nIn = 0;
@@ -2977,7 +2978,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient> &vecSend,
                                           this, &txNewConst, nIn,
                                           coin.first->tx->vout[coin.second]
                                               .nValue.GetSatoshis(),
-                                          nHashType),
+                                          sigHashType.getRawSigHashType()),
                                       scriptPubKey, sigdata)) {
                     strFailReason = _("Signing transaction failed");
                     return false;
