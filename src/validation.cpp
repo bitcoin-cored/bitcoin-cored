@@ -617,6 +617,19 @@ bool IsUAHFenabled(const Config &config, const CBlockIndex *pindexPrev) {
     return IsUAHFenabled(config, pindexPrev->nHeight);
 }
 
+static bool IsCoreHFEnabled(const Config &config, int64_t nMedianTimePast) {
+    return nMedianTimePast >=
+           config.GetChainParams().GetConsensus().cashHardForkActivationTime;
+}
+
+bool IsCoreHFEnabled(const Config &config, const CBlockIndex *pindexPrev) {
+    if (pindexPrev == nullptr) {
+        return false;
+    }
+
+    return IsCoreHFEnabled(config, pindexPrev->GetMedianTimePast());
+}
+
 // Used to avoid mempool polluting consensus critical paths if CCoinsViewMempool
 // were somehow broken and returning the wrong scriptPubKeys
 static bool CheckInputsFromMempoolAndCache(const CTransaction &tx,

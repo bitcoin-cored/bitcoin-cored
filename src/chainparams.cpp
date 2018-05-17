@@ -143,8 +143,8 @@ public:
         // Aug, 1 hard fork
         consensus.uahfHeight = 478559;
 
-        // TVS-43 Replay Protection from Bitcoin Cash. (9) difficulty adjustments from 2018/01/30
-        consensus.TVS43Height = 544320;
+        // May, 20th hard fork
+        consensus.coreHardForkActivationTime = 1526842800;
 
         /**
          * The message start string is designed to be unlikely to occur in
@@ -315,6 +315,9 @@ public:
         // Aug, 1 hard fork
         consensus.uahfHeight = 1155876;
 
+        // May, 20th hard fork
+        consensus.coreHardForkActivationTime = 1526842800;
+
         pchMessageStart[0] = 0x0b;
         pchMessageStart[1] = 0x11;
         pchMessageStart[2] = 0x09;
@@ -433,6 +436,9 @@ public:
 
         // Hard fork is always enabled on regtest.
         consensus.uahfHeight = 0;
+
+        // Nov, 13 hard fork
+        consensus.coreHardForkActivationTime = 0;
 
         pchMessageStart[0] = 0xfa;
         pchMessageStart[1] = 0xbf;
