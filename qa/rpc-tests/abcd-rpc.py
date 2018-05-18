@@ -91,13 +91,13 @@ class ABCD_RPC_Test (BitcoinTestFramework):
         assert_equal(int(nw_info['localservices'], 16) & NODE_BITCOIN_CASH,
                      NODE_BITCOIN_CASH)
 
-    def test_clashicservicebit(self):
-        # Check that NODE_BITCOIN_CLASHIC bit is set.
+    def test_coreservicebit(self):
+        # Check that NODE_BITCOIN_CORE bit is set.
         # This can be seen in the 'localservices' entry of getnetworkinfo RPC.
         node = self.nodes[0]
         nw_info = node.getnetworkinfo()
-        assert_equal(int(nw_info['localservices'], 16) & NODE_BITCOIN_CLASHIC,
-                     NODE_BITCOIN_CLASHIC)
+        assert_equal(int(nw_info['localservices'], 16) & NODE_BITCOIN_CORE,
+                     NODE_BITCOIN_CORE)
 
     def run_test(self):
         self.genesis_hash = int(self.nodes[0].getbestblockhash(), 16)

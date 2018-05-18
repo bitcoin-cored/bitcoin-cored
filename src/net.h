@@ -96,7 +96,7 @@ static const size_t DEFAULT_MAXRECEIVEBUFFER = 5 * 1000;
 static const size_t DEFAULT_MAXSENDBUFFER = 1 * 1000;
 
 static const ServiceFlags REQUIRED_SERVICES =
-    ServiceFlags(NODE_NETWORK | NODE_BITCOIN_CASH);
+    ServiceFlags(NODE_NETWORK | NODE_BITCOIN_CORE);
 
 // Default 24-hour ban.
 // NOTE: When adjusting this, update rpcnet:setban's help ("24h")

@@ -114,7 +114,7 @@ public:
     bool IsGood() const {
         if (ip.GetPort() != GetDefaultPort()) return false;
         if (!(services & NODE_NETWORK)) return false;
-        if (!(services & NODE_BITCOIN_CASH)) return false;
+        if (!(services & NODE_BITCOIN_CORE)) return false;
         if (!ip.IsRoutable()) return false;
         if (clientVersion && clientVersion < REQUIRE_VERSION) return false;
         if (blocks && blocks < GetRequireHeight()) return false;

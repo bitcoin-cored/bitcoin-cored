@@ -152,12 +152,12 @@ public:
             }
         }
         if (filter_whitelist.empty()) {
-            filter_whitelist.insert(NODE_NETWORK | NODE_BITCOIN_CASH);
-            filter_whitelist.insert(NODE_NETWORK | NODE_BITCOIN_CASH |
+            filter_whitelist.insert(NODE_NETWORK | NODE_BITCOIN_CORE);
+            filter_whitelist.insert(NODE_NETWORK | NODE_BITCOIN_CORE |
                                     NODE_BLOOM);
-            filter_whitelist.insert(NODE_NETWORK | NODE_BITCOIN_CASH |
+            filter_whitelist.insert(NODE_NETWORK | NODE_BITCOIN_CORE |
                                     NODE_XTHIN);
-            filter_whitelist.insert(NODE_NETWORK | NODE_BITCOIN_CASH |
+            filter_whitelist.insert(NODE_NETWORK | NODE_BITCOIN_CORE |
                                     NODE_BLOOM | NODE_XTHIN);
         }
         if (host != nullptr && ns == nullptr) showHelp = true;

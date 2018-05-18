@@ -92,7 +92,7 @@ class CNode {
         CAddress me(CService("0.0.0.0"));
         BeginMessage("version");
         int nBestHeight = GetRequireHeight();
-        std::string ver = "/bitcoin-clashic-seeder:0.16/";
+        std::string ver = "/bitcoin-core-qt-seeder:0.16.1/";
         vSend << PROTOCOL_VERSION << nLocalServices << nTime << you << me
               << nLocalNonce << ver << nBestHeight;
         EndMessage();
