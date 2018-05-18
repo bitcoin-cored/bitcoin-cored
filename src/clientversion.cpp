@@ -13,7 +13,7 @@
  * for both clashicd and bitcoin-abcd, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("Bitcoin Clashic ABCD");
+const std::string CLIENT_NAME("Bitcoin Core SQ");
 
 /**
  * Client version number
