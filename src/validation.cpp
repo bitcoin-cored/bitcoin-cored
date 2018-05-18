@@ -619,7 +619,7 @@ bool IsUAHFenabled(const Config &config, const CBlockIndex *pindexPrev) {
 
 static bool IsCoreHFEnabled(const Config &config, int64_t nMedianTimePast) {
     return nMedianTimePast >=
-           config.GetChainParams().GetConsensus().cashHardForkActivationTime;
+           config.GetChainParams().GetConsensus().coreHardForkActivationTime;
 }
 
 bool IsCoreHFEnabled(const Config &config, const CBlockIndex *pindexPrev) {
@@ -1249,8 +1249,7 @@ void CheckForkWarningConditions() {
                       pindexBestForkTip->nHeight,
                       pindexBestForkTip->phashBlock->ToString());
             SetfLargeWorkForkFound(true);
-        } else {nSubsidy >>= halvings;
-    return nSubsidy;
+        } else {
             LogPrintf("%s: Warning: Found invalid chain at least ~6 blocks "
                       "longer than our best chain.\nChain state database "
                       "corruption likely.\n",
