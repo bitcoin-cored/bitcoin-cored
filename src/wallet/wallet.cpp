@@ -2978,7 +2978,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient> &vecSend,
                                           this, &txNewConst, nIn,
                                           coin.first->tx->vout[coin.second]
                                               .nValue.GetSatoshis(),
-                                          sigHashType.getRawSigHashType()),
+                                          sigHashType),
                                       scriptPubKey, sigdata)) {
                     strFailReason = _("Signing transaction failed");
                     return false;
