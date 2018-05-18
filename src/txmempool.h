@@ -246,7 +246,7 @@ struct mempoolentry_txid {
  */
 class CompareTxMemPoolEntryByDescendantScore {
 public:
-    bool operator()(const CTxMemPoolEntry &a, const CTxMemPoolEntry &b) {
+    bool operator()(const CTxMemPoolEntry &a, const CTxMemPoolEntry &b) const {
         bool fUseADescendants = UseDescendantScore(a);
         bool fUseBDescendants = UseDescendantScore(b);
 
@@ -273,7 +273,7 @@ public:
     }
 
     // Calculate which score to use for an entry (avoiding division).
-    bool UseDescendantScore(const CTxMemPoolEntry &a) {
+    bool UseDescendantScore(const CTxMemPoolEntry &a) const {
         double f1 = double(a.GetSizeWithDescendants() *
                            a.GetModifiedFee().GetSatoshis());
         double f2 =
@@ -288,7 +288,7 @@ public:
  */
 class CompareTxMemPoolEntryByScore {
 public:
-    bool operator()(const CTxMemPoolEntry &a, const CTxMemPoolEntry &b) {
+    bool operator()(const CTxMemPoolEntry &a, const CTxMemPoolEntry &b) const {
         double f1 = double(b.GetTxSize() * a.GetModifiedFee().GetSatoshis());
         double f2 = double(a.GetTxSize() * b.GetModifiedFee().GetSatoshis());
         if (f1 == f2) {
@@ -300,14 +300,14 @@ public:
 
 class CompareTxMemPoolEntryByEntryTime {
 public:
-    bool operator()(const CTxMemPoolEntry &a, const CTxMemPoolEntry &b) {
+    bool operator()(const CTxMemPoolEntry &a, const CTxMemPoolEntry &b) const {
         return a.GetTime() < b.GetTime();
     }
 };
 
 class CompareTxMemPoolEntryByAncestorFee {
 public:
-    bool operator()(const CTxMemPoolEntry &a, const CTxMemPoolEntry &b) {
+    bool operator()(const CTxMemPoolEntry &a, const CTxMemPoolEntry &b) const {
         double aFees = double(a.GetModFeesWithAncestors().GetSatoshis());
         double aSize = a.GetSizeWithAncestors();
 
