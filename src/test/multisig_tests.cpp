@@ -9,6 +9,7 @@
 #include "script/ismine.h"
 #include "script/script.h"
 #include "script/script_error.h"
+#include "script/sighashtype.h"
 #include "script/sign.h"
 #include "test/test_clashic.h"
 #include "uint256.h"
@@ -21,8 +22,8 @@ BOOST_FIXTURE_TEST_SUITE(multisig_tests, BasicTestingSetup)
 
 CScript sign_multisig(CScript scriptPubKey, std::vector<CKey> keys,
                       CTransaction transaction, int whichIn) {
-    uint256 hash =
-        SignatureHash(scriptPubKey, transaction, whichIn, SIGHASH_ALL, 0);
+    uint256 hash = SignatureHash(scriptPubKey, transaction, whichIn,
+                                 SigHashType(), Amount(0));
 
     CScript result;
     // CHECKMULTISIG bug workaround
