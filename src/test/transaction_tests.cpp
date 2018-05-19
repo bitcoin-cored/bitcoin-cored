@@ -212,7 +212,7 @@ BOOST_AUTO_TEST_CASE(tx_invalid) {
 
 BOOST_AUTO_TEST_CASE(basic_transaction_tests) {
     // Random real transaction
-    // (e2769b09e784f32f62ef849763d4f45b98e07ba658647343b915ff832b110436)
+    // (e2769b09e784f32f62SigHashType().withBaseSigHash(BaseSigHashType::SINGLE), Amount(0));ef849763d4f45b98e07ba658647343b915ff832b110436)
     uint8_t ch[] = {
         0x01, 0x00, 0x00, 0x00, 0x01, 0x6b, 0xff, 0x7f, 0xcd, 0x4f, 0x85, 0x65,
         0xef, 0x40, 0x6d, 0xd5, 0xd6, 0x3d, 0x4f, 0xf9, 0x4f, 0x31, 0x8f, 0xe8,
@@ -346,8 +346,8 @@ void CreateCreditAndSpend(const CKeyStore &keystore, const CScript &outscript,
     inputm.vout.resize(1);
     inputm.vout[0].nValue = 1;
     inputm.vout[0].scriptPubKey = CScript();
-    bool ret = SignSignature(keystore, *output, inputm, 0,
-                             SigHashType().withForkId(true));
+    bool ret =
+        SignSignature(keystore, *output, inputm, 0, SigHashType().withForkId());
     BOOST_CHECK_EQUAL(ret, success);
     CDataStream ssin(SER_NETWORK, PROTOCOL_VERSION);
     ssin << inputm;

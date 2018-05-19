@@ -107,13 +107,18 @@ enum {
     // Do we accept signature using SIGHASH_FORKID
     //
     SCRIPT_ENABLE_SIGHASH_FORKID = (1U << 16),
+
+    // Do we accept activate replay protection using a different fork id.
+    //
+    SCRIPT_ENABLE_REPLAY_PROTECTION = (1U << 17),
 };
 
 bool CheckSignatureEncoding(const std::vector<uint8_t> &vchSig, uint32_t flags,
                             ScriptError *serror);
 
 uint256 SignatureHash(const CScript &scriptCode, const CTransaction &txTo,
-                      unsigned int nIn, uint32_t nHashType, const Amount amount,
+                      unsigned int nIn, SigHashType sigHashType,
+                      const Amount amount,
                       const PrecomputedTransactionData *cache = nullptr,
                       uint32_t flags = SCRIPT_ENABLE_SIGHASH_FORKID);
 

@@ -207,7 +207,7 @@ static bool IsDefinedHashtypeSignature(const valtype &vchSig) {
     if (vchSig.size() == 0) {
         return false;
     }
-    if (!GetHashType(vchSig).hasSupportedBaseSigHashType()) {
+    if (!GetHashType(vchSig).hasSupportedBaseType()) {
         return false;
     }
 
@@ -1214,21 +1214,16 @@ private:
     const CScript &scriptCode;
     //!< input index of txTo being signed
     const unsigned int nIn;
-    //!< whether the hashtype has the SIGHASH_ANYONECANPAY flag set
-    const bool fAnyoneCanPay;
-    //!< whether the hashtype is SIGHASH_SINGLE
-    const bool fHashSingle;
-    //!< whether the hashtype is SIGHASH_NONE
-    const bool fHashNone;
+    //!< container for hashtype flags
+    const SigHashType sigHashType;
 
 public:
-    CTransactionSignatureSerializer(const CTransaction &txToIn,
+     CTransactionSignatureSerializer(const CTransaction &txToIn,
                                     const CScript &scriptCodeIn,
-                                    unsigned int nInIn, uint32_t nHashTypeIn)
+                                    unsigned int nInIn,
+                                    SigHashType sigHashTypeIn)
         : txTo(txToIn), scriptCode(scriptCodeIn), nIn(nInIn),
-          fAnyoneCanPay(!!(nHashTypeIn & SIGHASH_ANYONECANPAY)),
-          fHashSingle((nHashTypeIn & 0x1f) == SIGHASH_SINGLE),
-          fHashNone((nHashTypeIn & 0x1f) == SIGHASH_NONE) {}
+          sigHashType(sigHashTypeIn) {}
 
     /** Serialize the passed scriptCode, skipping OP_CODESEPARATORs */
     template <typename S> void SerializeScriptCode(S &s) const {
@@ -1258,7 +1253,7 @@ public:
     template <typename S> void SerializeInput(S &s, unsigned int nInput) const {
         // In case of SIGHASH_ANYONECANPAY, only the input being signed is
         // serialized
-        if (fAnyoneCanPay) {
+        if (sigHashType.hasAnyoneCanPay()) {
             nInput = nIn;
         }
         // Serialize the prevout
@@ -1271,7 +1266,9 @@ public:
             SerializeScriptCode(s);
         }
         // Serialize the nSequence
-        if (nInput != nIn && (fHashSingle || fHashNone)) {
+        if (nInput != nIn && 
+            (sigHashType.getBaseType() == BaseSigHashType::SINGLE ||
+             sigHashType.getBaseType() == BaseSigHashType::NONE)) {
             // let the others update at will
             ::Serialize(s, (int)0);
         } else {
@@ -1282,7 +1279,8 @@ public:
     /** Serialize an output of txTo */
     template <typename S>
     void SerializeOutput(S &s, unsigned int nOutput) const {
-        if (fHashSingle && nOutput != nIn) {
+        if (sigHashType.getBaseType() == BaseSigHashType::SINGLE &&
+            nOutput != nIn) {
             // Do not lock-in the txout payee at other indices as txin
             ::Serialize(s, CTxOut());
         } else {
@@ -1295,14 +1293,19 @@ public:
         // Serialize nVersion
         ::Serialize(s, txTo.nVersion);
         // Serialize vin
-        unsigned int nInputs = fAnyoneCanPay ? 1 : txTo.vin.size();
+        unsigned int nInputs =
+            sigHashType.hasAnyoneCanPay() ? 1 : txTo.vin.size();
         ::WriteCompactSize(s, nInputs);
         for (unsigned int nInput = 0; nInput < nInputs; nInput++) {
             SerializeInput(s, nInput);
         }
         // Serialize vout
         unsigned int nOutputs =
-            fHashNone ? 0 : (fHashSingle ? nIn + 1 : txTo.vout.size());
+            (sigHashType.getBaseType() == BaseSigHashType::NONE)
+                ? 0
+                : ((sigHashType.getBaseType() == BaseSigHashType::SINGLE)
+                       ? nIn + 1
+                       : txTo.vout.size());
         ::WriteCompactSize(s, nOutputs);
         for (unsigned int nOutput = 0; nOutput < nOutputs; nOutput++) {
             SerializeOutput(s, nOutput);
@@ -1359,15 +1362,15 @@ uint256 SignatureHash(const CScript &scriptCode, const CTransaction &txTo,
         }
 
         if (!sigHashType.hasAnyoneCanPay() &&
-            (sigHashType.getBaseSigHashType() != BaseSigHashType::SINGLE) &&
-            (sigHashType.getBaseSigHashType() != BaseSigHashType::NONE)) {
+            (sigHashType.getBaseType() != BaseSigHashType::SINGLE) &&
+            (sigHashType.getBaseType() != BaseSigHashType::NONE)) {
             hashSequence = cache ? cache->hashSequence : GetSequenceHash(txTo);
         }
 
-        if ((sigHashType.getBaseSigHashType() != BaseSigHashType::SINGLE) &&
-            (sigHashType.getBaseSigHashType() != BaseSigHashType::NONE)) {
+        if ((sigHashType.getBaseType() != BaseSigHashType::SINGLE) &&
+            (sigHashType.getBaseType() != BaseSigHashType::NONE)) {
             hashOutputs = cache ? cache->hashOutputs : GetOutputsHash(txTo);
-        } else if ((sigHashType.getBaseSigHashType() ==
+        } else if ((sigHashType.getBaseType() ==
                     BaseSigHashType::SINGLE) &&
                    (nIn < txTo.vout.size())) {
             CHashWriter ss(SER_GETHASH, 0);
@@ -1406,7 +1409,7 @@ uint256 SignatureHash(const CScript &scriptCode, const CTransaction &txTo,
     }
 
     // Check for invalid use of SIGHASH_SINGLE
-    if ((sigHashType.getBaseSigHashType() == BaseSigHashType::SINGLE) &&
+    if ((sigHashType.getBaseType() == BaseSigHashType::SINGLE) &&
         (nIn >= txTo.vout.size())) {
             //  nOut out of range
         return one;
@@ -1414,7 +1417,7 @@ uint256 SignatureHash(const CScript &scriptCode, const CTransaction &txTo,
 
     // Wrapper to serialize only the necessary parts of the transaction being
     // signed
-    CTransactionSignatureSerializer txTmp(txTo, scriptCode, nIn, nHashType);
+    CTransactionSignatureSerializer txTmp(txTo, scriptCode, nIn, sigHashType);
 
     // Serialize and hash
     CHashWriter ss(SER_GETHASH, 0);
