@@ -574,9 +574,8 @@ bool CheckBlock(const Config &Config, const CBlock &block,
  * activation/deactivation and CLTV.
  */
 bool ContextualCheckTransaction(const Config &config, const CTransaction &tx,
-                                CValidationState &state,
-                                const Consensus::Params &consensusParams,
-                                int nHeight, int64_t nLockTimeCutoff);
+                                CValidationState &state, int nHeight,
+                                int64_t nLockTimeCutoff);
 
 /**
  * This is a variant of ContextualCheckTransaction which computes the contextual
@@ -584,9 +583,10 @@ bool ContextualCheckTransaction(const Config &config, const CTransaction &tx,
  *
  * See consensus/consensus.h for flag definitions.
  */
-bool ContextualCheckTransactionForCurrentBlock(
-    const Config &config, const CTransaction &tx, CValidationState &state,
-    const Consensus::Params &consensusParams, int flags = -1);
+bool ContextualCheckTransactionForCurrentBlock(const Config &config,
+                                               const CTransaction &tx,
+                                               CValidationState &state,
+                                               int flags = -1);
 
 /** Context-dependent validity checks.
  *  By "context", we mean only the previous block headers, but not the UTXO
