@@ -161,6 +161,7 @@ testScripts = [
     'abcd-p2p-fullblocktest.py',
     'abcd-rpc.py',
     'mempool-accept-txn.py',
+    'abcd-replay-protection.py',
 ]
 if ENABLE_ZMQ:
     testScripts.append('zmq_test.py')
