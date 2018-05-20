@@ -16,7 +16,7 @@
 
 // Far into the future.
 static const std::string ANTI_REPLAY_COMMITMENT =
-    "Bitcoin: A Peer-to-Peer Electronic Cash System";
+    "Bitcoin Core: Satoshi's True Vision";
 
 static std::vector<uint8_t> GetAntiReplayCommitment() {
     return std::vector<uint8_t>(std::begin(ANTI_REPLAY_COMMITMENT),
@@ -143,8 +143,8 @@ public:
         // Aug, 1 hard fork
         consensus.uahfHeight = 478559;
 
-        // May, 20th hard fork
-        consensus.coreHardForkActivationTime = 1526842800;
+        // May, 21st hard fork. Human time (GMT): Monday, May 21, 2018 12:00:00 AM
+        consensus.coreHardForkActivationTime = 1526860800;
 
         /**
          * The message start string is designed to be unlikely to occur in
@@ -174,21 +174,6 @@ public:
 
         // Note that of those with the service bits flag, most only support a
         // subset of possible options.
-        // Bitcoin ABC seeder
-        vSeeds.push_back(
-            CDNSSeedData("bitcoinabc.org", "seed.bitcoinabc.org", true));
-        // bitcoinforks seeders
-        vSeeds.push_back(CDNSSeedData("bitcoinforks.org",
-                                      "seed-abc.bitcoinforks.org", true));
-        // BU backed seeder
-        vSeeds.push_back(CDNSSeedData("bitcoinunlimited.info",
-                                      "btccash-seeder.bitcoinunlimited.info",
-                                      true));
-        // Bitprim
-        vSeeds.push_back(CDNSSeedData("bitprim.org", "seed.bitprim.org", true));
-        // Amaury SÉCHET
-        vSeeds.push_back(
-            CDNSSeedData("deadalnix.me", "seed.deadalnix.me", true));
         // clashic.cash maintained by Clashicly
         vSeeds.push_back(
             CDNSSeedData("clashic.cash", "seeder.clashic.cash", true));

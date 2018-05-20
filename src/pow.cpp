@@ -98,12 +98,10 @@ uint32_t GetNextWorkRequired(const CBlockIndex *pindexPrev,
         return pindexPrev->nBits;
     }
 
-    if (pindexPrev->GetMedianTimePast() >=
-        GetArg("-newdaaactivationtime", params.coreHardForkActivationTime)) {
+    if (pindexPrev->GetMedianTimePast() >= params.coreHardForkActivationTime) {
         return GetNextCoreWorkRequired(pindexPrev, pblock, params);
     }
-
-
+    
     return GetNextEDAWorkRequired(pindexPrev, pblock, params);
 }
 
