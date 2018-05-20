@@ -339,8 +339,8 @@ Var vänlig och försök igen.</translation>
         <translation>Återindexerar block på disken...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Skicka bitcoins till en Bitcoin Clashic-adress</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Skicka bitcoins till en Bitcoin Core-adress</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

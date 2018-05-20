@@ -318,7 +318,7 @@
         <translation>إعادة الفهرسة الكتل على القرص ...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
+        <source>Send coins to a Bitcoin Core address</source>
         <translation>ارسل عملات الى عنوان بيتكوين</translation>
     </message>
     <message>

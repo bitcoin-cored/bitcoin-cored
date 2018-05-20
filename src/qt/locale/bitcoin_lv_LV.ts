@@ -142,8 +142,8 @@
         <translation>Bloku reindeksēšana no diska...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Nosūtīt bitkoinus uz Bitcoin Clashic adresi</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Nosūtīt bitkoinus uz Bitcoin Core adresi</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

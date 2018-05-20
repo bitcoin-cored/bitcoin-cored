@@ -154,8 +154,8 @@
         <translation>Mengindex ulang blok di dalam disk...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Kirim koin ke alamat Bitcoin Clashic</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Kirim koin ke alamat Bitcoin Core</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

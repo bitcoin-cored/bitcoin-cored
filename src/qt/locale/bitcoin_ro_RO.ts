@@ -154,8 +154,8 @@
         <translation>Se reindexează blocurile pe disc...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Trimite monede către o adresă Bitcoin Clashic</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Trimite monede către o adresă Bitcoin Core</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

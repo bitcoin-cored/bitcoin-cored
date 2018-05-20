@@ -162,8 +162,8 @@
         <translation>Φόρτωση ευρετηρίου μπλοκ στον σκληρο δισκο...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Στείλε νομίσματα σε μια διεύθυνση Bitcoin Clashic</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Στείλε νομίσματα σε μια διεύθυνση Bitcoin Core</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

@@ -322,8 +322,8 @@
         <translation>Bezig met herindexeren van blokken op harde schijf...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Verstuur munten naar een Bitcoin Clashic adres</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Verstuur munten naar een Bitcoin Core adres</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

@@ -338,8 +338,8 @@
         <translation>Reindexando bloques en disco...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Enviar bitcoins a una dirección Bitcoin Clashic</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Enviar bitcoins a una dirección Bitcoin Core</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
