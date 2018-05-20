@@ -7,7 +7,6 @@
 
 #include "chainparams.h" // for GetConsensus.
 #include "clientversion.h"
-#include "config.h"
 #include "consensus/consensus.h"
 #include "consensus/validation.h"
 #include "policy/fees.h"
@@ -551,7 +550,8 @@ void CTxMemPool::removeRecursive(const CTransaction &origTx,
     }
 }
 
-void CTxMemPool::removeForReorg(const CCoinsViewCache *pcoins,
+void CTxMemPool::removeForReorg(const Config &config,
+                                const CCoinsViewCache *pcoins,
                                 unsigned int nMemPoolHeight, int flags) {
     // Remove transactions spending a coinbase which are now immature and
     // no-longer-final transactions
@@ -563,7 +563,6 @@ void CTxMemPool::removeForReorg(const CCoinsViewCache *pcoins,
         LockPoints lp = it->GetLockPoints();
         bool validLP = TestLockPointValidity(&lp);
 
-        auto &config = GetConfig();
         CValidationState state;
         if (!ContextualCheckTransactionForCurrentBlock(
                 config, tx, state, config.GetChainParams().GetConsensus(),
