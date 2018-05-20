@@ -180,6 +180,10 @@ public:
         // bitcoincore.zone
         vSeeds.push_back(
             CDNSSeedData("bitcoincore.zone", "seeder.bitcoincore.zone", true));
+        // truevisionofsatoshi.com
+        vSeeds.push_back(
+            CDNSSeedData("truevisionofsatoshi.com", 
+                         "seeder-mainnet.truevisionofsatoshi.com", true));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<uint8_t>(1, 0);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<uint8_t>(1, 5);
@@ -340,15 +344,12 @@ public:
         // bitcoinforks seeders
         vSeeds.push_back(CDNSSeedData(
             "bitcoinforks.org", "testnet-seed-abc.bitcoinforks.org", true));
-        // Bitprim
-        vSeeds.push_back(
-            CDNSSeedData("bitprim.org", "testnet-seed.bitprim.org", true));
         // Amaury SÉCHET
         vSeeds.push_back(
             CDNSSeedData("deadalnix.me", "testnet-seed.deadalnix.me", true));
-        // criptolayer.net
-        vSeeds.push_back(CDNSSeedData("criptolayer.net",
-                                      "testnet-seeder.criptolayer.net", true));
+        // truevisionofsatoshi.com
+        vSeeds.push_back(CDNSSeedData("truevisionofsatoshi.com",
+                                      "seeder-testnet.truevisionofsatoshi.com", true));
         // clashic.cash maintained by Clashicly
         vSeeds.push_back(
             CDNSSeedData("clashic.cash", "testnet-seeder.clashic.cash", true));
