@@ -571,8 +571,8 @@ bool CheckRegularTransaction(const CTransaction &tx, CValidationState &state,
 void LimitMempoolSize(CTxMemPool &pool, size_t limit, unsigned long age) {
     int expired = pool.Expire(GetTime() - age);
     if (expired != 0) {
-        LogPrint("mempool", "Expired %i transactions from the memory pool\n",
-                 expired);
+        LogPrint(BCLog::MEMPOOL,
+                 "Expired %i transactions from the memory pool\n", expired);
     }
 
     std::vector<COutPoint> vNoSpendsRemaining;
@@ -705,7 +705,8 @@ static bool CheckInputsFromMempoolAndCache(const CTransaction &tx,
     for (const CTxIn &txin : tx.vin) {
         const Coin &coin = view.AccessCoin(txin.prevout);
 
-        // At this point we haven't actually checked if the coins are all
+        // At this point we hLogPrint(BCLog::MEMPOOL, "Rate limit dFreeCount: %g => %g\n",
+                     dFreeCount, dFreeCount + nSize);aven't actually checked if the coins are all
         // available (or shouldn't assume we have, since CheckInputs does). So
         // we just return failure if the inputs are not available here, and then
         // only have to check equivalence for available inputs.
@@ -947,8 +948,8 @@ static bool AcceptToMemoryPoolWorker(
                                  "rate limited free transaction");
             }
 
-            LogPrint("mempool", "Rate limit dFreeCount: %g => %g\n", dFreeCount,
-                     dFreeCount + nSize);
+            LogPrint(BCLog::MEMPOOL, "Rate limit dFreeCount: %g => %g\n",
+                     dFreeCount, dFreeCount + nSize);
             dFreeCount += nSize;
         }
 
@@ -1983,7 +1984,7 @@ static bool ConnectBlock(const Config &config, const CBlock &block,
 
     int64_t nTime1 = GetTimeMicros();
     nTimeCheck += nTime1 - nTimeStart;
-    LogPrint("bench", "    - Sanity checks: %.2fms [%.2fs]\n",
+    LogPrint(BCLog::BENCH, "    - Sanity checks: %.2fms [%.2fs]\n",
              0.001 * (nTime1 - nTimeStart), nTimeCheck * 0.000001);
 
     // Do not allow blocks that contain transactions which 'overwrite' older
@@ -2053,7 +2054,7 @@ static bool ConnectBlock(const Config &config, const CBlock &block,
 
     int64_t nTime2 = GetTimeMicros();
     nTimeForks += nTime2 - nTime1;
-    LogPrint("bench", "    - Fork checks: %.2fms [%.2fs]\n",
+    LogPrint(BCLog::BENCH, "    - Fork checks: %.2fms [%.2fs]\n",
              0.001 * (nTime2 - nTime1), nTimeForks * 0.000001);
 
     CBlockUndo blockundo;
@@ -2151,7 +2152,8 @@ static bool ConnectBlock(const Config &config, const CBlock &block,
 
     int64_t nTime3 = GetTimeMicros();
     nTimeConnect += nTime3 - nTime2;
-    LogPrint("bench", "      - Connect %u transactions: %.2fms (%.3fms/tx, "
+    LogPrint(BCLog::BENCH,
+             "      - Connect %u transactions: %.2fms (%.3fms/tx, "
                       "%.3fms/txin) [%.2fs]\n",
              (unsigned)block.vtx.size(), 0.001 * (nTime3 - nTime2),
              0.001 * (nTime3 - nTime2) / block.vtx.size(),
@@ -2174,7 +2176,8 @@ static bool ConnectBlock(const Config &config, const CBlock &block,
 
     int64_t nTime4 = GetTimeMicros();
     nTimeVerify += nTime4 - nTime2;
-    LogPrint("bench", "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs]\n",
+    LogPrint(BCLog::BENCH,
+             "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs]\n",
              nInputs - 1, 0.001 * (nTime4 - nTime2),
              nInputs <= 1 ? 0 : 0.001 * (nTime4 - nTime2) / (nInputs - 1),
              nTimeVerify * 0.000001);
@@ -2217,7 +2220,7 @@ static bool ConnectBlock(const Config &config, const CBlock &block,
 
     int64_t nTime5 = GetTimeMicros();
     nTimeIndex += nTime5 - nTime4;
-    LogPrint("bench", "    - Index writing: %.2fms [%.2fs]\n",
+    LogPrint(BCLog::BENCH, "    - Index writing: %.2fms [%.2fs]\n",
              0.001 * (nTime5 - nTime4), nTimeIndex * 0.000001);
 
     // Watch for changes to the previous coinbase transaction.
@@ -2227,7 +2230,7 @@ static bool ConnectBlock(const Config &config, const CBlock &block,
 
     int64_t nTime6 = GetTimeMicros();
     nTimeCallbacks += nTime6 - nTime5;
-    LogPrint("bench", "    - Callbacks: %.2fms [%.2fs]\n",
+    LogPrint(BCLog::BENCH, "    - Callbacks: %.2fms [%.2fs]\n",
              0.001 * (nTime6 - nTime5), nTimeCallbacks * 0.000001);
 
     return true;
@@ -2509,7 +2512,7 @@ static bool DisconnectTip(const Config &config, CValidationState &state,
         assert(flushed);
     }
 
-    LogPrint("bench", "- Disconnect block: %.2fms\n",
+    LogPrint(BCLog::BENCH, "- Disconnect block: %.2fms\n",
              (GetTimeMicros() - nStart) * 0.001);
 
     // Write the chain state to disk, if necessary.
@@ -2590,7 +2593,7 @@ static bool ConnectTip(const Config &config, CValidationState &state,
     int64_t nTime2 = GetTimeMicros();
     nTimeReadFromDisk += nTime2 - nTime1;
     int64_t nTime3;
-    LogPrint("bench", "  - Load block from disk: %.2fms [%.2fs]\n",
+    LogPrint(BCLog::BENCH, "  - Load block from disk: %.2fms [%.2fs]\n",
              (nTime2 - nTime1) * 0.001, nTimeReadFromDisk * 0.000001);
     {
         CCoinsViewCache view(pcoinsTip);
@@ -2606,20 +2609,20 @@ static bool ConnectTip(const Config &config, CValidationState &state,
         }
         nTime3 = GetTimeMicros();
         nTimeConnectTotal += nTime3 - nTime2;
-        LogPrint("bench", "  - Connect total: %.2fms [%.2fs]\n",
+        LogPrint(BCLog::BENCH, "  - Connect total: %.2fms [%.2fs]\n",
                  (nTime3 - nTime2) * 0.001, nTimeConnectTotal * 0.000001);
         bool flushed = view.Flush();
         assert(flushed);
     }
     int64_t nTime4 = GetTimeMicros();
     nTimeFlush += nTime4 - nTime3;
-    LogPrint("bench", "  - Flush: %.2fms [%.2fs]\n", (nTime4 - nTime3) * 0.001,
-             nTimeFlush * 0.000001);
+    LogPrint(BCLog::BENCH, "  - Flush: %.2fms [%.2fs]\n",
+             (nTime4 - nTime3) * 0.001, nTimeFlush * 0.000001);
     // Write the chain state to disk, if necessary.
     if (!FlushStateToDisk(state, FLUSH_STATE_IF_NEEDED)) return false;
     int64_t nTime5 = GetTimeMicros();
     nTimeChainState += nTime5 - nTime4;
-    LogPrint("bench", "  - Writing chainstate: %.2fms [%.2fs]\n",
+    LogPrint(BCLog::BENCH, "  - Writing chainstate: %.2fms [%.2fs]\n",
              (nTime5 - nTime4) * 0.001, nTimeChainState * 0.000001);
     // Remove conflicting transactions from the mempool.;
     mempool.removeForBlock(blockConnecting.vtx, pindexNew->nHeight);
@@ -2630,9 +2633,9 @@ static bool ConnectTip(const Config &config, CValidationState &state,
     int64_t nTime6 = GetTimeMicros();
     nTimePostConnect += nTime6 - nTime5;
     nTimeTotal += nTime6 - nTime1;
-    LogPrint("bench", "  - Connect postprocess: %.2fms [%.2fs]\n",
+    LogPrint(BCLog::BENCH, "  - Connect postprocess: %.2fms [%.2fs]\n",
              (nTime6 - nTime5) * 0.001, nTimePostConnect * 0.000001);
-    LogPrint("bench", "- Connect block: %.2fms [%.2fs]\n",
+    LogPrint(BCLog::BENCH, "- Connect block: %.2fms [%.2fs]\n",
              (nTime6 - nTime1) * 0.001, nTimeTotal * 0.000001);
     return true;
 }
@@ -3988,7 +3991,7 @@ void FindFilesToPrune(std::set<int> &setFilesToPrune,
         }
     }
 
-    LogPrint("prune", "Prune: target=%dMiB actual=%dMiB diff=%dMiB "
+    LogPrint(BCLog::PRUNE, "Prune: target=%dMiB actual=%dMiB diff=%dMiB "
                       "max_prune_height=%d removed %d blk/rev pairs\n",
              nPruneTarget / 1024 / 1024, nCurrentUsage / 1024 / 1024,
              ((int64_t)nPruneTarget - (int64_t)nCurrentUsage) / 1024 / 1024,
@@ -4547,7 +4550,7 @@ bool LoadExternalBlockFile(const Config &config, FILE *fileIn,
                 if (hash != chainparams.GetConsensus().hashGenesisBlock &&
                     mapBlockIndex.find(block.hashPrevBlock) ==
                         mapBlockIndex.end()) {
-                    LogPrint("reindex",
+                    LogPrint(BCLog::REINDEX,
                              "%s: Out of order block %s, parent %s not known\n",
                              __func__, hash.ToString(),
                              block.hashPrevBlock.ToString());
@@ -4574,7 +4577,7 @@ bool LoadExternalBlockFile(const Config &config, FILE *fileIn,
                                chainparams.GetConsensus().hashGenesisBlock &&
                            mapBlockIndex[hash]->nHeight % 1000 == 0) {
                     LogPrint(
-                        "reindex",
+                        BCLog::REINDEX,
                         "Block Import: already had block %s at height %d\n",
                         hash.ToString(), mapBlockIndex[hash]->nHeight);
                 }
@@ -4608,7 +4611,7 @@ bool LoadExternalBlockFile(const Config &config, FILE *fileIn,
                         if (ReadBlockFromDisk(*pblockrecursive, it->second,
                                               chainparams.GetConsensus())) {
                             LogPrint(
-                                "reindex",
+                                BCLog::REINDEX,
                                 "%s: Processing out of order child %s of %s\n",
                                 __func__, pblockrecursive->GetHash().ToString(),
                                 head.ToString());

@@ -289,7 +289,7 @@ void OnRPCStopped() {
     uiInterface.NotifyBlockTip.disconnect(&RPCNotifyBlockChange);
     RPCNotifyBlockChange(false, nullptr);
     cvBlockChange.notify_all();
-    LogPrint("rpc", "RPC stopped.\n");
+    LogPrint(BCLog::RPC, "RPC stopped.\n");
 }
 
 void OnRPCPreCommand(const CRPCCommand &cmd) {
@@ -656,11 +656,6 @@ std::string HelpMessage(HelpMessageMode mode) {
                                    "Use given start/end times for specified "
                                    "BIP9 deployment (regtest-only)");
     }
-    std::string debugCategories =
-        "addrman, alert, bench, cmpctblock, coindb, db, http, libevent, lock, "
-        "mempool, mempoolrej, net, proxy, prune, rand, reindex, rpc, "
-        "selectcoins, tor, zmq"; // Don't translate these and qt below
-    if (mode == HMM_CLASHIC_QT) debugCategories += ", qt";
     strUsage += HelpMessageOpt(
         "-debug=<category>",
         strprintf(_("Output debugging information (default: %u, supplying "
@@ -668,7 +663,7 @@ std::string HelpMessage(HelpMessageMode mode) {
                   0) +
             ". " + _("If <category> is not supplied or if <category> = 1, "
                      "output all debugging information.") +
-            _("<category> can be:") + " " + debugCategories + ".");
+            _("<category> can be:") + " " + ListLogCategories() + ".");
     if (showDebug)
         strUsage += HelpMessageOpt(
             "-nodebug", "Turn off debugging messages, same as -debug=0");
@@ -1645,7 +1640,7 @@ bool AppInitMain(Config &config, boost::thread_group &threadGroup,
 #ifndef WIN32
     CreatePidFile(GetPidFile(), getpid());
 #endif
-    if (GetBoolArg("-shrinkdebugfile", !fDebug)) {
+    if (GetBoolArg("-shrinkdebugfile", logCategories != BCLog::NONE)) {
         // Do this first since it both loads a bunch of debug.log into memory,
         // and because this needs to happen before any other debug.log printing.
         ShrinkDebugFile();
@@ -2043,7 +2038,7 @@ bool AppInitMain(Config &config, boost::thread_group &threadGroup,
                     break;
                 }
             } catch (const std::exception &e) {
-                if (fDebug) LogPrintf("%s\n", e.what());
+                LogPrintf("%s\n", e.what());
                 strLoadError = _("Error opening block database");
                 break;
             }
