@@ -180,9 +180,8 @@ static bool InitHTTPAllowList() {
     rpc_allow_subnets.push_back(CSubNet(localv4, 8));
     // always allow IPv6 localhost.
     rpc_allow_subnets.push_back(CSubNet(localv6));
-    if (mapMultiArgs.count("-rpcallowip")) {
-        const std::vector<std::string> &vAllow = mapMultiArgs.at("-rpcallowip");
-        for (std::string strAllow : vAllow) {
+    if (gArgs.IsArgSet("-rpcallowip")) {
+        for (const std::string &strAllow : gArgs.GetArgs("-rpcallowip")) {
             CSubNet subnet;
             LookupSubNet(strAllow.c_str(), subnet);
             if (!subnet.IsValid()) {
@@ -259,7 +258,9 @@ static void http_request_cb(struct evhttp_request *req, void *arg) {
         } else {
             match = (strURI.substr(0, i->prefix.size()) == i->prefix);
         }
-        if (match) {
+        if (match) {} else if (gArgs.IsArgSet("-rpcbind")) {
+        // Specific bind address.
+        for (const std::string &strRPCBind : gArgs.GetArgs("-rpcbind")) {
             path = strURI.substr(i->prefix.size());
             break;
         }
@@ -315,14 +316,12 @@ static bool HTTPBindAddresses(struct evhttp *http) {
                       "-rpcallowip was not specified, refusing to allow "
                       "everyone to connect\n");
         }
-    } else if (mapMultiArgs.count("-rpcbind")) {
+    } else if (gArgs.IsArgSet("-rpcbind")) {
         // Specific bind address.
-        const std::vector<std::string> &vbind = mapMultiArgs.at("-rpcbind");
-        for (std::vector<std::string>::const_iterator i = vbind.begin();
-             i != vbind.end(); ++i) {
+        for (const std::string &strRPCBind : gArgs.GetArgs("-rpcbind")) {
             int port = defaultPort;
             std::string host;
-            SplitHostPort(*i, port, host);
+            SplitHostPort(strRPCBind, port, host);
             endpoints.push_back(std::make_pair(host, port));
         }
     } else {

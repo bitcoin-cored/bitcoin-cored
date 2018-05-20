@@ -1094,8 +1094,7 @@ void InitParameterInteraction() {
                       __func__);
     }
 
-    if (mapMultiArgs.count("-connect") &&
-        mapMultiArgs.at("-connect").size() > 0) {
+    if (gArgs.IsArgSet("-connect")) {
         // when only connecting to trusted nodes, do not seed via DNS, or listen
         // by default.
         if (SoftSetBoolArg("-dnsseed", false))
@@ -1290,9 +1289,8 @@ bool AppInitParameterInteraction(Config &config) {
 
     // Make sure enough file descriptors are available
     int nBind = std::max(
-        (mapMultiArgs.count("-bind") ? mapMultiArgs.at("-bind").size() : 0) +
-            (mapMultiArgs.count("-whitebind")
-                 ? mapMultiArgs.at("-whitebind").size()
+         (gArgs.IsArgSet("-bind") ? gArgs.GetArgs("-bind").size() : 0) +
+            (gArgs.IsArgSet("-whitebind") ? gArgs.GetArgs("-whitebind").size()
                  : 0),
         size_t(1));
     nUserMaxConnections =
@@ -1313,21 +1311,28 @@ bool AppInitParameterInteraction(Config &config) {
         std::min(nFD - MIN_CORE_FILEDESCRIPTORS - MAX_ADDNODE_CONNECTIONS,
                  nMaxConnections);
 
-    if (nMaxConnections < nUserMaxConnections)
+    if (nMaxConnections < nUserMaxConnections) {
         InitWarning(strprintf(_("Reducing -maxconnections from %d to %d, "
                                 "because of system limitations."),
                               nUserMaxConnections, nMaxConnections));
+    }
 
     // Step 3: parameter-to-internal-flags
+    if (gArgs.IsArgSet("-debug")) {
+        // Special-case: if -debug=0/-nodebug is set, turn off debugging messages
+        const std::vector<std::string> &categories = gArgs.GetArgs("-debug");
+        if (find(categories.begin(), categories.end(), std::string("0")) ==
+            categories.end()) {
 
-    fDebug = mapMultiArgs.count("-debug");
-    // Special-case: if -debug=0/-nodebug is set, turn off debugging messages
-    if (fDebug) {
-        const std::vector<std::string> &categories = mapMultiArgs.at("-debug");
-        if (GetBoolArg("-nodebug", false) ||
-            find(categories.begin(), categories.end(), std::string("0")) !=
-                categories.end())
-            fDebug = false;
+            for (const auto &cat : categories) {
+                uint32_t flag = 0;
+                if (!GetLogCategory(&flag, &cat)) {
+                    InitWarning(strprintf(
+                        _("Unsupported logging category %s.\n"), cat));
+                }
+                logCategories |= flag;
+            }
+        }
     }
 
     // Check for -debugnet
@@ -1530,17 +1535,16 @@ bool AppInitParameterInteraction(Config &config) {
 
     nMaxTipAge = GetArg("-maxtipage", DEFAULT_MAX_TIP_AGE);
 
-    if (mapMultiArgs.count("-bip9params")) {
+    if (gArgs.IsArgSet("-bip9params")) {
         // Allow overriding BIP9 parameters for testing
         if (!chainparams.MineBlocksOnDemand()) {
             return InitError(
                 "BIP9 parameters may only be overridden on regtest.");
         }
-        const std::vector<std::string> &deployments =
-            mapMultiArgs.at("-bip9params");
-        for (auto i : deployments) {
+        for (const std::string &strDeployment : gArgs.GetArgs("-bip9params")) {
             std::vector<std::string> vDeploymentParams;
-            boost::split(vDeploymentParams, i, boost::is_any_of(":"));
+            boost::split(vDeploymentParams, strDeployment,
+                         boost::is_any_of(":"));
             if (vDeploymentParams.size() != 3) {
                 return InitError("BIP9 parameters malformed, expecting "
                                  "deployment:start:end");
@@ -1712,9 +1716,9 @@ bool AppInitMain(Config &config, boost::thread_group &threadGroup,
     RegisterValidationInterface(peerLogic.get());
     RegisterNodeSignals(GetNodeSignals());
 
-    if (mapMultiArgs.count("-onlynet")) {
+    if (gArgs.IsArgSet("-onlynet")) {
         std::set<enum Network> nets;
-        for (const std::string &snet : mapMultiArgs.at("-onlynet")) {
+        for (const std::string &snet : gArgs.GetArgs("-onlynet")) {
             enum Network net = ParseNetwork(snet);
             if (net == NET_UNROUTABLE)
                 return InitError(strprintf(
@@ -1727,8 +1731,8 @@ bool AppInitMain(Config &config, boost::thread_group &threadGroup,
         }
     }
 
-    if (mapMultiArgs.count("-whitelist")) {
-        for (const std::string &net : mapMultiArgs.at("-whitelist")) {
+    if (gArgs.IsArgSet("-whitelist")) {
+        for (const std::string &net : gArgs.GetArgs("-whitelist")) {
             CSubNet subnet;
             LookupSubNet(net.c_str(), subnet);
             if (!subnet.IsValid())
@@ -1787,8 +1791,8 @@ bool AppInitMain(Config &config, boost::thread_group &threadGroup,
 
     if (fListen) {
         bool fBound = false;
-        if (mapMultiArgs.count("-bind")) {
-            for (const std::string &strBind : mapMultiArgs.at("-bind")) {
+        if (gArgs.IsArgSet("-bind")) {
+            for (const std::string &strBind : gArgs.GetArgs("-bind")) {
                 CService addrBind;
                 if (!Lookup(strBind.c_str(), addrBind, GetListenPort(), false))
                     return InitError(ResolveErrMsg("bind", strBind));
@@ -1796,8 +1800,8 @@ bool AppInitMain(Config &config, boost::thread_group &threadGroup,
                     Bind(connman, addrBind, (BF_EXPLICIT | BF_REPORT_ERROR));
             }
         }
-        if (mapMultiArgs.count("-whitebind")) {
-            for (const std::string &strBind : mapMultiArgs.at("-whitebind")) {
+        if (gArgs.IsArgSet("-whitebind")) {
+            for (const std::string &strBind : gArgs.GetArgs("-whitebind")) {
                 CService addrBind;
                 if (!Lookup(strBind.c_str(), addrBind, 0, false))
                     return InitError(ResolveErrMsg("whitebind", strBind));
@@ -1809,7 +1813,7 @@ bool AppInitMain(Config &config, boost::thread_group &threadGroup,
                                (BF_EXPLICIT | BF_REPORT_ERROR | BF_WHITELIST));
             }
         }
-        if (!mapMultiArgs.count("-bind") && !mapMultiArgs.count("-whitebind")) {
+        if (!gArgs.IsArgSet("-bind") && !gArgs.IsArgSet("-whitebind")) {
             struct in_addr inaddr_any;
             inaddr_any.s_addr = INADDR_ANY;
             fBound |=
@@ -1822,8 +1826,8 @@ bool AppInitMain(Config &config, boost::thread_group &threadGroup,
                                "you want this."));
     }
 
-    if (mapMultiArgs.count("-externalip")) {
-        for (const std::string &strAddr : mapMultiArgs.at("-externalip")) {
+    if (gArgs.IsArgSet("-externalip")) {
+        for (const std::string &strAddr : gArgs.GetArgs("-externalip")) {
             CService addrLocal;
             if (Lookup(strAddr.c_str(), addrLocal, GetListenPort(),
                        fNameLookup) &&
@@ -1834,8 +1838,8 @@ bool AppInitMain(Config &config, boost::thread_group &threadGroup,
         }
     }
 
-    if (mapMultiArgs.count("-seednode")) {
-        for (const std::string &strDest : mapMultiArgs.at("-seednode")) {
+    if (gArgs.IsArgSet("-seednode")) {
+        for (const std::string &strDest : gArgs.GetArgs("-seednode")) {
             connman.AddOneShot(strDest);
         }
     }
@@ -2120,12 +2124,13 @@ bool AppInitMain(Config &config, boost::thread_group &threadGroup,
         fHaveGenesis = true;
     }
 
-    if (IsArgSet("-blocknotify"))
+    if (IsArgSet("-blocknotify")) {
         uiInterface.NotifyBlockTip.connect(BlockNotifyCallback);
+    }
 
     std::vector<boost::filesystem::path> vImportFiles;
-    if (mapMultiArgs.count("-loadblock")) {
-        for (const std::string &strFile : mapMultiArgs.at("-loadblock")) {
+    if (gArgs.IsArgSet("-loadblock")) {
+        for (const std::string &strFile : gArgs.GetArgs("-loadblock")) {
             vImportFiles.push_back(strFile);
         }
     }
