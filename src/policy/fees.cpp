@@ -295,9 +295,8 @@ void TxConfirmStats::removeTx(unsigned int entryHeight,
     if (blocksAgo < 0) {
         // This can't happen because we call this with our best seen height, no
         // entries can have higher
-        LogPrint(BCLog::ESTIMATEFEE, "Blockpolicy error, mempool tx "
-                                         "removed from >25 "
-                                         "blocks,bucketIndex=%u already\n",
+        LogPrint(BCLog::ESTIMATEFEE,
+                 "Blockpolicy error, blocks ago is negative for mempool tx\n");
         return;
     }
 
@@ -305,9 +304,10 @@ void TxConfirmStats::removeTx(unsigned int entryHeight,
         if (oldUnconfTxs[bucketindex] > 0) {
             oldUnconfTxs[bucketindex]--;
         } else {
-            LogPrint("estimatefee", "Blockpolicy error, mempool tx removed "
-                                    "from >25 blocks,bucketIndex=%u already\n",
-                     bucketindex);
+            LogPrint(BCLog::ESTIMATEFEE, "Blockpolicy error, mempool tx "
+                                         "removed from >25 "
+                                         "blocks,bucketIndex=%u already\n",
+                                          bucketindex);
         }
     } else {
         unsigned int blockIndex = entryHeight % unconfTxs.size();

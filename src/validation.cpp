@@ -686,6 +686,28 @@ void UpdateMempoolForReorg(const Config &config,
         GetArg("-mempoolexpiry", DEFAULT_MEMPOOL_EXPIRY) * 60 * 60);
 }
 
+static bool IsReplayProtectionEnabled(const Config &config,
+                                      int64_t nMedianTimePast) {
+    return nMedianTimePast >= gArgs.GetArg("-replayprotectionactivationtime",
+                                           config.GetChainParams()
+                                               .GetConsensus()
+                                               .coreHardForkActivationTime);
+}
+
+static bool IsReplayProtectionEnabled(const Config &config,
+                                      const CBlockIndex *pindexPrev) {
+    if (pindexPrev == nullptr) {
+        return false;
+    }
+
+    return IsReplayProtectionEnabled(config, pindexPrev->GetMedianTimePast());
+}
+
+static bool IsReplayProtectionEnabledForCurrentBlock(const Config &config) {
+    AssertLockHeld(cs_main);
+    return IsReplayProtectionEnabled(config, chainActive.Tip());
+}
+
 // Used to avoid mempool polluting consensus critical paths if CCoinsViewMempool
 // were somehow broken and returning the wrong scriptPubKeys
 static bool CheckInputsFromMempoolAndCache(const CTransaction &tx,
@@ -705,8 +727,7 @@ static bool CheckInputsFromMempoolAndCache(const CTransaction &tx,
     for (const CTxIn &txin : tx.vin) {
         const Coin &coin = view.AccessCoin(txin.prevout);
 
-        // At this point we hLogPrint(BCLog::MEMPOOL, "Rate limit dFreeCount: %g => %g\n",
-                     dFreeCount, dFreeCount + nSize);aven't actually checked if the coins are all
+        // At this point we haven't actually checked if the coins are all
         // available (or shouldn't assume we have, since CheckInputs does). So
         // we just return failure if the inputs are not available here, and then
         // only have to check equivalence for available inputs.
@@ -977,11 +998,22 @@ static bool AcceptToMemoryPoolWorker(
                              "too-long-mempool-chain", false, errString);
         }
 
-        uint32_t scriptVerifyFlags = STANDARD_SCRIPT_VERIFY_FLAGS;
-        if (!Params().RequireStandard()) {
-            scriptVerifyFlags =
-                GetArg("-promiscuousmempoolflags", scriptVerifyFlags);
+        // Set extraFlags as a set of flags that needs to be activated.
+        uint32_t extraFlags = SCRIPT_VERIFY_NONE;
+        if (IsReplayProtectionEnabledForCurrentBlock(config)) {
+            extraFlags |= SCRIPT_ENABLE_REPLAY_PROTECTION;
         }
+
+        // Check inputs based on the set of flags we activate.
+        uint32_t scriptVerifyFlags = STANDARD_SCRIPT_VERIFY_FLAGS;
+        if (!config.GetChainParams().RequireStandard()) {
+            scriptVerifyFlags =
+                SCRIPT_ENABLE_SIGHASH_FORKID |
+                gArgs.GetArg("-promiscuousmempoolflags", scriptVerifyFlags);
+        }
+
+        // Make sure whatever we need to activate is actually activated.
+        scriptVerifyFlags |= extraFlags;
 
         // Check against previous transactions. This is done last to help
         // prevent CPU exhaustion denial-of-service attacks.
@@ -2233,6 +2265,14 @@ static bool ConnectBlock(const Config &config, const CBlock &block,
     LogPrint(BCLog::BENCH, "    - Callbacks: %.2fms [%.2fs]\n",
              0.001 * (nTime6 - nTime5), nTimeCallbacks * 0.000001);
 
+    // If we just activated the replay protection with that block, it means
+    // transaction in the mempool are now invalid. As a result, we need to clear
+    // the mempool.
+    if (IsReplayProtectionEnabled(config, pindex) &&
+        !IsReplayProtectionEnabled(config, pindex->pprev)) {
+        mempool.clear();
+    }
+
     return true;
 }
 
@@ -2806,7 +2846,11 @@ static bool ActivateBestChainStep(const Config &config, CValidationState &state,
     if (fBlocksDisconnected) {
         // If any blocks were disconnected, disconnectpool may be non empty. Add
         // any disconnected transactions back to the mempool.
-        UpdateMempoolForReorg(config, disconnectpool, true);
+        mempool.removeForReorg(config, pcoinsTip,
+                               chainActive.Tip()->nHeight + 1,
+                               STANDARD_LOCKTIME_VERIFY_FLAGS);
+    }
+
     mempool.check(pcoinsTip);
 
     // Callbacks/notifications for a new best chain.
@@ -2990,7 +3034,9 @@ bool InvalidateBlock(const Config &config, CValidationState &state,
         if (!DisconnectTip(config, state, &disconnectpool)) {
             // It's probably hopeless to try to make the mempool consistent
             // here if DisconnectTip failed, but we can try.
-            UpdateMempoolForReorg(config, disconnectpool, false);
+            mempool.removeForReorg(config, pcoinsTip,
+                                   chainActive.Tip()->nHeight + 1,
+                                   STANDARD_LOCKTIME_VERIFY_FLAGS);
             return false;
         }
     }
@@ -3013,6 +3059,8 @@ bool InvalidateBlock(const Config &config, CValidationState &state,
     }
 
     InvalidChainFound(pindex);
+    mempool.removeForReorg(config, pcoinsTip, chainActive.Tip()->nHeight + 1,
+                           STANDARD_LOCKTIME_VERIFY_FLAGS);
     uiInterface.NotifyBlockTip(IsInitialBlockDownload(), pindex->pprev);
     return true;
 }

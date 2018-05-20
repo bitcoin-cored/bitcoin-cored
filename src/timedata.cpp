@@ -53,6 +53,7 @@ void AddTimeData(const CNetAddr &ip, int64_t nOffsetSample) {
     vTimeOffsets.input(nOffsetSample);
     LogPrint(BCLog::NET,
              "added time data, samples %d, offset %+d (%+d minutes)\n",
+             vTimeOffsets.size(), nOffsetSample, nOffsetSample / 60);
 
     // There is a known issue here (see issue #4521):
     //

@@ -2545,6 +2545,7 @@ static bool ProcessMessage(const Config &config, CNode *pfrom,
                 it->second.first != pfrom->GetId()) {
                 LogPrint(BCLog::NET,
                          "Peer %d sent us block transactions for block "
+                         "we weren't expecting\n",
                          pfrom->id);
                 return true;
             }
@@ -3463,7 +3464,6 @@ bool SendMessages(const Config &config, CNode *pto, CConnman &connman,
                 LogPrint(BCLog::NET,
                          "%s sending header-and-ids %s to peer=%d\n", __func__,
                          vHeaders.front().GetHash().ToString(), pto->id);
-                         pto->id);
 
                 int nSendFlags = 0;
 

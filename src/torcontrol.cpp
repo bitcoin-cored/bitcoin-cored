@@ -168,6 +168,7 @@ void TorControlConnection::readcb(struct bufferevent *bev, void *ctx) {
                 } else {
                     LogPrint(BCLog::TOR,
                              "tor: Received unexpected sync reply %i\n",
+                             self->message.code);
                 }
             }
             self->message.Clear();

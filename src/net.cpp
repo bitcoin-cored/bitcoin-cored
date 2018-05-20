@@ -763,24 +763,15 @@ void CNode::SetSendVersion(int nVersionIn) {
     // has been successfully processed. Any attempt to set this twice is an
     // error.
     if (nSendVersion != 0) {
-        error("SeLogPrint(BCLog::NET, "failed to find an eviction candidate - "
-                                 "connection dropped (full)\n");nd version already set for node: %i. Refusing to change from "
-              "%iLogPrint(BCLog::NET, "failed to find an eviction candidate - "
-                                 "connection dropped (full)\n"); to %i",
-              id,LogPrint(BCLog::NET, "failed to find an eviction candidate - "
-                                 "connection dropped (full)\n"); nSendVersion, nVersionIn);
-    } else {LogPrint(BCLog::NET, "failed to find an eviction candidate - "
-                                 "connection dropped (full)\n");
-        nSendVersLogPrint(BCLog::NET, "failed to find an eviction candidate - "
-                                 "connection dropped (full)\n");ion = nVersionIn;
-    }LogPrint(BCLog::NET, "failed to find an eviction candidate - "
-                                 "connection dropped (full)\n");
-}LogPrint(BCLog::NET, "failed to find an eviction candidate - "
-                                 "connection dropped (full)\n");
-LogPrint(BCLog::NET, "failed to find an eviction candidate - "
-                                 "connection dropped (full)\n");
-int CNode::GetSenLogPrint(BCLog::NET, "failed to find an eviction candidate - "
-                                 "connection dropped (full)\n");dVersion() const {
+        error("Send version already set for node: %i. Refusing to change from "
+              "%i to %i",
+              id, nSendVersion, nVersionIn);
+    } else {
+        nSendVersion = nVersionIn;
+    }
+}
+
+int CNode::GetSendVersion() const {
     // The send version should always be explicitly set to INIT_PROTO_VERSION
     // rather than using this value until SetSendVersion has been called.
     if (nSendVersion == 0) {
@@ -806,8 +797,7 @@ int CNetMessage::readHeader(const char *pch, unsigned int nBytes) {
 
     // deserialize to CMessageHeader
     try {
-        hdrbuf >>LogPrint(BCLog::NET, "failed to find an eviction candidate - "
-                                 "connection dropped (full)\n"); hdr;
+        hdrbuf >> hdr;
     } catch (const std::exception &) {
         return -1;
     }
