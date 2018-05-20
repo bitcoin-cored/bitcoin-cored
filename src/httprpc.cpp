@@ -68,7 +68,7 @@ static void JSONErrorReply(HTTPRequest *req, const UniValue &objError,
     if (code == RPC_INVALID_REQUEST)
         nStatus = HTTP_BAD_REQUEST;
     else if (code == RPC_METHOD_NOT_FOUND)
-        nStatus = HTTP_NOT_FOUND;LogPrint(BCLog::RPC, "Starting HTTP RPC server\n");
+        nStatus = HTTP_NOT_FOUND;
 
     std::string strReply = JSONRPCReply(NullUniValue, objError, id);
 
@@ -100,7 +100,7 @@ static bool multiUserAuthorized(std::string strUserPass) {
                 continue;
             }
 
-            std::string strSalt =LogPrint(BCLog::RPC, "Starting HTTP RPC server\n");Fields[1];
+            std::string strSalt = vFields[1];
             std::string strHash = vFields[2];
 
             static const unsigned int KEY_SIZE = 32;
@@ -176,7 +176,7 @@ static bool HTTPReq_JSONRPC(Config &config, HTTPRequest *req,
 
         req->WriteHeader("WWW-Authenticate", WWW_AUTH_HEADER_DATA);
         req->WriteReply(HTTP_UNAUTHORIZED);
-        return false;LogPrint(BCLog::RPC, "Starting HTTP RPC server\n");
+        return false;
     }
 
     try {
