@@ -161,7 +161,7 @@ BOOST_AUTO_TEST_CASE(sighash_test) {
                                       sigHashType, Amount(0), nullptr,
                                       SCRIPT_ENABLE_SIGHASH_FORKID |
                                           SCRIPT_ENABLE_REPLAY_PROTECTION);
-        uint32_t newForValue = 0xff0000 | ((nHashType >> 8) ^ 0xdead);
+        uint32_t newForValue = 0xff0000 | ((nHashType >> 8) ^ 0xbad1);
         uint256 manualshrep =
             SignatureHash(scriptCode, CTransaction(txTo), nIn,
                           sigHashType.withForkValue(newForValue), Amount(0));
@@ -174,7 +174,7 @@ BOOST_AUTO_TEST_CASE(sighash_test) {
             SCRIPT_ENABLE_SIGHASH_FORKID | SCRIPT_ENABLE_REPLAY_PROTECTION);
         uint256 manualshrepff = SignatureHash(
             scriptCode, CTransaction(txTo), nIn,
-            sigHashType.withForkValue(newForValue ^ 0xdead), Amount(0));
+            sigHashType.withForkValue(newForValue ^ 0xbad1), Amount(0));
         BOOST_CHECK(shrepff == manualshrepff);
 
         uint256 shrepabcdef = SignatureHash(
