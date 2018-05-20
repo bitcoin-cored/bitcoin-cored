@@ -258,9 +258,7 @@ static void http_request_cb(struct evhttp_request *req, void *arg) {
         } else {
             match = (strURI.substr(0, i->prefix.size()) == i->prefix);
         }
-        if (match) {} else if (gArgs.IsArgSet("-rpcbind")) {
-        // Specific bind address.
-        for (const std::string &strRPCBind : gArgs.GetArgs("-rpcbind")) {
+        if (match) {
             path = strURI.substr(i->prefix.size());
             break;
         }
