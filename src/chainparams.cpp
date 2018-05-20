@@ -177,6 +177,9 @@ public:
         // clashic.cash maintained by Clashicly
         vSeeds.push_back(
             CDNSSeedData("clashic.cash", "seeder.clashic.cash", true));
+        // bitcoincore.zone
+        vSeeds.push_back(
+            CDNSSeedData("bitcoincore.zone", "seeder.bitcoincore.zone", true));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<uint8_t>(1, 0);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<uint8_t>(1, 5);
@@ -346,6 +349,12 @@ public:
         // criptolayer.net
         vSeeds.push_back(CDNSSeedData("criptolayer.net",
                                       "testnet-seeder.criptolayer.net", true));
+        // clashic.cash maintained by Clashicly
+        vSeeds.push_back(
+            CDNSSeedData("clashic.cash", "testnet-seeder.clashic.cash", true));
+        // bitcoincore.zone
+        vSeeds.push_back(
+            CDNSSeedData("bitcoincore.zone", "testnet-seeder.bitcoincore.zone", true));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<uint8_t>(1, 111);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<uint8_t>(1, 196);
