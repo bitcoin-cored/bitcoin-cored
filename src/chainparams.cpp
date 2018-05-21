@@ -143,8 +143,8 @@ public:
         // Aug, 1 hard fork
         consensus.uahfHeight = 478559;
 
-        // May, 21st hard fork. Human time (GMT): Monday, May 21, 2018 11:00:00 PM
-        consensus.coreHardForkActivationTime = 1526943600;
+        // May, 21st hard fork. Human time (GMT): Monday, May 21, 2018 12:00:00 AM
+        consensus.coreHardForkActivationTime = 1526860800;
 
         /**
          * The message start string is designed to be unlikely to occur in
@@ -312,7 +312,7 @@ public:
         consensus.uahfHeight = 1155876;
 
         // May, 21st hard fork
-        consensus.coreHardForkActivationTime = 1526943600;
+        consensus.coreHardForkActivationTime = 1526860800;
 
         pchMessageStart[0] = 0x0b;
         pchMessageStart[1] = 0x11;
