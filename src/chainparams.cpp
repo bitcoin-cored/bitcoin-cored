@@ -143,8 +143,9 @@ public:
         // Aug, 1 hard fork
         consensus.uahfHeight = 478559;
 
-        // May, 21st hard fork. Human time (GMT): Monday, May 21, 2018 12:00:00 AM
-        consensus.coreHardForkActivationTime = 1526860800;
+        // May, 21st hard fork. Human time (GMT): Monday, May 21, 2018 04:00:00 PM
+        // Actual fork was 5 hours later
+        consensus.coreHardForkActivationTime = 1526832000;
 
         /**
          * The message start string is designed to be unlikely to occur in
