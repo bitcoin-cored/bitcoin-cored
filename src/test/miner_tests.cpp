@@ -138,7 +138,7 @@ void TestPackageSelection(const CChainParams &chainparams, CScript scriptPubKey,
 
     // Calculate a fee on child transaction that will put the package just
     // below the block min tx fee (assuming 1 child tx of the same size).
-    CAmount feeToUse = blockMinFeeRate.GetFee(2 * freeTxSize).GetSatoshis() - 1;
+    Amount feeToUse = blockMinFeeRate.GetFee(2 * freeTxSize) - Amount(1);
 
     tx.vin[0].prevout.hash = hashFreeTx;
     tx.vout[0].nValue = 5000000000LL - 1000 - 50000 - feeToUse;
@@ -155,7 +155,7 @@ void TestPackageSelection(const CChainParams &chainparams, CScript scriptPubKey,
     // Test that packages above the min relay fee do get included, even if one
     // of the transactions is below the min relay fee. Remove the low fee
     // transaction and replace with a higher fee transaction
-    mempool.removeRecursive(tx);
+    mempool.removeRecursive(CTransaction(tx));
     // Now we should be just over the min relay fee.
     tx.vout[0].nValue -= 2;
     hashLowFeeTx = tx.GetId();
@@ -180,7 +180,7 @@ void TestPackageSelection(const CChainParams &chainparams, CScript scriptPubKey,
     // This tx can't be mined by itself.
     tx.vin[0].prevout.hash = hashFreeTx2;
     tx.vout.resize(1);
-    feeToUse = blockMinFeeRate.GetFee(freeTxSize).GetSatoshis();
+    feeToUse = blockMinFeeRate.GetFee(freeTxSize);
     tx.vout[0].nValue = 5000000000LL - 100000000 - feeToUse;
     uint256 hashLowFeeTx2 = tx.GetId();
     mempool.addUnchecked(hashLowFeeTx2,
@@ -303,10 +303,10 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity) {
         pblocktemplate =
             BlockAssembler(config, chainparams).CreateNewBlock(scriptPubKey));
 
-    const CAmount BLOCKSUBSIDY = 50 * COIN.GetSatoshis();
-    const CAmount LOWFEE = CENT.GetSatoshis();
-    const CAmount HIGHFEE = COIN.GetSatoshis();
-    const CAmount HIGHERFEE = 4 * COIN.GetSatoshis();
+    const Amount BLOCKSUBSIDY = 50 * COIN;
+    const Amount LOWFEE = CENT;
+    const Amount HIGHFEE = COIN;
+    const Amount HIGHERFEE = 4 * COIN;
 
     // block sigops > limit: 1000 CHECKMULTISIG + 1
     tx.vin.resize(1);
@@ -540,15 +540,15 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity) {
         // Locktime passes.
         GlobalConfig config;
         CValidationState state;
-        BOOST_CHECK(ContextualCheckTransactionForCurrentBlock(config, tx, state,
-                                                              flags));
+        BOOST_CHECK(ContextualCheckTransactionForCurrentBlock(
+            config, CTransaction(tx), state, flags));
     }
 
     // Sequence locks fail.
-    BOOST_CHECK(!TestSequenceLocks(tx, flags));
+    BOOST_CHECK(!TestSequenceLocks(CTransaction(tx), flags));
     // Sequence locks pass on 2nd block.
     BOOST_CHECK(
-        SequenceLocks(tx, flags, &prevheights,
+        SequenceLocks(CTransaction(tx), flags, &prevheights,
                       CreateBlockIndex(chainActive.Tip()->nHeight + 2)));
 
     // Relative time locked.
@@ -567,12 +567,12 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity) {
         // Locktime passes.
         GlobalConfig config;
         CValidationState state;
-        BOOST_CHECK(ContextualCheckTransactionForCurrentBlock(config, tx, state,
-                                                              flags));
+        BOOST_CHECK(ContextualCheckTransactionForCurrentBlock(
+            config, CTransaction(tx), state, flags));
     }
 
     // Sequence locks fail.
-    BOOST_CHECK(!TestSequenceLocks(tx, flags));
+    BOOST_CHECK(!TestSequenceLocks(CTransaction(tx), flags));
 
     for (int i = 0; i < CBlockIndex::nMedianTimeSpan; i++) {
         // Trick the MedianTimePast.
@@ -581,7 +581,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity) {
     }
     // Sequence locks pass 512 seconds later.
     BOOST_CHECK(
-        SequenceLocks(tx, flags, &prevheights,
+        SequenceLocks(CTransaction(tx), flags, &prevheights,
                       CreateBlockIndex(chainActive.Tip()->nHeight + 1)));
     for (int i = 0; i < CBlockIndex::nMedianTimeSpan; i++) {
         // Undo tricked MTP.
@@ -601,20 +601,20 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity) {
         // Locktime fails.
         GlobalConfig config;
         CValidationState state;
-        BOOST_CHECK(!ContextualCheckTransactionForCurrentBlock(config, tx,
-                                                               state, flags));
+        BOOST_CHECK(!ContextualCheckTransactionForCurrentBlock(
+            config, CTransaction(tx), state, flags));
         BOOST_CHECK_EQUAL(state.GetRejectReason(), "bad-txns-nonfinal");
     }
 
     // Sequence locks pass.
-    BOOST_CHECK(TestSequenceLocks(tx, flags));
+    BOOST_CHECK(TestSequenceLocks(CTransaction(tx), flags));
 
     {
         // Locktime passes on 2nd block.
         GlobalConfig config;
         CValidationState state;
         BOOST_CHECK(ContextualCheckTransaction(
-            config, tx, state, chainActive.Tip()->nHeight + 2,
+            config, CTransaction(tx), state, chainActive.Tip()->nHeight + 2,
             chainActive.Tip()->GetMedianTimePast()));
     }
 
@@ -630,20 +630,20 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity) {
         // Locktime fails.
         GlobalConfig config;
         CValidationState state;
-        BOOST_CHECK(!ContextualCheckTransactionForCurrentBlock(config, tx,
-                                                               state, flags));
+        BOOST_CHECK(!ContextualCheckTransactionForCurrentBlock(
+            config, CTransaction(tx), state, flags));
         BOOST_CHECK_EQUAL(state.GetRejectReason(), "bad-txns-nonfinal");
     }
 
     // Sequence locks pass.
-    BOOST_CHECK(TestSequenceLocks(tx, flags));
+    BOOST_CHECK(TestSequenceLocks(CTransaction(tx), flags));
 
     {
         // Locktime passes 1 second later.
         GlobalConfig config;
         CValidationState state;
         BOOST_CHECK(ContextualCheckTransaction(
-            config, tx, state, chainActive.Tip()->nHeight + 1,
+            config, CTransaction(tx), state, chainActive.Tip()->nHeight + 1,
             chainActive.Tip()->GetMedianTimePast() + 1));
     }
 
@@ -657,21 +657,21 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity) {
         // Locktime passes.
         GlobalConfig config;
         CValidationState state;
-        BOOST_CHECK(ContextualCheckTransactionForCurrentBlock(config, tx, state,
-                                                              flags));
+        BOOST_CHECK(ContextualCheckTransactionForCurrentBlock(
+            config, CTransaction(tx), state, flags));
     }
 
     // Sequence locks pass.
-    BOOST_CHECK(TestSequenceLocks(tx, flags));
+    BOOST_CHECK(TestSequenceLocks(CTransaction(tx), flags));
     tx.vin[0].nSequence = 1;
     // Sequence locks fail.
-    BOOST_CHECK(!TestSequenceLocks(tx, flags));
+    BOOST_CHECK(!TestSequenceLocks(CTransaction(tx), flags));
     tx.vin[0].nSequence = CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG;
     // Sequence locks pass.
-    BOOST_CHECK(TestSequenceLocks(tx, flags));
+    BOOST_CHECK(TestSequenceLocks(CTransaction(tx), flags));
     tx.vin[0].nSequence = CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG | 1;
     // Sequence locks fail.
-    BOOST_CHECK(!TestSequenceLocks(tx, flags));
+    BOOST_CHECK(!TestSequenceLocks(CTransaction(tx), flags));
 
     BOOST_CHECK(
         pblocktemplate =

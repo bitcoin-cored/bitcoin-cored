@@ -104,7 +104,7 @@ void BuildTxs(CMutableTransaction &spendingTx, CCoinsViewCache &coins,
     spendingTx.vout[0].nValue = 1;
     spendingTx.vout[0].scriptPubKey = CScript();
 
-    AddCoins(coins, creationTx, 0);
+    AddCoins(coins, CTransaction(creationTx), 0);
 }
 
 BOOST_AUTO_TEST_CASE(GetTxSigOpCost) {
@@ -145,7 +145,7 @@ BOOST_AUTO_TEST_CASE(GetTxSigOpCost) {
                                         flags) == MAX_PUBKEYS_PER_MULTISIG);
         // Sanity check: script verification fails because of an invalid
         // signature.
-        assert(VerifyWithFlag(creationTx, spendingTx, flags) ==
+        assert(VerifyWithFlag(CTransaction(creationTx), spendingTx, flags) ==
                SCRIPT_ERR_CHECKMULTISIGVERIFY);
     }
 
@@ -161,7 +161,7 @@ BOOST_AUTO_TEST_CASE(GetTxSigOpCost) {
         BuildTxs(spendingTx, coins, creationTx, scriptPubKey, scriptSig);
         assert(GetTransactionSigOpCount(CTransaction(spendingTx), coins,
                                         flags) == 2);
-        assert(VerifyWithFlag(creationTx, spendingTx, flags) ==
+        assert(VerifyWithFlag(CTransaction(creationTx), spendingTx, flags) ==
                SCRIPT_ERR_CHECKMULTISIGVERIFY);
     }
 }
@@ -198,7 +198,7 @@ BOOST_AUTO_TEST_CASE(test_max_sigops_per_tx) {
 
     {
         CValidationState state;
-        BOOST_CHECK(CheckRegularTransaction(tx, state, false));
+        BOOST_CHECK(CheckRegularTransaction(CTransaction(tx), state, false));
     }
 
     // Get just before the limit.
@@ -208,7 +208,7 @@ BOOST_AUTO_TEST_CASE(test_max_sigops_per_tx) {
 
     {
         CValidationState state;
-        BOOST_CHECK(CheckRegularTransaction(tx, state, false));
+        BOOST_CHECK(CheckRegularTransaction(CTransaction(tx), state, false));
     }
 
     // And go over.
@@ -216,7 +216,7 @@ BOOST_AUTO_TEST_CASE(test_max_sigops_per_tx) {
 
     {
         CValidationState state;
-        BOOST_CHECK(!CheckRegularTransaction(tx, state, false));
+        BOOST_CHECK(!CheckRegularTransaction(CTransaction(tx), state, false));
         BOOST_CHECK_EQUAL(state.GetRejectReason(), "bad-txn-sigops");
     }
 }

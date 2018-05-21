@@ -25,6 +25,8 @@ static const uint64_t MAX_TX_SIGOPS_COUNT = 20000;
  * blocks (network rule) */
 static const int COINBASE_MATURITY = 100;
 
+static const int64_t P2SH_ACTIVATION_TIME = 1333234914;
+
 /** Flags for nSequence and nLockTime locks */
 enum {
     /* Interpret sequence numbers as relative lock-time constraints. */
