@@ -7,6 +7,7 @@
 #define BITCOIN_CONSENSUS_PARAMS_H
 
 #include "uint256.h"
+
 #include <map>
 #include <string>
 
@@ -51,8 +52,6 @@ struct Params {
     int uahfHeight;
     /** Block height at which OP_RETURN replay protection stops */
     int antiReplayOpReturnSunsetHeight;
-    /** Block height at which TVS43 becomes active */
-    int TVS43Height;
     /** Committed OP_RETURN value for replay protection */
     std::vector<uint8_t> antiReplayOpReturnCommitment;
     /**
@@ -75,6 +74,9 @@ struct Params {
     }
     uint256 nMinimumChainWork;
     uint256 defaultAssumeValid;
+
+    /** Activation time at which the core HF kicks in. */
+    int64_t coreHardForkActivationTime;
 };
 } // namespace Consensus
 

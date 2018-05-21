@@ -214,8 +214,8 @@
         <translation>Reindeksado de blokoj sur disko...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Sendi monon al Bitmon Clashic-adreso</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Sendi monon al Bitmon Core-adreso</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

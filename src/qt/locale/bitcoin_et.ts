@@ -290,8 +290,8 @@
         <translation>Kettal olevate blokkide re-indekseerimine...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Saada münte Bitcoini Clashic aadressile</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Saada münte Bitcoini Core aadressile</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

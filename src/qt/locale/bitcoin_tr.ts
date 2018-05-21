@@ -338,8 +338,8 @@
         <translation>Diskteki bloklar yeniden indeksleniyor...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Bir bitcoin adresine bitcoin Clashic gönder</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Bir bitcoin adresine bitcoin Core gönder</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

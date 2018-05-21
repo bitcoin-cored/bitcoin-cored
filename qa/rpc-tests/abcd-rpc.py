@@ -10,7 +10,7 @@ import random
 import re
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
-from test_framework.mininode import NODE_BITCOIN_CASH
+from test_framework.mininode import NODE_BITCOIN_CORE
 from test_framework.cdefs import (ONE_MEGABYTE,
                                   LEGACY_MAX_BLOCK_SIZE,
                                   DEFAULT_MAX_BLOCK_SIZE)
@@ -64,7 +64,7 @@ class ABCD_RPC_Test (BitcoinTestFramework):
         ebs = getsize['excessiveBlockSize']
         assert_equal(ebs, 2 * ONE_MEGABYTE)
         # Check for EB correctness in the subver string
-        self.check_subversion("/Bitcoin Clashic ABCD:.*\(EB2\.0; .*\)/")
+        self.check_subversion("/Bitcoin Core SQ:.*\(EB2\.0; .*\)/")
 
         # Check setting to 13MB
         self.nodes[0].setexcessiveblock(13 * ONE_MEGABYTE)
@@ -72,7 +72,7 @@ class ABCD_RPC_Test (BitcoinTestFramework):
         ebs = getsize['excessiveBlockSize']
         assert_equal(ebs, 13 * ONE_MEGABYTE)
         # Check for EB correctness in the subver string
-        self.check_subversion("/Bitcoin Clashic ABCD:.*\(EB13\.0; .*\)/")
+        self.check_subversion("/Bitcoin Core SQ:.*\(EB13\.0; .*\)/")
 
         # Check setting to 13.14MB
         self.nodes[0].setexcessiveblock(13140000)
@@ -80,29 +80,20 @@ class ABCD_RPC_Test (BitcoinTestFramework):
         ebs = getsize['excessiveBlockSize']
         assert_equal(ebs, 13.14 * ONE_MEGABYTE)
         # check for EB correctness in the subver string
-        self.check_subversion("/Bitcoin Clashic ABCD:.*\(EB13\.1; .*\)/")
+        self.check_subversion("/Bitcoin Core SQ:.*\(EB13\.1; .*\)/")
 
-    // TODO: Remove this test after hardfork
-    def test_cashservicebit(self):
-        # Check that NODE_BITCOIN_CASH bit is set.
+    def test_coreservicebit(self):
+        # Check that NODE_BITCOIN_CORE bit is set.
         # This can be seen in the 'localservices' entry of getnetworkinfo RPC.
         node = self.nodes[0]
         nw_info = node.getnetworkinfo()
-        assert_equal(int(nw_info['localservices'], 16) & NODE_BITCOIN_CASH,
-                     NODE_BITCOIN_CASH)
-
-    def test_clashicservicebit(self):
-        # Check that NODE_BITCOIN_CLASHIC bit is set.
-        # This can be seen in the 'localservices' entry of getnetworkinfo RPC.
-        node = self.nodes[0]
-        nw_info = node.getnetworkinfo()
-        assert_equal(int(nw_info['localservices'], 16) & NODE_BITCOIN_CLASHIC,
-                     NODE_BITCOIN_CLASHIC)
+        assert_equal(int(nw_info['localservices'], 16) & NODE_BITCOIN_CORE,
+                     NODE_BITCOIN_CORE)
 
     def run_test(self):
         self.genesis_hash = int(self.nodes[0].getbestblockhash(), 16)
         self.test_excessiveblock()
-        self.test_cashservicebit()
+        self.test_coreservicebit()
 
 
 if __name__ == '__main__':

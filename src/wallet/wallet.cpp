@@ -18,6 +18,7 @@
 #include "primitives/block.h"
 #include "primitives/transaction.h"
 #include "script/script.h"
+#include "script/sighashtype.h"
 #include "script/sign.h"
 #include "timedata.h"
 #include "txmempool.h"
@@ -1805,7 +1806,7 @@ void CWallet::ReacceptWalletTransactions() {
 
         LOCK(mempool.cs);
         CValidationState state;
-        wtx.AcceptToMemoryPool(maxTxFee, state);
+        wtx.AcceptToMemoryPool(maxTxFee.GetSatoshis(), state);
     }
 }
 
@@ -1817,7 +1818,7 @@ bool CWalletTx::RelayWalletTransaction(CConnman *connman) {
 
     CValidationState state;
     // GetDepthInMainChain already catches known conflicts.
-    if (InMempool() || AcceptToMemoryPool(maxTxFee, state)) {
+    if (InMempool() || AcceptToMemoryPool(maxTxFee.GetSatoshis(), state)) {
         LogPrintf("Relaying wtx %s\n", GetId().ToString());
         if (connman) {
             CInv inv(MSG_TX, GetId());
@@ -2439,14 +2440,16 @@ bool CWallet::SelectCoinsMinConf(
             }
         }
 
-        LogPrint("selectcoins", "SelectCoins() best subset: ");
-        for (unsigned int i = 0; i < vValue.size(); i++) {
-            if (vfBest[i]) {
-                LogPrint("selectcoins", "%s ", FormatMoney(vValue[i].first));
+         if (LogAcceptCategory(BCLog::SELECTCOINS)) {
+            LogPrint(BCLog::SELECTCOINS, "SelectCoins() best subset: ");
+            for (size_t i = 0; i < vValue.size(); i++) {
+                if (vfBest[i]) {
+                    LogPrint(BCLog::SELECTCOINS, "%s ",
+                             FormatMoney(vValue[i].first));
+                }
             }
+            LogPrint(BCLog::SELECTCOINS, "total %s\n", FormatMoney(nBest));
         }
-
-        LogPrint("selectcoins", "total %s\n", FormatMoney(nBest));
     }
 
     return true;
@@ -2964,7 +2967,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient> &vecSend,
         }
 
         if (sign) {
-            uint32_t nHashType = SIGHASH_ALL | SIGHASH_FORKID;
+            SigHashType sigHashType = SigHashType().withForkId();
 
             CTransaction txNewConst(txNew);
             int nIn = 0;
@@ -2977,7 +2980,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient> &vecSend,
                                           this, &txNewConst, nIn,
                                           coin.first->tx->vout[coin.second]
                                               .nValue.GetSatoshis(),
-                                          nHashType),
+                                          sigHashType),
                                       scriptPubKey, sigdata)) {
                     strFailReason = _("Signing transaction failed");
                     return false;
@@ -3053,7 +3056,7 @@ bool CWallet::CommitTransaction(CWalletTx &wtxNew, CReserveKey &reservekey,
 
     if (fBroadcastTransactions) {
         // Broadcast
-        if (!wtxNew.AcceptToMemoryPool(maxTxFee, state)) {
+        if (!wtxNew.AcceptToMemoryPool(maxTxFee.GetSatoshis(), state)) {
             LogPrintf("CommitTransaction(): Transaction cannot be "
                       "broadcast immediately, %s\n",
                       state.GetRejectReason());
@@ -3127,7 +3130,7 @@ CAmount CWallet::GetMinimumFee(unsigned int nTxBytes,
 
     // But always obey the maximum.
     if (nFeeNeeded > maxTxFee) {
-        nFeeNeeded = maxTxFee;
+        nFeeNeeded = maxTxFee.GetSatoshis();
     }
 
     return nFeeNeeded;

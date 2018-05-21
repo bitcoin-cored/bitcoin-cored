@@ -16,7 +16,6 @@
 #include "ui_interface.h"
 #include "util.h"
 #include "utilstrencodings.h"
-#include "utilstrencodings.h"
 
 #include <cstdio>
 
@@ -86,9 +85,9 @@ static bool multiUserAuthorized(std::string strUserPass) {
     std::string strUser = strUserPass.substr(0, strUserPass.find(":"));
     std::string strPass = strUserPass.substr(strUserPass.find(":") + 1);
 
-    if (mapMultiArgs.count("-rpcauth") > 0) {
+    if (gArgs.IsArgSet("-rpcauth")) {
         // Search for multi-user login/pass "rpcauth" from config
-        for (const std::string &strRPCAuth : mapMultiArgs.at("-rpcauth")) {
+        for (const std::string &strRPCAuth : gArgs.GetArgs("-rpcauth")) {
             std::vector<std::string> vFields;
             boost::split(vFields, strRPCAuth, boost::is_any_of(":$"));
             if (vFields.size() != 3) {
@@ -241,7 +240,7 @@ static bool InitRPCAuthentication() {
 }
 
 bool StartHTTPRPC() {
-    LogPrint("rpc", "Starting HTTP RPC server\n");
+    LogPrint(BCLog::RPC, "Starting HTTP RPC server\n");
     if (!InitRPCAuthentication()) return false;
 
     RegisterHTTPHandler("/", true, HTTPReq_JSONRPC);
@@ -253,11 +252,11 @@ bool StartHTTPRPC() {
 }
 
 void InterruptHTTPRPC() {
-    LogPrint("rpc", "Interrupting HTTP RPC server\n");
+    LogPrint(BCLog::RPC, "Interrupting HTTP RPC server\n");
 }
 
 void StopHTTPRPC() {
-    LogPrint("rpc", "Stopping HTTP RPC server\n");
+    LogPrint(BCLog::RPC, "Stopping HTTP RPC server\n");
     UnregisterHTTPHandler("/", true);
     if (httpRPCTimerInterface) {
         RPCUnsetTimerInterface(httpRPCTimerInterface);

@@ -225,11 +225,11 @@ BlockAssembler::CreateNewBlock(const CScript &scriptPubKeyIn) {
     }
     int64_t nTime2 = GetTimeMicros();
 
-    LogPrint("bench", "CreateNewBlock() packages: %.2fms (%d packages, %d "
+    LogPrint(
+        BCLog::BENCH, "CreateNewBlock() packages: %.2fms (%d packages, %d "
                       "updated descendants), validity: %.2fms (total %.2fms)\n",
-             0.001 * (nTime1 - nTimeStart), nPackagesSelected,
-             nDescendantsUpdated, 0.001 * (nTime2 - nTime1),
-             0.001 * (nTime2 - nTimeStart));
+        0.001 * (nTime1 - nTimeStart), nPackagesSelected, nDescendantsUpdated,
+        0.001 * (nTime2 - nTime1), 0.001 * (nTime2 - nTimeStart));
 
     return std::move(pblocktemplate);
 }
@@ -275,8 +275,7 @@ bool BlockAssembler::TestPackageTransactions(
     uint64_t nPotentialBlockSize = nBlockSize;
     for (const CTxMemPool::txiter it : package) {
         CValidationState state;
-        if (!ContextualCheckTransaction(*config, it->GetTx(), state,
-                                        chainparams.GetConsensus(), nHeight,
+        if (!ContextualCheckTransaction(*config, it->GetTx(), state, nHeight,
                                         nLockTimeCutoff)) {
             return false;
         }
@@ -326,8 +325,7 @@ bool BlockAssembler::TestForBlock(CTxMemPool::txiter it) {
     // Must check that lock times are still valid. This can be removed once MTP
     // is always enforced as long as reorgs keep the mempool consistent.
     CValidationState state;
-    if (!ContextualCheckTransaction(*config, it->GetTx(), state,
-                                    chainparams.GetConsensus(), nHeight,
+    if (!ContextualCheckTransaction(*config, it->GetTx(), state, nHeight,
                                     nLockTimeCutoff)) {
         return false;
     }

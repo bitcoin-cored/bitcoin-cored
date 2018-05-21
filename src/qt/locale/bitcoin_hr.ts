@@ -174,8 +174,8 @@
         <translation>Re-indeksiranje blokova na disku...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Slanje novca na Bitcoin Clashic adresu</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Slanje novca na Bitcoin Core adresu</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

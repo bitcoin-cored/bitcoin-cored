@@ -56,7 +56,7 @@ public:
      * @note Source: https://en.bitcoin.it/wiki/Units.
      * Please add only sensible ones.
      */
-    enum Unit { BCL, mBCL, uBCL };
+    enum Unit { BTCC, mBTCC, uBTCC };
 
     enum SeparatorStyle { separatorNever, separatorStandard, separatorAlways };
 

@@ -250,8 +250,8 @@
         <translation>Reindekserer blokker på harddisk...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Send til en Bitcoin Clashic-adresse</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Send til en Bitcoin Core-adresse</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

@@ -338,8 +338,8 @@
         <translation>正在為磁碟裡的區塊重建索引...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>付錢給一個 Bitcoin Clashic 位址</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>付錢給一個 Bitcoin Core 位址</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

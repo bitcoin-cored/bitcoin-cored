@@ -114,8 +114,8 @@
         <translation>Recreans indicem frustorum in disco...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Mitte nummos ad inscriptionem Bitcoin Clashic</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Mitte nummos ad inscriptionem Bitcoin Core</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

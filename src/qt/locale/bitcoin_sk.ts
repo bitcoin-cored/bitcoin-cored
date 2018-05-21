@@ -314,8 +314,8 @@
         <translation>Preindexúvam bloky na disku...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Poslať Bitcoins Clashic na adresu</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Poslať Bitcoins Core na adresu</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>

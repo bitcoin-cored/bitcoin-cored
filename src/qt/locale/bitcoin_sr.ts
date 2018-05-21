@@ -130,8 +130,8 @@
         <translation>Промени &amp;лозинку...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Пошаљите новац на Bitcoin Clashic адресу</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Пошаљите новац на Bitcoin Core адресу</translation>
     </message>
     <message>
         <source>Change the passphrase used for wallet encryption</source>

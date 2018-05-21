@@ -26,7 +26,7 @@ class TxViewDelegate : public QAbstractItemDelegate {
 public:
     TxViewDelegate(const PlatformStyle *_platformStyle,
                    QObject *parent = nullptr)
-        : QAbstractItemDelegate(parent), unit(BitcoinUnits::BCL),
+        : QAbstractItemDelegate(parent), unit(BitcoinUnits::BTCC),
           platformStyle(_platformStyle) {}
 
     inline void paint(QPainter *painter, const QStyleOptionViewItem &option,
@@ -264,7 +264,7 @@ void OverviewPage::setWalletModel(WalletModel *model) {
                 SLOT(updateWatchOnlyLabels(bool)));
     }
 
-    // update the display unit, to not use the default ("BCL")
+    // update the display unit, to not use the default ("BTCC")
     updateDisplayUnit();
 }
 

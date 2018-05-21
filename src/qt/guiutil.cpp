@@ -192,7 +192,7 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out) {
             fShouldReturnFalse = false;
         } else if (i->first == "amount") {
             if (!i->second.isEmpty()) {
-                if (!BitcoinUnits::parse(BitcoinUnits::BCL, i->second,
+                if (!BitcoinUnits::parse(BitcoinUnits::BTCC, i->second,
                                          &rv.amount)) {
                     return false;
                 }
@@ -230,7 +230,7 @@ QString formatBitcoinURI(const SendCoinsRecipient &info) {
     if (info.amount) {
         ret +=
             QString("?amount=%1")
-                .arg(BitcoinUnits::format(BitcoinUnits::BCL, info.amount, false,
+                .arg(BitcoinUnits::format(BitcoinUnits::BTCC, info.amount, false,
                                           BitcoinUnits::separatorNever));
         paramCount++;
     }
@@ -922,8 +922,8 @@ QString formatServicesStr(quint64 mask) {
                 case NODE_XTHIN:
                     strList.append("XTHIN");
                     break;
-                case NODE_BITCOIN_CASH:
-                    strList.append("CASH");
+                case NODE_BITCOIN_CORE:
+                    strList.append("CORE");
                     break;
                 default:
                     strList.append(QString("%1[%2]").arg("UNKNOWN").arg(check));
