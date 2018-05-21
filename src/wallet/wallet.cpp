@@ -2873,9 +2873,8 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient> &vecSend,
                 return false;
             }
 
-            unsigned int nBytes = GetTransactionSize(txNew);
-
             CTransaction txNewConst(txNew);
+            unsigned int nBytes = txNewConst.GetTotalSize();
             dPriority = txNewConst.ComputePriority(dPriority, nBytes);
 
             // Remove scriptSigs to eliminate the fee calculation dummy
