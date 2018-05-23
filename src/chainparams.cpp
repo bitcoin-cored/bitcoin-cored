@@ -137,8 +137,8 @@ public:
         // By default assume that the signatures in ancestors of this block are
         // valid.
         consensus.defaultAssumeValid =
-            uint256S("0x000000000000000004694d6c74b532faf99fc072181f870bfb4a6c9"
-                     "930f7440c");
+            uint256S("0x00000000000000017de31d8e9a74ba7c50557d13e10290131dfa782"
+                     "02799faea");
 
         // Aug, 1 hard fork
         consensus.uahfHeight = 478559;
