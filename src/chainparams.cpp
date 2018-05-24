@@ -131,21 +131,19 @@ public:
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork =
-            uint256S("0x000000000000000000000000000000000000000000796b6d5908f8d"
-                     "b26c3cf44");
+            uint256S("0x0000000000000000000000000000000000000000007cb5f207557941bd9a6096");
 
         // By default assume that the signatures in ancestors of this block are
         // valid.
         consensus.defaultAssumeValid =
-            uint256S("0x00000000000000017de31d8e9a74ba7c50557d13e10290131dfa782"
-                     "02799faea");
+            uint256S("0x00000000000000017de31d8e9a74ba7c50557d13e10290131dfa78202799faea");
 
         // Aug, 1 hard fork
         consensus.uahfHeight = 478559;
 
         // May, 21st hard fork. Human time (GMT): Monday, May 21, 2018 04:00:00 PM
         // Actual fork was 5 hours later
-        consensus.coreHardForkActivationTime = 1526832000;
+        consensus.coreHardForkActivationTime = 1526852960;
 
         /**
          * The message start string is designed to be unlikely to occur in
@@ -237,7 +235,11 @@ public:
                                   "4fffb870c26d6c765dc6d1")},
                 // May 18, 2018
                 {575000, uint256S("0x000000000000000e507218030ced7824e0a6b84e6d"
-                                  "243bc76d6590930fc88c82")}}};
+                                  "243bc76d6590930fc88c82")},
+                // May 23, 2018
+                {576720, uint256S("0x00000000000000017de31d8e9a74ba7c50557d13e1"
+                                  "0290131dfa78202799faea")}}};
+
 
         // Data as of block
         // 00000000000000000166d612d5595e2b1cd88d71d695fc580af64d8da8658c23
