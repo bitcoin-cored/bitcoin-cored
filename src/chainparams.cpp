@@ -181,8 +181,7 @@ public:
             CDNSSeedData("bitcoincore.zone", "seeder.bitcoincore.zone", true));
         // truevisionofsatoshi.com
         vSeeds.push_back(
-            CDNSSeedData("truevisionofsatoshi.com", 
-                         "seeder-mainnet.truevisionofsatoshi.com", true));
+            CDNSSeedData("clashic.org", "seeder-mainnet.clashic.org", true));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<uint8_t>(1, 0);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<uint8_t>(1, 5);
