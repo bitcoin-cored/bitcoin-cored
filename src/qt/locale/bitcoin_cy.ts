@@ -115,7 +115,7 @@
     </message>
     <message>
         <source>Bitcoin</source>
-        <translation>Bitcoin</translation>
+        <translation>Bitcoin Core</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -485,7 +485,7 @@
     </message>
     <message>
         <source>Bitcoin Core</source>
-        <translation>Craidd Bitcoin</translation>
+        <translation>Craidd Bitcoin Core</translation>
     </message>
     <message>
         <source>Information</source>
