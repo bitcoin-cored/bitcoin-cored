@@ -838,7 +838,7 @@ void SendCoinsDialog::coinControlChangeEdited(const QString &text) {
         } else if (!IsValidDestination(dest)) {
             // Invalid address
             ui->labelCoinControlChangeLabel->setText(
-                tr("Warning: Invalid Bitcoin address"));
+                tr("Warning: Invalid Bitcoin Core address"));
         } else {
             // Valid address
             if (!model->IsSpendable(dest)) {
