@@ -1,6 +1,6 @@
 UNIX BUILD NOTES
 ====================
-Some notes on how to build Bitcoin Clashic ABCD in Unix.
+Some notes on how to build Bitcoin Core SQ in Unix.
 
 (for OpenBSD specific instructions, see [build-openbsd.md](build-openbsd.md))
 
@@ -55,7 +55,7 @@ Memory Requirements
 --------------------
 
 C++ compilers are memory-hungry. It is recommended to have at least 1.5 GB of
-memory available when compiling Bitcoin Clashic ABCD. On systems with less, gcc can be
+memory available when compiling Bitcoin Core SQ. On systems with less, gcc can be
 tuned to conserve memory with additional CXXFLAGS:
 
 
@@ -96,7 +96,7 @@ BerkeleyDB 5.1 or later, which break binary wallet compatibility with the distri
 are based on BerkeleyDB 4.8. If you do not care about wallet compatibility,
 pass `--with-incompatible-bdb` to configure.
 
-See the section "Disable-wallet mode" to build Bitcoin Clashic ABCD without wallet.
+See the section "Disable-wallet mode" to build Bitcoin Core SQ without wallet.
 
 Optional (see --with-miniupnpc and --enable-upnp-default):
 
@@ -190,7 +190,7 @@ cd db-4.8.30.NC/build_unix/
 sudo ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PREFIX
 sudo make install
 
-# Configure Bitcoin Clashic ABCD to use our own-built instance of BDB
+# Configure Bitcoin Core SQ to use our own-built instance of BDB
 cd $CLASHIC_ROOT
 ./autogen.sh
 ./configure LDFLAGS="-L${BDB_PREFIX}/lib/" CPPFLAGS="-I${BDB_PREFIX}/include/" # (other args...)
@@ -280,8 +280,8 @@ Setup and Build Example: Arch Linux
 This example lists the steps necessary to setup and build a command line only, non-wallet distribution of the latest changes on Arch Linux:
 
     pacman -S git base-devel boost libevent python
-    git clone https://github.com/Bitcoin-Clashic/bitcoin-clashic
-    cd bitcoin-clashic/
+    git clone https://github.com/bitcoin-cored/bitcoin-cored
+    cd bitcoin-cored/
     ./autogen.sh
     ./configure --disable-wallet --without-gui --without-miniupnpc
     make check
