@@ -509,7 +509,7 @@ void BitcoinApplication::initializeResult(int retval) {
 
 #ifdef ENABLE_WALLET
         // Now that initialization/startup is done, process any command-line
-        // bitcoinclashic: URIs or payment requests:
+        // bitcoincore: URIs or payment requests:
         connect(paymentServer,
                 SIGNAL(receivedPaymentRequest(SendCoinsRecipient)), window,
                 SLOT(handlePaymentRequest(SendCoinsRecipient)));
@@ -556,9 +556,9 @@ static void MigrateSettings() {
         // Macs and/or iOS et al use a domain-style name for Settings
         // files. All other platforms use a simple orgname. This
         // difference is documented in the QSettings class documentation.
-        legacyOrg("bitcoin.org");
+        legacyOrg("thebitcoincore.org");
 #else
-        legacyOrg("Bitcoin");
+        legacyOrg("thebitcoincore");
 #endif
     QSettings
         // below picks up settings file location based on orgname,appname
@@ -575,8 +575,8 @@ static void MigrateSettings() {
 #endif
     const QStringList legacyKeys(legacy.allKeys());
 
-    // We only migrate settings if we have Core settings but no Bitcoin Clashic
-    // ABCD settings
+    // We only migrate settings if we have Core settings but no Bitcoin Core
+    // Sq settings
     if (!legacyKeys.isEmpty() && abcd.allKeys().isEmpty()) {
         for (const QString &key : legacyKeys) {
             // now, copy settings over
@@ -647,8 +647,8 @@ int main(int argc, char *argv[]) {
     QApplication::setOrganizationName(QAPP_ORG_NAME);
     QApplication::setOrganizationDomain(QAPP_ORG_DOMAIN);
     QApplication::setApplicationName(QAPP_APP_NAME_DEFAULT);
-    // Migrate settings from core's/our old GUI settings to Bitcoin Clashic ABCD
-    // only if core's exist but Bitcoin Clashic ABCD's doesn't.
+    // Migrate settings from core's/our old GUI settings to Bitcoin Core Sq
+    // only if core's exist but Bitcoin Core Sq's doesn't.
     // NOTE -- this function needs to be called *after* the above 3 lines
     // that set the app orgname and app name! If you move the above 3 lines
     // to elsewhere, take this call with you!
