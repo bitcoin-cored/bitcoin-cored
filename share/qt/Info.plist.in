@@ -29,16 +29,16 @@
   <string>????</string>
 
   <key>CFBundleExecutable</key>
-  <string>Clashic-Qt</string>
+  <string>Core-Qt</string>
   
   <key>CFBundleName</key>
-  <string>Clashic-Qt</string>
+  <string>Core-Qt</string>
 
   <key>LSHasLocalizedDisplayName</key>
   <true/>
 
   <key>CFBundleIdentifier</key>
-  <string>org.clashic.Clashic-Qt</string>
+  <string>org.core.Core-Qt</string>
 
   <key>CFBundleURLTypes</key>
   <array>
@@ -46,10 +46,10 @@
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
       <key>CFBundleURLName</key>
-      <string>org.clashic.BitcoinPayment</string>
+      <string>org.core.BitcoinPayment</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>clashic</string>
+        <string>core</string>
       </array>
     </dict>
   </array>
@@ -58,7 +58,7 @@
   <array>
     <dict>
       <key>UTTypeIdentifier</key>
-      <string>org.clashic.paymentrequest</string>
+      <string>org.core.paymentrequest</string>
       <key>UTTypeDescription</key>
       <string>Bitcoin Cash payment request</string>
       <key>UTTypeConformsTo</key>
@@ -68,10 +68,10 @@
       <key>UTTypeTagSpecification</key>
       <dict>
         <key>public.mime-type</key>
-        <string>application/clashic-paymentrequest</string>
+        <string>application/core-paymentrequest</string>
         <key>public.filename-extension</key>
         <array>
-          <string>clashicpaymentrequest</string>
+          <string>corepaymentrequest</string>
         </array>
       </dict>
     </dict>
@@ -84,7 +84,7 @@
       <string>Editor</string>
       <key>LSItemContentTypes</key>
       <array>
-        <string>org.clashic.paymentrequest</string>
+        <string>org.core.paymentrequest</string>
       </array>
       <key>LSHandlerRank</key>
       <string>Owner</string>

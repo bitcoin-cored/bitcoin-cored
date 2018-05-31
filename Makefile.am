@@ -16,7 +16,7 @@ GZIP_ENV="-9n"
 
 if BUILD_CLASHIC_LIBS
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libclashicconsensus.pc
+pkgconfig_DATA = libcoreconsensus.pc
 endif
 
 CLASHICD_BIN=$(top_builddir)/src/$(BITCOIN_DAEMON_NAME)$(EXEEXT)
@@ -42,9 +42,9 @@ OSX_PLIST=$(top_builddir)/share/qt/Info.plist #not installed
 OSX_QT_TRANSLATIONS = da,de,es,hu,ru,uk,zh_CN,zh_TW
 
 DIST_DOCS = $(wildcard doc/*.md) $(wildcard doc/release-notes/*.md)
-DIST_CONTRIB = $(top_srcdir)/contrib/clashic-cli.bash-completion \
-	       $(top_srcdir)/contrib/clashic-tx.bash-completion \
-	       $(top_srcdir)/contrib/clashicd.bash-completion \
+DIST_CONTRIB = $(top_srcdir)/contrib/core-cli.bash-completion \
+	       $(top_srcdir)/contrib/core-tx.bash-completion \
+	       $(top_srcdir)/contrib/cored.bash-completion \
 	       $(top_srcdir)/contrib/init \
 	       $(top_srcdir)/contrib/rpm
 
@@ -193,7 +193,7 @@ baseline_filtered_combined.info: leveldb_baseline_filtered.info baseline_filtere
 
 test_bitcoin.info: baseline_filtered_combined.info
 	$(MAKE) -C src/ check
-	$(LCOV) -c -d $(abs_builddir)/src -t test_clashic -o $@
+	$(LCOV) -c -d $(abs_builddir)/src -t test_core -o $@
 	$(LCOV) -z -d $(abs_builddir)/src
 	$(LCOV) -z -d $(abs_builddir)/src/leveldb
 

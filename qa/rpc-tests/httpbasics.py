@@ -107,7 +107,7 @@ class HTTPBasicsTest (BitcoinTestFramework):
         out1 = conn.getresponse().read()
         assert(b'"error":null' in out1)
         assert(conn.sock != None)
-               # connection must be closed because clashicd should use
+               # connection must be closed because cored should use
                # keep-alive by default
 
         # Check excessive request size

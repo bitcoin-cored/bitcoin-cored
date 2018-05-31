@@ -14,7 +14,7 @@
 
 #include "support/events.h"
 
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 
 #include <vector>
 

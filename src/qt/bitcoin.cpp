@@ -675,7 +675,7 @@ int main(int argc, char *argv[]) {
     /// directory. User language is set up: pick a data directory.
     if (!Intro::pickDataDirectory()) return EXIT_SUCCESS;
 
-    /// 6. Determine availability of data directory and parse clashic.conf
+    /// 6. Determine availability of data directory and parse core.conf
     /// - Do not call GetDataDir(true) before this step finishes.
     if (!boost::filesystem::is_directory(GetDataDir(false))) {
         QMessageBox::critical(
@@ -740,7 +740,7 @@ int main(int argc, char *argv[]) {
     if (PaymentServer::ipcSendCommandLine()) exit(EXIT_SUCCESS);
 
     // Start up the payment server early, too, so impatient users that click on
-    // bitcoinclashic: links repeatedly have their payment requests routed to
+    // bitcoincore: links repeatedly have their payment requests routed to
     // this process:
     app.createPaymentServer();
 #endif

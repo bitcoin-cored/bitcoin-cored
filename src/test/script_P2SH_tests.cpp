@@ -10,7 +10,7 @@
 #include "script/ismine.h"
 #include "script/script_error.h"
 #include "script/sign.h"
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 #include "validation.h"
 
 #include <vector>

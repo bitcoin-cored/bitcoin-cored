@@ -9,7 +9,7 @@
 #include "netbase.h"
 #include "serialize.h"
 #include "streams.h"
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 
 #include <string>
 

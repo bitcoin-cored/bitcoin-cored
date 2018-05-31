@@ -1,14 +1,14 @@
 *.tar.gz
 
 *.exe
-src/clashic
-src/clashicd
-src/clashic-cli
-src/clashic-seeder
-src/clashic-tx
-src/test/test_clashic
-src/test/test_clashic_fuzzy
-src/qt/test/test_clashic-qt
+src/core
+src/cored
+src/core-cli
+src/core-seeder
+src/core-tx
+src/test/test_core
+src/test/test_core_fuzzy
+src/qt/test/test_core-qt
 
 # autoreconf
 Makefile.in
@@ -75,12 +75,12 @@ src/qt/test/moc*.cpp
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
-clashic-qt
-Clashic-Qt.app
+core-qt
+Core-Qt.app
 
 # Unit-tests
 Makefile.test
-clashic-qt_test
+core-qt_test
 src/test/buildenv.py
 
 # Resources cpp
@@ -109,5 +109,5 @@ qa/cache/*
 
 /doc/doxygen/
 
-libclashicconsensus.pc
+libcoreconsensus.pc
 contrib/devtools/split-debug.sh

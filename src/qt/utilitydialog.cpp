@@ -69,7 +69,7 @@ HelpMessageDialog::HelpMessageDialog(QWidget *parent, bool about)
         ui->helpMessage->setVisible(false);
     } else {
         setWindowTitle(tr("Command-line options"));
-        QString header = tr("Usage:") + "\n" + "  clashic-qt [" +
+        QString header = tr("Usage:") + "\n" + "  core-qt [" +
                          tr("command-line options") + "]                     " +
                          "\n";
         QTextCursor cursor(ui->helpMessage->document());

@@ -6,7 +6,7 @@
 #include "txmempool.h"
 #include "util.h"
 
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 
 #include <boost/test/unit_test.hpp>
 #include <list>

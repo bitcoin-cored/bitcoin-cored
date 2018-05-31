@@ -8,7 +8,7 @@
 #include "config.h"
 #include "consensus/consensus.h"
 #include "primitives/transaction.h"
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 #include "util.h"
 
 #include <cstdint>

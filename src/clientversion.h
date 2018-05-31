@@ -13,7 +13,7 @@
  * client versioning and copyright year
  */
 
-//! These need to be macros, as clientversion.cpp's and clashic*-res.rc's voodoo
+//! These need to be macros, as clientversion.cpp's and core*-res.rc's voodoo
 //! requires it
 #define CLIENT_VERSION_MAJOR 0
 #define CLIENT_VERSION_MINOR 16
@@ -44,7 +44,7 @@
     "2009-" STRINGIZE(COPYRIGHT_YEAR) " " COPYRIGHT_HOLDERS_FINAL
 
 /**
- * clashicd-res.rc includes this file, but it cannot cope with real c++ code.
+ * cored-res.rc includes this file, but it cannot cope with real c++ code.
  * WINDRES_PREPROC is defined to indicate that its pre-processor is running.
  * Anything other than a define should be guarded below.
  */

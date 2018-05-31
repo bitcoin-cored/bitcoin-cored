@@ -44,7 +44,7 @@ void RPCNestedTests::rpcNestedTests() {
     ClearDatadirCache();
     std::string path =
         QDir::tempPath().toStdString() + "/" +
-        strprintf("test_clashic_qt_%lu_%i", (unsigned long)GetTime(),
+        strprintf("test_core_qt_%lu_%i", (unsigned long)GetTime(),
                   (int)(GetRand(100000)));
     QDir dir(QString::fromStdString(path));
     dir.mkpath(".");

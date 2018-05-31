@@ -137,7 +137,7 @@ bool ShutdownRequested() {
 /**
  * This is a minimally invasive approach to shutdown on LevelDB read errors from
  * the chainstate, while keeping user interface out of the common library, which
- * is shared between clashicd, and clashic-qt and non-server tools.
+ * is shared between cored, and core-qt and non-server tools.
  */
 class CCoinsViewErrorCatcher : public CCoinsViewBacked {
 public:

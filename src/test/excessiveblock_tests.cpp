@@ -4,7 +4,7 @@
 
 #include "consensus/consensus.h"
 #include "rpc/server.h"
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>

@@ -24,7 +24,7 @@ make
 make install # optional
 ```
 
-This will build clashic-qt as well if the dependencies are met.
+This will build core-qt as well if the dependencies are met.
 
 Dependencies
 ---------------------
@@ -109,7 +109,7 @@ ZMQ dependencies (provides ZMQ API 4.x):
 Dependencies for the GUI: Ubuntu & Debian
 -----------------------------------------
 
-If you want to build Clashic-Qt, make sure that the required packages for Qt development
+If you want to build Core-Qt, make sure that the required packages for Qt development
 are installed. Either Qt 5 or Qt 4 are necessary to build the GUI.
 If both Qt 4 and Qt 5 are installed, Qt 5 will be used. Pass `--with-gui=qt4` to configure to choose Qt4.
 To build without GUI pass `--without-gui`.
@@ -126,7 +126,7 @@ libqrencode (optional) can be installed with:
 
     sudo apt-get install libqrencode-dev
 
-Once these are installed, they will be found by configure and a clashic-qt executable will be
+Once these are installed, they will be found by configure and a core-qt executable will be
 built by default.
 
 Dependency Build Instructions: Fedora
@@ -149,7 +149,7 @@ libqrencode (optional) can be installed with:
 
 Notes
 -----
-The release is built with GCC and then "strip clashicd" to strip the debug
+The release is built with GCC and then "strip cored" to strip the debug
 symbols, which reduces the executable size by about 90%.
 
 
@@ -233,7 +233,7 @@ Hardening enables the following features:
 
     To test that you have built PIE executable, install scanelf, part of paxutils, and use:
 
-    	scanelf -e ./clashic
+    	scanelf -e ./core
 
     The output should contain:
 
@@ -248,7 +248,7 @@ Hardening enables the following features:
     executable without the non-executable stack protection.
 
     To verify that the stack is non-executable after compiling use:
-    `scanelf -e ./clashic`
+    `scanelf -e ./core`
 
     the output should contain:
 	STK/REL/PTL

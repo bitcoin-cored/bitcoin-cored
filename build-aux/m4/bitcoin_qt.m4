@@ -3,21 +3,21 @@ dnl Distributed under the MIT software license, see the accompanying
 dnl file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 dnl Helper for cases where a qt dependency is not met.
-dnl Output: If qt version is auto, set clashic_enable_qt to false. Else, exit.
+dnl Output: If qt version is auto, set core_enable_qt to false. Else, exit.
 AC_DEFUN([CLASHIC_QT_FAIL],[
-  if test "x$clashic_qt_want_version" = "xauto" && test x$clashic_qt_force != xyes; then
-    if test x$clashic_enable_qt != xno; then
-      AC_MSG_WARN([$1; clashic-qt frontend will not be built])
+  if test "x$core_qt_want_version" = "xauto" && test x$core_qt_force != xyes; then
+    if test x$core_enable_qt != xno; then
+      AC_MSG_WARN([$1; core-qt frontend will not be built])
     fi
-    clashic_enable_qt=no
-    clashic_enable_qt_test=no
+    core_enable_qt=no
+    core_enable_qt_test=no
   else
     AC_MSG_ERROR([$1])
   fi
 ])
 
 AC_DEFUN([CLASHIC_QT_CHECK],[
-  if test "x$clashic_enable_qt" != "xno" && test x$clashic_qt_want_version != xno; then
+  if test "x$core_enable_qt" != "xno" && test x$core_qt_want_version != xno; then
     true
     $1
   else
@@ -54,15 +54,15 @@ AC_DEFUN([CLASHIC_QT_INIT],[
   dnl enable qt support
   AC_ARG_WITH([gui],
     [AS_HELP_STRING([--with-gui@<:@=no|qt4|qt5|auto@:>@],
-    [build clashic-qt GUI (default=auto, qt5 tried first)])],
+    [build core-qt GUI (default=auto, qt5 tried first)])],
     [
-     clashic_qt_want_version=$withval
-     if test x$clashic_qt_want_version = xyes; then
-       clashic_qt_force=yes
-       clashic_qt_want_version=auto
+     core_qt_want_version=$withval
+     if test x$core_qt_want_version = xyes; then
+       core_qt_force=yes
+       core_qt_want_version=auto
      fi
     ],
-    [clashic_qt_want_version=auto])
+    [core_qt_want_version=auto])
 
   AC_ARG_WITH([qt-incdir],[AS_HELP_STRING([--with-qt-incdir=INC_DIR],[specify qt include path (overridden by pkgconfig)])], [qt_include_path=$withval], [])
   AC_ARG_WITH([qt-libdir],[AS_HELP_STRING([--with-qt-libdir=LIB_DIR],[specify qt lib path (overridden by pkgconfig)])], [qt_lib_path=$withval], [])
@@ -85,7 +85,7 @@ dnl Inputs: $2: If $1 is "yes" and --with-gui=auto, which qt version should be
 dnl         tried first.
 dnl Outputs: See _CLASHIC_QT_FIND_LIBS_*
 dnl Outputs: Sets variables for all qt-related tools.
-dnl Outputs: clashic_enable_qt, clashic_enable_qt_dbus, clashic_enable_qt_test
+dnl Outputs: core_enable_qt, core_enable_qt_dbus, core_enable_qt_test
 AC_DEFUN([CLASHIC_QT_CONFIGURE],[
   use_pkgconfig=$1
 
@@ -113,7 +113,7 @@ AC_DEFUN([CLASHIC_QT_CONFIGURE],[
   TEMP_CXXFLAGS=$CXXFLAGS
   CPPFLAGS="$QT_INCLUDES $CPPFLAGS"
   CXXFLAGS="$PIC_FLAGS $CXXFLAGS"
-  if test x$clashic_qt_got_major_vers = x5; then
+  if test x$core_qt_got_major_vers = x5; then
     _CLASHIC_QT_IS_STATIC
     if test x$bitcoin_cv_static_qt = xyes; then
       _CLASHIC_QT_FIND_STATIC_PLUGINS
@@ -159,7 +159,7 @@ AC_DEFUN([CLASHIC_QT_CONFIGURE],[
   ])
 
   if test x$use_pkgconfig$qt_bin_path = xyes; then
-    if test x$clashic_qt_got_major_vers = x5; then
+    if test x$core_qt_got_major_vers = x5; then
       qt_bin_path="`$PKG_CONFIG --variable=host_bins Qt5Core 2>/dev/null`"
     fi
   fi
@@ -201,11 +201,11 @@ AC_DEFUN([CLASHIC_QT_CONFIGURE],[
     ])
   fi
 
-  CLASHIC_QT_PATH_PROGS([MOC], [moc-qt${clashic_qt_got_major_vers} moc${clashic_qt_got_major_vers} moc], $qt_bin_path)
-  CLASHIC_QT_PATH_PROGS([UIC], [uic-qt${clashic_qt_got_major_vers} uic${clashic_qt_got_major_vers} uic], $qt_bin_path)
-  CLASHIC_QT_PATH_PROGS([RCC], [rcc-qt${clashic_qt_got_major_vers} rcc${clashic_qt_got_major_vers} rcc], $qt_bin_path)
-  CLASHIC_QT_PATH_PROGS([LRELEASE], [lrelease-qt${clashic_qt_got_major_vers} lrelease${clashic_qt_got_major_vers} lrelease], $qt_bin_path)
-  CLASHIC_QT_PATH_PROGS([LUPDATE], [lupdate-qt${clashic_qt_got_major_vers} lupdate${clashic_qt_got_major_vers} lupdate],$qt_bin_path, yes)
+  CLASHIC_QT_PATH_PROGS([MOC], [moc-qt${core_qt_got_major_vers} moc${core_qt_got_major_vers} moc], $qt_bin_path)
+  CLASHIC_QT_PATH_PROGS([UIC], [uic-qt${core_qt_got_major_vers} uic${core_qt_got_major_vers} uic], $qt_bin_path)
+  CLASHIC_QT_PATH_PROGS([RCC], [rcc-qt${core_qt_got_major_vers} rcc${core_qt_got_major_vers} rcc], $qt_bin_path)
+  CLASHIC_QT_PATH_PROGS([LRELEASE], [lrelease-qt${core_qt_got_major_vers} lrelease${core_qt_got_major_vers} lrelease], $qt_bin_path)
+  CLASHIC_QT_PATH_PROGS([LUPDATE], [lupdate-qt${core_qt_got_major_vers} lupdate${core_qt_got_major_vers} lupdate],$qt_bin_path, yes)
 
   MOC_DEFS='-DHAVE_CONFIG_H -I$(srcdir)'
   case $host in
@@ -226,14 +226,14 @@ AC_DEFUN([CLASHIC_QT_CONFIGURE],[
   dnl enable qt support
   AC_MSG_CHECKING(whether to build ]AC_PACKAGE_NAME[ GUI)
   CLASHIC_QT_CHECK([
-    clashic_enable_qt=yes
-    clashic_enable_qt_test=yes
+    core_enable_qt=yes
+    core_enable_qt_test=yes
     if test x$have_qt_test = xno; then
-      clashic_enable_qt_test=no
+      core_enable_qt_test=no
     fi
-    clashic_enable_qt_dbus=no
+    core_enable_qt_dbus=no
     if test x$use_dbus != xno && test x$have_qt_dbus = xyes; then
-      clashic_enable_qt_dbus=yes
+      core_enable_qt_dbus=yes
     fi
     if test x$use_dbus = xyes && test x$have_qt_dbus = xno; then
       AC_MSG_ERROR("libQtDBus not found. Install libQtDBus or remove --with-qtdbus.")
@@ -242,9 +242,9 @@ AC_DEFUN([CLASHIC_QT_CONFIGURE],[
       AC_MSG_WARN("lupdate is required to update qt translations")
     fi
   ],[
-    clashic_enable_qt=no
+    core_enable_qt=no
   ])
-  AC_MSG_RESULT([$clashic_enable_qt (Qt${clashic_qt_got_major_vers})])
+  AC_MSG_RESULT([$core_enable_qt (Qt${core_qt_got_major_vers})])
 
   AC_SUBST(QT_PIE_FLAGS)
   AC_SUBST(QT_INCLUDES)
@@ -254,7 +254,7 @@ AC_DEFUN([CLASHIC_QT_CONFIGURE],[
   AC_SUBST(QT_DBUS_LIBS)
   AC_SUBST(QT_TEST_INCLUDES)
   AC_SUBST(QT_TEST_LIBS)
-  AC_SUBST(QT_SELECT, qt${clashic_qt_got_major_vers})
+  AC_SUBST(QT_SELECT, qt${core_qt_got_major_vers})
   AC_SUBST(MOC_DEFS)
 ])
 
@@ -324,11 +324,11 @@ AC_DEFUN([_CLASHIC_QT_CHECK_STATIC_PLUGINS],[
 ])
 
 dnl Internal. Find paths necessary for linking qt static plugins
-dnl Inputs: clashic_qt_got_major_vers. 4 or 5.
+dnl Inputs: core_qt_got_major_vers. 4 or 5.
 dnl Inputs: qt_plugin_path. optional.
 dnl Outputs: QT_LIBS is appended
 AC_DEFUN([_CLASHIC_QT_FIND_STATIC_PLUGINS],[
-  if test x$clashic_qt_got_major_vers = x5; then
+  if test x$core_qt_got_major_vers = x5; then
       if test x$qt_plugin_path != x; then
         QT_LIBS="$QT_LIBS -L$qt_plugin_path/platforms"
         if test -d "$qt_plugin_path/accessible"; then
@@ -373,12 +373,12 @@ AC_DEFUN([_CLASHIC_QT_FIND_STATIC_PLUGINS],[
 ])
 
 dnl Internal. Find Qt libraries using pkg-config.
-dnl Inputs: clashic_qt_want_version (from --with-gui=). The version to check
+dnl Inputs: core_qt_want_version (from --with-gui=). The version to check
 dnl         first.
-dnl Inputs: $1: If clashic_qt_want_version is "auto", check for this version
+dnl Inputs: $1: If core_qt_want_version is "auto", check for this version
 dnl         first.
 dnl Outputs: All necessary QT_* variables are set.
-dnl Outputs: clashic_qt_got_major_vers is set to "4" or "5".
+dnl Outputs: core_qt_got_major_vers is set to "4" or "5".
 dnl Outputs: have_qt_test and have_qt_dbus are set (if applicable) to yes|no.
 AC_DEFUN([_CLASHIC_QT_FIND_LIBS_WITH_PKGCONFIG],[
   m4_ifdef([PKG_CHECK_MODULES],[
@@ -386,28 +386,28 @@ AC_DEFUN([_CLASHIC_QT_FIND_LIBS_WITH_PKGCONFIG],[
   if test x$auto_priority_version = x; then
     auto_priority_version=qt5
   fi
-    if test x$clashic_qt_want_version = xqt5 ||  ( test x$clashic_qt_want_version = xauto && test x$auto_priority_version = xqt5 ); then
+    if test x$core_qt_want_version = xqt5 ||  ( test x$core_qt_want_version = xauto && test x$auto_priority_version = xqt5 ); then
       QT_LIB_PREFIX=Qt5
-      clashic_qt_got_major_vers=5
+      core_qt_got_major_vers=5
     else
       QT_LIB_PREFIX=Qt
-      clashic_qt_got_major_vers=4
+      core_qt_got_major_vers=4
     fi
     qt5_modules="Qt5Core Qt5Gui Qt5Network Qt5Widgets"
     qt4_modules="QtCore QtGui QtNetwork"
     CLASHIC_QT_CHECK([
-      if test x$clashic_qt_want_version = xqt5 || ( test x$clashic_qt_want_version = xauto && test x$auto_priority_version = xqt5 ); then
+      if test x$core_qt_want_version = xqt5 || ( test x$core_qt_want_version = xauto && test x$auto_priority_version = xqt5 ); then
         PKG_CHECK_MODULES([QT], [$qt5_modules], [QT_INCLUDES="$QT_CFLAGS"; have_qt=yes],[have_qt=no])
-      elif test x$clashic_qt_want_version = xqt4 || ( test x$clashic_qt_want_version = xauto && test x$auto_priority_version = xqt4 ); then
+      elif test x$core_qt_want_version = xqt4 || ( test x$core_qt_want_version = xauto && test x$auto_priority_version = xqt4 ); then
         PKG_CHECK_MODULES([QT], [$qt4_modules], [QT_INCLUDES="$QT_CFLAGS"; have_qt=yes], [have_qt=no])
       fi
 
       dnl qt version is set to 'auto' and the preferred version wasn't found. Now try the other.
-      if test x$have_qt = xno && test x$clashic_qt_want_version = xauto; then
+      if test x$have_qt = xno && test x$core_qt_want_version = xauto; then
         if test x$auto_priority_version = xqt5; then
-          PKG_CHECK_MODULES([QT], [$qt4_modules], [QT_INCLUDES="$QT_CFLAGS"; have_qt=yes; QT_LIB_PREFIX=Qt; clashic_qt_got_major_vers=4], [have_qt=no])
+          PKG_CHECK_MODULES([QT], [$qt4_modules], [QT_INCLUDES="$QT_CFLAGS"; have_qt=yes; QT_LIB_PREFIX=Qt; core_qt_got_major_vers=4], [have_qt=no])
         else
-          PKG_CHECK_MODULES([QT], [$qt5_modules], [QT_INCLUDES="$QT_CFLAGS"; have_qt=yes; QT_LIB_PREFIX=Qt5; clashic_qt_got_major_vers=5], [have_qt=no])
+          PKG_CHECK_MODULES([QT], [$qt5_modules], [QT_INCLUDES="$QT_CFLAGS"; have_qt=yes; QT_LIB_PREFIX=Qt5; core_qt_got_major_vers=5], [have_qt=no])
         fi
       fi
       if test x$have_qt != xyes; then
@@ -427,10 +427,10 @@ AC_DEFUN([_CLASHIC_QT_FIND_LIBS_WITH_PKGCONFIG],[
 
 dnl Internal. Find Qt libraries without using pkg-config. Version is deduced
 dnl from the discovered headers.
-dnl Inputs: clashic_qt_want_version (from --with-gui=). The version to use.
+dnl Inputs: core_qt_want_version (from --with-gui=). The version to use.
 dnl         If "auto", the version will be discovered by _CLASHIC_QT_CHECK_QT5.
 dnl Outputs: All necessary QT_* variables are set.
-dnl Outputs: clashic_qt_got_major_vers is set to "4" or "5".
+dnl Outputs: core_qt_got_major_vers is set to "4" or "5".
 dnl Outputs: have_qt_test and have_qt_dbus are set (if applicable) to yes|no.
 AC_DEFUN([_CLASHIC_QT_FIND_LIBS_WITHOUT_PKGCONFIG],[
   TEMP_CPPFLAGS="$CPPFLAGS"
@@ -449,15 +449,15 @@ AC_DEFUN([_CLASHIC_QT_FIND_LIBS_WITHOUT_PKGCONFIG],[
   CLASHIC_QT_CHECK([AC_CHECK_HEADER([QLocalSocket],, CLASHIC_QT_FAIL(QtNetwork headers missing))])
 
   CLASHIC_QT_CHECK([
-    if test x$clashic_qt_want_version = xauto; then
+    if test x$core_qt_want_version = xauto; then
       _CLASHIC_QT_CHECK_QT5
     fi
-    if test x$bitcoin_cv_qt5 = xyes || test x$clashic_qt_want_version = xqt5; then
+    if test x$bitcoin_cv_qt5 = xyes || test x$core_qt_want_version = xqt5; then
       QT_LIB_PREFIX=Qt5
-      clashic_qt_got_major_vers=5
+      core_qt_got_major_vers=5
     else
       QT_LIB_PREFIX=Qt
-      clashic_qt_got_major_vers=4
+      core_qt_got_major_vers=4
     fi
   ])
 
@@ -480,7 +480,7 @@ AC_DEFUN([_CLASHIC_QT_FIND_LIBS_WITHOUT_PKGCONFIG],[
   CLASHIC_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}Core]   ,[main],,CLASHIC_QT_FAIL(lib$QT_LIB_PREFIXCore not found)))
   CLASHIC_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}Gui]    ,[main],,CLASHIC_QT_FAIL(lib$QT_LIB_PREFIXGui not found)))
   CLASHIC_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}Network],[main],,CLASHIC_QT_FAIL(lib$QT_LIB_PREFIXNetwork not found)))
-  if test x$clashic_qt_got_major_vers = x5; then
+  if test x$core_qt_got_major_vers = x5; then
     CLASHIC_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}Widgets],[main],,CLASHIC_QT_FAIL(lib$QT_LIB_PREFIXWidgets not found)))
   fi
   QT_LIBS="$LIBS"

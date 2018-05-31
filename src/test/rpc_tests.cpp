@@ -9,7 +9,7 @@
 #include "config.h"
 #include "netbase.h"
 
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/test/unit_test.hpp>

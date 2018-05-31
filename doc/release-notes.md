@@ -1,3 +1,3 @@
-Bitcoin Clashic ABCD version 0.16.1 is now available from:
+Bitcoin Core ABCD version 0.16.1 is now available from:
 
-  <https://bitcoin.clashic.cash/downloads/0.16.1/>
+  <https://bitcoin.core.cash/downloads/0.16.1/>

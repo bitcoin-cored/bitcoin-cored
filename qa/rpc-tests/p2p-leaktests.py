@@ -95,7 +95,7 @@ class CNodeNoVersionBan(CLazyNode):
         super().__init__()
 
     # send a bunch of veracks without sending a message. This should get us disconnected.
-    # NOTE: implementation-specific check here. Remove if clashicd ban
+    # NOTE: implementation-specific check here. Remove if cored ban
     # behavior changes
     def on_open(self, conn):
         super().on_open(conn)

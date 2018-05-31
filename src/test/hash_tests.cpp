@@ -3,7 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "hash.h"
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 #include "utilstrencodings.h"
 
 #include <vector>

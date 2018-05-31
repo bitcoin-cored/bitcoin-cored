@@ -53,15 +53,15 @@ Build Bitcoin Core SQ
 Running
 -------
 
-Bitcoin Core SQ is now available at `./src/clashicd`
+Bitcoin Core SQ is now available at `./src/cored`
 
 Before running, it's recommended you create an RPC configuration file.
 
-    echo -e "rpcuser=bitcoinrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/Clashic/clashic.conf"
+    echo -e "rpcuser=bitcoinrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/Core/core.conf"
 
-    chmod 600 "/Users/${USER}/Library/Application Support/Clashic/clashic.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/Core/core.conf"
 
-The first time you run clashicd, it will start downloading the blockchain. This process could take several hours.
+The first time you run cored, it will start downloading the blockchain. This process could take several hours.
 
 You can monitor the download process by looking at the debug.log file:
 
@@ -70,20 +70,20 @@ You can monitor the download process by looking at the debug.log file:
 Other commands:
 -------
 
-    ./src/clashicd -daemon # Starts the clashic daemon.
-    ./src/clashic-cli --help # Outputs a list of command-line options.
-    ./src/clashic-cli help # Outputs a list of RPC commands when the daemon is running.
+    ./src/cored -daemon # Starts the core daemon.
+    ./src/core-cli --help # Outputs a list of command-line options.
+    ./src/core-cli help # Outputs a list of RPC commands when the daemon is running.
 
 Using Qt Creator as IDE
 ------------------------
-You can use Qt Creator as an IDE, for clashic development.
+You can use Qt Creator as an IDE, for core development.
 Download and install the community edition of [Qt Creator](https://www.qt.io/download/).
 Uncheck everything except Qt Creator during the installation process.
 
 1. Make sure you installed everything through Homebrew mentioned above
 2. Do a proper ./configure --enable-debug
 3. In Qt Creator do "New Project" -> Import Project -> Import Existing Project
-4. Enter "clashic-qt" as project name, enter src/qt as location
+4. Enter "core-qt" as project name, enter src/qt as location
 5. Leave the file selection as it is
 6. Confirm the "summary page"
 7. In the "Projects" tab select "Manage Kits..."

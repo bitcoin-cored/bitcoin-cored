@@ -11,7 +11,7 @@
 #include "script/script_error.h"
 #include "script/sighashtype.h"
 #include "script/sign.h"
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 #include "uint256.h"
 
 #include <boost/test/unit_test.hpp>

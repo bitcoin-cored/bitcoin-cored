@@ -17,7 +17,7 @@ What is Bitcoin Core Squared?
 Bitcoin Core Squared is the name of open source software which enables the use of Bitcoin Core.
 It is designed to facilite a hard fork to increase Bitcoin's block size limit.
 
-Bitcoin Core Squared is a fork of the [Bitcoin Clashic Project](http://bitcoinclashic.org),
+Bitcoin Core Squared is a fork of the [Bitcoin Core Project](http://bitcoincore.org),
 which itself is a fork of the [Bitcoin ABC Project](https://bitcoinabc.org),
 which itself is yet another fork of the [Bitcoin Core](https://bitcoincore.org) software project
 (not to be confused between Bitcoin Core client for the Bitcoin project and Bitcoin Core Squared

@@ -106,13 +106,13 @@ class BitcoinTestFramework(object):
         parser = optparse.OptionParser(usage="%prog [options]")
         parser.add_option(
             "--nocleanup", dest="nocleanup", default=False, action="store_true",
-                          help="Leave clashicds and test.* datadir on exit or error")
+                          help="Leave coreds and test.* datadir on exit or error")
         parser.add_option(
             "--noshutdown", dest="noshutdown", default=False, action="store_true",
-                          help="Don't stop clashicds after the test execution")
+                          help="Don't stop coreds after the test execution")
         parser.add_option(
             "--srcdir", dest="srcdir", default=os.path.normpath(os.path.dirname(os.path.realpath(__file__)) + "/../../../src"),
-                          help="Source directory containing clashicd/clashic-cli (default: %default)")
+                          help="Source directory containing cored/core-cli (default: %default)")
         parser.add_option(
             "--cachedir", dest="cachedir", default=os.path.normpath(os.path.dirname(os.path.realpath(__file__)) + "/../../cache"),
                           help="Directory for caching pregenerated datadirs")
@@ -173,7 +173,7 @@ class BitcoinTestFramework(object):
             stop_nodes(self.nodes)
         else:
             self.log.info(
-                "Note: clashicds were not stopped and may still be running")
+                "Note: coreds were not stopped and may still be running")
 
         if not self.options.nocleanup and not self.options.noshutdown and success:
             self.log.info("Cleaning up")
@@ -217,7 +217,7 @@ class BitcoinTestFramework(object):
         ll = int(
             self.options.loglevel) if self.options.loglevel.isdigit() else self.options.loglevel.upper()
         ch.setLevel(ll)
-        # Format logs the same as clashicd's debug.log with microprecision (so
+        # Format logs the same as cored's debug.log with microprecision (so
         # log files can be concatenated and sorted)
         formatter = logging.Formatter(
             fmt='%(asctime)s.%(msecs)03d000 %(name)s (%(levelname)s): %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
@@ -235,7 +235,7 @@ class BitcoinTestFramework(object):
             rpc_handler.setLevel(logging.DEBUG)
             rpc_logger.addHandler(rpc_handler)
 
-# Test framework for doing p2p comparison testing, which sets up some clashicd
+# Test framework for doing p2p comparison testing, which sets up some cored
 # binaries:
 # 1 binary: test binary
 # 2 binaries: 1 test binary, 1 ref binary
@@ -251,11 +251,11 @@ class ComparisonTestFramework(BitcoinTestFramework):
 
     def add_options(self, parser):
         parser.add_option("--testbinary", dest="testbinary",
-                          default=os.getenv("CLASHICD", "clashicd"),
-                          help="clashicd binary to test")
+                          default=os.getenv("CLASHICD", "cored"),
+                          help="cored binary to test")
         parser.add_option("--refbinary", dest="refbinary",
-                          default=os.getenv("CLASHICD", "clashicd"),
-                          help="clashicd binary to use for reference nodes (if any)")
+                          default=os.getenv("CLASHICD", "cored"),
+                          help="cored binary to use for reference nodes (if any)")
 
     def setup_network(self):
         extra_args = [['-whitelist=127.0.0.1']] * self.num_nodes

@@ -4,10 +4,10 @@ TOPDIR=${TOPDIR:-$(git rev-parse --show-toplevel)}
 SRCDIR=${SRCDIR:-$TOPDIR/src}
 MANDIR=${MANDIR:-$TOPDIR/doc/man}
 
-CLASHICD=${CLASHICD:-$SRCDIR/clashicd}
-CLASHICCLI=${CLASHICCLI:-$SRCDIR/clashic-cli}
-CLASHICTX=${CLASHICTX:-$SRCDIR/clashic-tx}
-CLASHICQT=${CLASHICQT:-$SRCDIR/qt/clashic_qt}
+CLASHICD=${CLASHICD:-$SRCDIR/cored}
+CLASHICCLI=${CLASHICCLI:-$SRCDIR/core-cli}
+CLASHICTX=${CLASHICTX:-$SRCDIR/core-tx}
+CLASHICQT=${CLASHICQT:-$SRCDIR/qt/core_qt}
 
 [ ! -x $CLASHICD ] && echo "$CLASHICD not found or not executable." && exit 1
 
@@ -15,8 +15,8 @@ CLASHICQT=${CLASHICQT:-$SRCDIR/qt/clashic_qt}
 BTCVER=($($CLASHICCLI --version | head -n1 | awk -F'[ -]' '{ print $6, $7 }'))
 
 # Create a footer file with copyright content.
-# This gets autodetected fine for clashicd if --version-string is not set,
-# but has different outcomes for clashic_qt and clashic-cli.
+# This gets autodetected fine for cored if --version-string is not set,
+# but has different outcomes for core_qt and core-cli.
 echo "[COPYRIGHT]" > footer.h2m
 $CLASHICD --version | sed -n '1!p' >> footer.h2m
 

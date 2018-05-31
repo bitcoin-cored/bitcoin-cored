@@ -14,11 +14,11 @@ AC_CONFIG_HEADERS([src/config/bitcoin-config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([build-aux/m4])
 
-BITCOIN_DAEMON_NAME=clashicd
-CLASHIC_GUI_NAME=clashic-qt
-CLASHIC_CLI_NAME=clashic-cli
-CLASHIC_TX_NAME=clashic-tx
-CLASHIC_SEEDER_NAME=clashic-seeder
+BITCOIN_DAEMON_NAME=cored
+CLASHIC_GUI_NAME=core-qt
+CLASHIC_CLI_NAME=core-cli
+CLASHIC_TX_NAME=core-tx
+CLASHIC_SEEDER_NAME=core-seeder
 
 AC_CANONICAL_HOST
 
@@ -304,27 +304,27 @@ CPPFLAGS="$CPPFLAGS -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS"
 
 AC_ARG_WITH([utils],
   [AS_HELP_STRING([--with-utils],
-  [build clashic-cli clashic-tx (default=yes)])],
-  [build_clashic_utils=$withval],
-  [build_clashic_utils=yes])
+  [build core-cli core-tx (default=yes)])],
+  [build_core_utils=$withval],
+  [build_core_utils=yes])
 
 AC_ARG_WITH([libs],
   [AS_HELP_STRING([--with-libs],
   [build libraries (default=yes)])],
-  [build_clashic_libs=$withval],
-  [build_clashic_libs=yes])
+  [build_core_libs=$withval],
+  [build_core_libs=yes])
 
 AC_ARG_WITH([daemon],
   [AS_HELP_STRING([--with-daemon],
-  [build clashicd daemon (default=yes)])],
-  [build_clashicd=$withval],
-  [build_clashicd=yes])
+  [build cored daemon (default=yes)])],
+  [build_cored=$withval],
+  [build_cored=yes])
 
 AC_ARG_WITH([seeder],
   [AS_HELP_STRING([--with-seeder],
   [build seeder (default=yes)])],
-  [build_clashic_seeder=$withval],
-  [build_clashic_seeder=yes])
+  [build_core_seeder=$withval],
+  [build_core_seeder=yes])
 
 use_pkgconfig=yes
 case $host in
@@ -710,10 +710,10 @@ fi
 
 CLASHIC_QT_INIT
 
-dnl sets $clashic_enable_qt, $clashic_enable_qt_test, $clashic_enable_qt_dbus
+dnl sets $core_enable_qt, $core_enable_qt_test, $core_enable_qt_dbus
 CLASHIC_QT_CONFIGURE([$use_pkgconfig], [qt5])
 
-if test x$build_clashic_utils$build_clashicd$clashic_enable_qt$build_clashic_seeder$use_tests$use_bench = xnononononono; then
+if test x$build_core_utils$build_cored$core_enable_qt$build_core_seeder$use_tests$use_bench = xnononononono; then
     use_boost=no
 else
     use_boost=yes
@@ -895,7 +895,7 @@ if test x$use_pkgconfig = xyes; then
       if test x$use_qr != xno; then
         CLASHIC_QT_CHECK([PKG_CHECK_MODULES([QR], [libqrencode], [have_qrencode=yes], [have_qrencode=no])])
       fi
-      if test x$build_clashic_utils$build_clashicd$clashic_enable_qt$use_tests != xnononono; then
+      if test x$build_core_utils$build_cored$core_enable_qt$use_tests != xnononono; then
         PKG_CHECK_MODULES([EVENT], [libevent],, [AC_MSG_ERROR(libevent not found.)])
         if test x$TARGET_OS != xwindows; then
           PKG_CHECK_MODULES([EVENT_PTHREADS], [libevent_pthreads],, [AC_MSG_ERROR(libevent_pthreads not found.)])
@@ -920,7 +920,7 @@ else
   AC_CHECK_HEADER([openssl/ssl.h],, AC_MSG_ERROR(libssl headers missing),)
   AC_CHECK_LIB([ssl],         [main],SSL_LIBS=-lssl, AC_MSG_ERROR(libssl missing))
 
-  if test x$build_clashic_utils$build_clashicd$clashic_enable_qt$use_tests != xnononono; then
+  if test x$build_core_utils$build_cored$core_enable_qt$use_tests != xnononono; then
     AC_CHECK_HEADER([event2/event.h],, AC_MSG_ERROR(libevent headers missing),)
     AC_CHECK_LIB([event],[main],EVENT_LIBS=-levent,AC_MSG_ERROR(libevent missing))
     if test x$TARGET_OS != xwindows; then
@@ -969,7 +969,7 @@ dnl univalue check
 
 need_bundled_univalue=yes
 
-if test x$build_clashic_utils$build_clashicd$clashic_enable_qt$use_tests$use_bench = xnonononono; then
+if test x$build_core_utils$build_cored$core_enable_qt$use_tests$use_bench = xnonononono; then
   need_bundled_univalue=no
 else
 
@@ -1015,25 +1015,25 @@ AC_SUBST(UNIVALUE_LIBS)
 
 CLASHIC_QT_PATH_PROGS([PROTOC], [protoc],$protoc_bin_path)
 
-AC_MSG_CHECKING([whether to build clashicd])
-AM_CONDITIONAL([BUILD_CLASHICD], [test x$build_clashicd = xyes])
-AC_MSG_RESULT($build_clashicd)
+AC_MSG_CHECKING([whether to build cored])
+AM_CONDITIONAL([BUILD_CLASHICD], [test x$build_cored = xyes])
+AC_MSG_RESULT($build_cored)
 
-AC_MSG_CHECKING([whether to build clashic-seeder])
-AM_CONDITIONAL([BUILD_CLASHIC_SEEDER], [test x$build_clashic_seeder = xyes])
-AC_MSG_RESULT($build_clashic_seeder)
+AC_MSG_CHECKING([whether to build core-seeder])
+AM_CONDITIONAL([BUILD_CLASHIC_SEEDER], [test x$build_core_seeder = xyes])
+AC_MSG_RESULT($build_core_seeder)
 
-AC_MSG_CHECKING([whether to build utils (clashic-cli clashic-tx)])
-AM_CONDITIONAL([BUILD_CLASHIC_UTILS], [test x$build_clashic_utils = xyes])
-AC_MSG_RESULT($build_clashic_utils)
+AC_MSG_CHECKING([whether to build utils (core-cli core-tx)])
+AM_CONDITIONAL([BUILD_CLASHIC_UTILS], [test x$build_core_utils = xyes])
+AC_MSG_RESULT($build_core_utils)
 
 AC_MSG_CHECKING([whether to build libraries])
-AM_CONDITIONAL([BUILD_CLASHIC_LIBS], [test x$build_clashic_libs = xyes])
-if test x$build_clashic_libs = xyes; then
+AM_CONDITIONAL([BUILD_CLASHIC_LIBS], [test x$build_core_libs = xyes])
+if test x$build_core_libs = xyes; then
   AC_DEFINE(HAVE_CONSENSUS_LIB, 1, [Define this symbol if the consensus lib has been built])
-  AC_CONFIG_FILES([libclashicconsensus.pc:libclashicconsensus.pc.in])
+  AC_CONFIG_FILES([libcoreconsensus.pc:libcoreconsensus.pc.in])
 fi
-AC_MSG_RESULT($build_clashic_libs)
+AC_MSG_RESULT($build_core_libs)
 
 AC_LANG_POP
 
@@ -1095,13 +1095,13 @@ fi
 
 dnl these are only used when qt is enabled
 BUILD_TEST_QT=""
-if test x$clashic_enable_qt != xno; then
+if test x$core_enable_qt != xno; then
   dnl enable dbus support
   AC_MSG_CHECKING([whether to build GUI with support for D-Bus])
-  if test x$clashic_enable_qt_dbus != xno; then
+  if test x$core_enable_qt_dbus != xno; then
     AC_DEFINE([USE_DBUS],[1],[Define if dbus support should be compiled in])
   fi
-  AC_MSG_RESULT($clashic_enable_qt_dbus)
+  AC_MSG_RESULT($core_enable_qt_dbus)
 
   dnl enable qr support
   AC_MSG_CHECKING([whether to build GUI with support for QR codes])
@@ -1124,8 +1124,8 @@ if test x$clashic_enable_qt != xno; then
     AC_MSG_WARN("xgettext is required to update qt translations")
   fi
 
-  AC_MSG_CHECKING([whether to build test_clashic-qt])
-  if test x$use_gui_tests$clashic_enable_qt_test = xyesyes; then
+  AC_MSG_CHECKING([whether to build test_core-qt])
+  if test x$use_gui_tests$core_enable_qt_test = xyesyes; then
     AC_MSG_RESULT([yes])
     BUILD_TEST_QT="yes"
   else
@@ -1135,7 +1135,7 @@ fi
 
 AM_CONDITIONAL([ENABLE_ZMQ], [test "x$use_zmq" = "xyes"])
 
-AC_MSG_CHECKING([whether to build test_clashic])
+AC_MSG_CHECKING([whether to build test_core])
 if test x$use_tests = xyes; then
   AC_MSG_RESULT([yes])
   BUILD_TEST="yes"
@@ -1151,7 +1151,7 @@ else
   AC_MSG_RESULT([no])
 fi
 
-if test x$build_clashic_utils$build_clashic_libs$build_clashicd$clashic_enable_qt$use_bench$use_tests = xnononononono; then
+if test x$build_core_utils$build_core_libs$build_cored$core_enable_qt$use_bench$use_tests = xnononononono; then
   AC_MSG_ERROR([No targets! Please specify at least one of: --with-utils --with-libs --with-daemon --with-seeder --with-gui --enable-bench or --enable-tests])
 fi
 
@@ -1160,7 +1160,7 @@ AM_CONDITIONAL([BUILD_DARWIN], [test x$BUILD_OS = xdarwin])
 AM_CONDITIONAL([TARGET_WINDOWS], [test x$TARGET_OS = xwindows])
 AM_CONDITIONAL([ENABLE_WALLET],[test x$enable_wallet = xyes])
 AM_CONDITIONAL([ENABLE_TESTS],[test x$BUILD_TEST = xyes])
-AM_CONDITIONAL([ENABLE_QT],[test x$clashic_enable_qt = xyes])
+AM_CONDITIONAL([ENABLE_QT],[test x$core_enable_qt = xyes])
 AM_CONDITIONAL([ENABLE_QT_TESTS],[test x$BUILD_TEST_QT = xyes])
 AM_CONDITIONAL([ENABLE_BENCH],[test x$use_bench = xyes])
 AM_CONDITIONAL([USE_QRCODE], [test x$use_qr = xyes])
@@ -1276,9 +1276,9 @@ esac
 echo
 echo "Options used to compile and link:"
 echo "  with wallet   = $enable_wallet"
-echo "  with gui / qt = $clashic_enable_qt"
-if test x$clashic_enable_qt != xno; then
-    echo "    qt version  = $clashic_qt_got_major_vers"
+echo "  with gui / qt = $core_enable_qt"
+if test x$core_enable_qt != xno; then
+    echo "    qt version  = $core_qt_got_major_vers"
     echo "    with qr     = $use_qr"
 fi
 echo "  with zmq      = $use_zmq"
