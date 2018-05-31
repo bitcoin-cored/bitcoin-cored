@@ -3,7 +3,7 @@ Contributing to Bitcoin Core ABCD
 
 The Bitcoin Core ABCD project welcomes contributors!
 
-To contribute, checkout http://bitcoincore.org
+To contribute, checkout http://thebitcoincore.org
 
 
 Copyright

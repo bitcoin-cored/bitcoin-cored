@@ -173,15 +173,15 @@ public:
 
         // Note that of those with the service bits flag, most only support a
         // subset of possible options.
-        // core.cash maintained by Corely
+        // clashic.cash maintained by Clashicly
         vSeeds.push_back(
-            CDNSSeedData("core.cash", "seeder.core.cash", true));
+            CDNSSeedData("clashic.cash", "seeder.clashic.cash", true));
         // bitcoincore.zone
         vSeeds.push_back(
             CDNSSeedData("bitcoincore.zone", "seeder.bitcoincore.zone", true));
         // truevisionofsatoshi.com
         vSeeds.push_back(
-            CDNSSeedData("core.org", "seeder-mainnet.core.org", true));
+            CDNSSeedData("clashic.org", "seeder-mainnet.clashic.org", true));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<uint8_t>(1, 0);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<uint8_t>(1, 5);
@@ -352,9 +352,9 @@ public:
         // truevisionofsatoshi.com
         vSeeds.push_back(CDNSSeedData("truevisionofsatoshi.com",
                                       "seeder-testnet.truevisionofsatoshi.com", true));
-        // core.cash maintained by Corely
+        // clashic.cash maintained by Clashicly
         vSeeds.push_back(
-            CDNSSeedData("core.cash", "testnet-seeder.core.cash", true));
+            CDNSSeedData("clashic.cash", "testnet-seeder.clashic.cash", true));
         // bitcoincore.zone
         vSeeds.push_back(
             CDNSSeedData("bitcoincore.zone", "testnet-seeder.bitcoincore.zone", true));

@@ -43,7 +43,7 @@ Bitcoin Core ABCD Release Process
     
 7. Verify matching gitian builds, gather signatures
 
-8. Upload gitian build to [bitcoincore.org](https://bitcoincore.org/)
+8. Upload gitian build to [thebitcoincore.org](https://thethebitcoincore.org/)
 
 9. Re-verify the uploads (make sure that downloading them, their checksums are ok)
 
@@ -52,12 +52,13 @@ Bitcoin Core ABCD Release Process
 
 ## After Release
 
-11. Update version number on www.bitcoincore.org
+11. Update version number on thebitcoincore.org
 
-12. Publish signed checksums (various places, e.g. blog, reddit/r/BitcoinABC)
+12. Publish signed checksums (various places, e.g. blog, reddit/r/BTCCore)
 
 13. Announce Release:
-    - [Reddit](https://www.reddit.com/r/BitcoinABC/)
-    - Twitter @BitcoinCore
-    - Public slack channels friendly to Bitcoin Core ABCD announcements 
-      (eg. #abc-announce on BTCforks,  #hardfork on BTCchat)
+    - [Offical Website](https://thethebitcoincore.org/)
+    - [Reddit](https://www.reddit.com/r/BTCCore/)
+    - Twitter @BitcoinCore_
+    - Public telegram channels friendly to Bitcoin Core announcements 
+      (eg. @TheBitcoinCore)

@@ -15,10 +15,10 @@ AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([build-aux/m4])
 
 BITCOIN_DAEMON_NAME=cored
-CLASHIC_GUI_NAME=core-qt
-CLASHIC_CLI_NAME=core-cli
-CLASHIC_TX_NAME=core-tx
-CLASHIC_SEEDER_NAME=core-seeder
+CORE_GUI_NAME=core-qt
+CORE_CLI_NAME=core-cli
+CORE_TX_NAME=core-tx
+CORE_SEEDER_NAME=core-seeder
 
 AC_CANONICAL_HOST
 
@@ -708,10 +708,10 @@ if test x$use_upnp != xno; then
   )
 fi
 
-CLASHIC_QT_INIT
+CORE_QT_INIT
 
 dnl sets $core_enable_qt, $core_enable_qt_test, $core_enable_qt_dbus
-CLASHIC_QT_CONFIGURE([$use_pkgconfig], [qt5])
+CORE_QT_CONFIGURE([$use_pkgconfig], [qt5])
 
 if test x$build_core_utils$build_cored$core_enable_qt$build_core_seeder$use_tests$use_bench = xnononononono; then
     use_boost=no
@@ -891,9 +891,9 @@ if test x$use_pkgconfig = xyes; then
     [
       PKG_CHECK_MODULES([SSL], [libssl],, [AC_MSG_ERROR(openssl  not found.)])
       PKG_CHECK_MODULES([CRYPTO], [libcrypto],,[AC_MSG_ERROR(libcrypto  not found.)])
-      CLASHIC_QT_CHECK([PKG_CHECK_MODULES([PROTOBUF], [protobuf], [have_protobuf=yes], [CLASHIC_QT_FAIL(libprotobuf not found)])])
+      CORE_QT_CHECK([PKG_CHECK_MODULES([PROTOBUF], [protobuf], [have_protobuf=yes], [CORE_QT_FAIL(libprotobuf not found)])])
       if test x$use_qr != xno; then
-        CLASHIC_QT_CHECK([PKG_CHECK_MODULES([QR], [libqrencode], [have_qrencode=yes], [have_qrencode=no])])
+        CORE_QT_CHECK([PKG_CHECK_MODULES([QR], [libqrencode], [have_qrencode=yes], [have_qrencode=no])])
       fi
       if test x$build_core_utils$build_cored$core_enable_qt$use_tests != xnononono; then
         PKG_CHECK_MODULES([EVENT], [libevent],, [AC_MSG_ERROR(libevent not found.)])
@@ -951,10 +951,10 @@ else
     esac
   fi
 
-  CLASHIC_QT_CHECK(AC_CHECK_LIB([protobuf] ,[main],[PROTOBUF_LIBS=-lprotobuf], CLASHIC_QT_FAIL(libprotobuf not found)))
+  CORE_QT_CHECK(AC_CHECK_LIB([protobuf] ,[main],[PROTOBUF_LIBS=-lprotobuf], CORE_QT_FAIL(libprotobuf not found)))
   if test x$use_qr != xno; then
-    CLASHIC_QT_CHECK([AC_CHECK_LIB([qrencode], [main],[QR_LIBS=-lqrencode], [have_qrencode=no])])
-    CLASHIC_QT_CHECK([AC_CHECK_HEADER([qrencode.h],, have_qrencode=no)])
+    CORE_QT_CHECK([AC_CHECK_LIB([qrencode], [main],[QR_LIBS=-lqrencode], [have_qrencode=no])])
+    CORE_QT_CHECK([AC_CHECK_HEADER([qrencode.h],, have_qrencode=no)])
   fi
 fi
 
@@ -1013,22 +1013,22 @@ AM_CONDITIONAL([EMBEDDED_UNIVALUE],[test x$need_bundled_univalue = xyes])
 AC_SUBST(UNIVALUE_CFLAGS)
 AC_SUBST(UNIVALUE_LIBS)
 
-CLASHIC_QT_PATH_PROGS([PROTOC], [protoc],$protoc_bin_path)
+CORE_QT_PATH_PROGS([PROTOC], [protoc],$protoc_bin_path)
 
 AC_MSG_CHECKING([whether to build cored])
-AM_CONDITIONAL([BUILD_CLASHICD], [test x$build_cored = xyes])
+AM_CONDITIONAL([BUILD_CORED], [test x$build_cored = xyes])
 AC_MSG_RESULT($build_cored)
 
 AC_MSG_CHECKING([whether to build core-seeder])
-AM_CONDITIONAL([BUILD_CLASHIC_SEEDER], [test x$build_core_seeder = xyes])
+AM_CONDITIONAL([BUILD_CORE_SEEDER], [test x$build_core_seeder = xyes])
 AC_MSG_RESULT($build_core_seeder)
 
 AC_MSG_CHECKING([whether to build utils (core-cli core-tx)])
-AM_CONDITIONAL([BUILD_CLASHIC_UTILS], [test x$build_core_utils = xyes])
+AM_CONDITIONAL([BUILD_CORE_UTILS], [test x$build_core_utils = xyes])
 AC_MSG_RESULT($build_core_utils)
 
 AC_MSG_CHECKING([whether to build libraries])
-AM_CONDITIONAL([BUILD_CLASHIC_LIBS], [test x$build_core_libs = xyes])
+AM_CONDITIONAL([BUILD_CORE_LIBS], [test x$build_core_libs = xyes])
 if test x$build_core_libs = xyes; then
   AC_DEFINE(HAVE_CONSENSUS_LIB, 1, [Define this symbol if the consensus lib has been built])
   AC_CONFIG_FILES([libcoreconsensus.pc:libcoreconsensus.pc.in])
@@ -1189,10 +1189,10 @@ AC_SUBST(COPYRIGHT_HOLDERS, "_COPYRIGHT_HOLDERS")
 AC_SUBST(COPYRIGHT_HOLDERS_SUBSTITUTION, "_COPYRIGHT_HOLDERS_SUBSTITUTION")
 AC_SUBST(COPYRIGHT_HOLDERS_FINAL, "_COPYRIGHT_HOLDERS_FINAL")
 AC_SUBST(BITCOIN_DAEMON_NAME)
-AC_SUBST(CLASHIC_GUI_NAME)
-AC_SUBST(CLASHIC_CLI_NAME)
-AC_SUBST(CLASHIC_TX_NAME)
-AC_SUBST(CLASHIC_SEEDER_NAME)
+AC_SUBST(CORE_GUI_NAME)
+AC_SUBST(CORE_CLI_NAME)
+AC_SUBST(CORE_TX_NAME)
+AC_SUBST(CORE_SEEDER_NAME)
 
 AC_SUBST(RELDFLAGS)
 AC_SUBST(ERROR_CXXFLAGS)

@@ -44,8 +44,8 @@ RPC_TESTS_DIR = SRCDIR + '/qa/rpc-tests/'
 # If imported values are not defined then set to zero (or disabled)
 if 'ENABLE_WALLET' not in vars():
     ENABLE_WALLET = 0
-if 'ENABLE_CLASHICD' not in vars():
-    ENABLE_CLASHICD = 0
+if 'ENABLE_CORED' not in vars():
+    ENABLE_CORED = 0
 if 'ENABLE_UTILS' not in vars():
     ENABLE_UTILS = 0
 if 'ENABLE_ZMQ' not in vars():
@@ -76,8 +76,8 @@ for arg in sys.argv[1:]:
         opts.add(arg)
 
 # Set env vars
-if "CLASHICD" not in os.environ:
-    os.environ["CLASHICD"] = BUILDDIR + '/src/cored' + EXEEXT
+if "CORED" not in os.environ:
+    os.environ["CORED"] = BUILDDIR + '/src/cored' + EXEEXT
 
 if EXEEXT == ".exe" and "-win" not in opts:
     # https://github.com/bitcoin/bitcoin/commit/d52802551752140cf41f0d9a225a43e84404d3e9
@@ -86,7 +86,7 @@ if EXEEXT == ".exe" and "-win" not in opts:
         "Win tests currently disabled by default.  Use -win option to enable")
     sys.exit(0)
 
-if not (ENABLE_WALLET == 1 and ENABLE_UTILS == 1 and ENABLE_CLASHICD == 1):
+if not (ENABLE_WALLET == 1 and ENABLE_UTILS == 1 and ENABLE_CORED == 1):
     print(
         "No rpc tests to run. Wallet, utils, and cored must all be enabled")
     sys.exit(0)

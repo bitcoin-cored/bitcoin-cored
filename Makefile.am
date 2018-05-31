@@ -14,15 +14,15 @@ export PYTHONPATH
 
 GZIP_ENV="-9n"
 
-if BUILD_CLASHIC_LIBS
+if BUILD_CORE_LIBS
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libcoreconsensus.pc
 endif
 
-CLASHICD_BIN=$(top_builddir)/src/$(BITCOIN_DAEMON_NAME)$(EXEEXT)
-CLASHIC_QT_BIN=$(top_builddir)/src/qt/$(CLASHIC_GUI_NAME)$(EXEEXT)
-CLASHIC_CLI_BIN=$(top_builddir)/src/$(CLASHIC_CLI_NAME)$(EXEEXT)
-CLASHIC_SEEDER_BIN=$(top_builddir)/src/$(CLASHIC_SEEDER_NAME)$(EXEEXT)
+CORED_BIN=$(top_builddir)/src/$(BITCOIN_DAEMON_NAME)$(EXEEXT)
+CORE_QT_BIN=$(top_builddir)/src/qt/$(CORE_GUI_NAME)$(EXEEXT)
+CORE_CLI_BIN=$(top_builddir)/src/$(CORE_CLI_NAME)$(EXEEXT)
+CORE_SEEDER_BIN=$(top_builddir)/src/$(CORE_SEEDER_NAME)$(EXEEXT)
 BITCOIN_WIN_INSTALLER=$(PACKAGE)-$(PACKAGE_VERSION)-win$(WINDOWS_BITS)-setup$(EXEEXT)
 
 empty :=
@@ -72,9 +72,9 @@ dist-hook:
 
 $(BITCOIN_WIN_INSTALLER): all-recursive
 	$(MKDIR_P) $(top_builddir)/release
-	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(CLASHICD_BIN) $(top_builddir)/release
-	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(CLASHIC_QT_BIN) $(top_builddir)/release
-	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(CLASHIC_CLI_BIN) $(top_builddir)/release
+	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(CORED_BIN) $(top_builddir)/release
+	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(CORE_QT_BIN) $(top_builddir)/release
+	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(CORE_CLI_BIN) $(top_builddir)/release
 	@test -f $(MAKENSIS) && $(MAKENSIS) -V2 $(top_builddir)/share/setup.nsi || \
 	  echo error: could not build $@
 	@echo built $@
@@ -98,7 +98,7 @@ $(OSX_APP)/Contents/Resources/bitcoin.icns: $(OSX_INSTALLER_ICONS)
 	$(MKDIR_P) $(@D)
 	$(INSTALL_DATA) $< $@
 
-$(OSX_APP)/Contents/MacOS/BitcoinABCD-Qt: $(CLASHIC_QT_BIN)
+$(OSX_APP)/Contents/MacOS/BitcoinABCD-Qt: $(CORE_QT_BIN)
 	$(MKDIR_P) $(@D)
 	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM)  $< $@
 
@@ -162,16 +162,16 @@ if TARGET_WINDOWS
 deploy: $(BITCOIN_WIN_INSTALLER)
 endif
 
-$(CLASHIC_QT_BIN): FORCE
+$(CORE_QT_BIN): FORCE
 	$(MAKE) -C src qt/$(@F)
 
-$(CLASHICD_BIN): FORCE
+$(CORED_BIN): FORCE
 	$(MAKE) -C src $(@F)
 
-$(CLASHIC_CLI_BIN): FORCE
+$(CORE_CLI_BIN): FORCE
 	$(MAKE) -C src $(@F)
 
-$(CLASHIC_SEEDER_BIN): FORCE
+$(CORE_SEEDER_BIN): FORCE
 	$(MAKE) -C src $(@F)
 
 if USE_LCOV

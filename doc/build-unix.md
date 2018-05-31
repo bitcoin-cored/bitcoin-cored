@@ -170,7 +170,7 @@ Berkeley DB
 It is recommended to use Berkeley DB 4.8. If you have to build it yourself:
 
 ```bash
-CLASHIC_ROOT=$(pwd)
+CORE_ROOT=$(pwd)
 
 # Pick some path to install BDB to, here we install in /usr/local/db4
 BDB_PREFIX="/usr/local/db4"
@@ -191,7 +191,7 @@ sudo ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PR
 sudo make install
 
 # Configure Bitcoin Core SQ to use our own-built instance of BDB
-cd $CLASHIC_ROOT
+cd $CORE_ROOT
 ./autogen.sh
 ./configure LDFLAGS="-L${BDB_PREFIX}/lib/" CPPFLAGS="-I${BDB_PREFIX}/include/" # (other args...)
 ```

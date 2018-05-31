@@ -95,7 +95,7 @@ bool AppInit(int argc, char *argv[]) {
                         "  cored [options]                     " +
                         strprintf(_("Start %s Daemon"), _(PACKAGE_NAME)) + "\n";
 
-            strUsage += "\n" + HelpMessage(HMM_CLASHICD);
+            strUsage += "\n" + HelpMessage(HMM_CORED);
         }
 
         fprintf(stdout, "%s", strUsage.c_str());
@@ -110,7 +110,7 @@ bool AppInit(int argc, char *argv[]) {
             return false;
         }
         try {
-            ReadConfigFile(GetArg("-conf", CLASHIC_CONF_FILENAME));
+            ReadConfigFile(GetArg("-conf", CORE_CONF_FILENAME));
         } catch (const std::exception &e) {
             fprintf(stderr, "Error reading configuration file: %s\n", e.what());
             return false;

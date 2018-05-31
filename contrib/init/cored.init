@@ -19,14 +19,14 @@ fi
 RETVAL=0
 
 prog=cored
-# you can override the lockfile via CLASHICD_LOCKFILE in /etc/sysconfig/cored
-lockfile=${CLASHICD_LOCKFILE-/var/lock/subsys/cored}
+# you can override the lockfile via CORED_LOCKFILE in /etc/sysconfig/cored
+lockfile=${CORED_LOCKFILE-/var/lock/subsys/cored}
 
-# cored defaults to /usr/bin/cored, override with CLASHICD_BIN
-cored=${CLASHICD_BIN-/usr/bin/cored}
+# cored defaults to /usr/bin/cored, override with CORED_BIN
+cored=${CORED_BIN-/usr/bin/cored}
 
-# cored opts default to -disablewallet, override with CLASHICD_OPTS
-cored_opts=${CLASHICD_OPTS--disablewallet}
+# cored opts default to -disablewallet, override with CORED_OPTS
+cored_opts=${CORED_OPTS--disablewallet}
 
 start() {
     echo -n $"Starting $prog: "

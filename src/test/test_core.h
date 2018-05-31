@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_TEST_TEST_CLASHIC_H
-#define BITCOIN_TEST_TEST_CLASHIC_H
+#ifndef BITCOIN_TEST_TEST_CORE_H
+#define BITCOIN_TEST_TEST_CORE_H
 
 #include "chainparamsbase.h"
 #include "key.h"

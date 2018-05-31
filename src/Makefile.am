@@ -24,8 +24,8 @@ BITCOIN_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BDB_CPPFLAGS) $(BOOST_CPPFLAG
 BITCOIN_INCLUDES += -I$(srcdir)/secp256k1/include
 BITCOIN_INCLUDES += $(UNIVALUE_CFLAGS)
 
-CLASHIC_SEEDER_INCLUDES = -I$(srcdir)/seeder
-CLASHIC_SEEDER_INCLUDES += $(BITCOIN_INCLUDES)
+CORE_SEEDER_INCLUDES = -I$(srcdir)/seeder
+CORE_SEEDER_INCLUDES += $(BITCOIN_INCLUDES)
 
 LIBBITCOIN_SERVER=libbitcoin_server.a
 LIBBITCOIN_COMMON=libbitcoin_common.a
@@ -39,11 +39,11 @@ LIBSECP256K1=secp256k1/libsecp256k1.la
 if ENABLE_ZMQ
 LIBBITCOIN_ZMQ=libbitcoin_zmq.a
 endif
-if BUILD_CLASHIC_LIBS
-LIBCLASHICCONSENSUS=libcoreconsensus.la
+if BUILD_CORE_LIBS
+LIBCORECONSENSUS=libcoreconsensus.la
 endif
-if BUILD_CLASHIC_SEEDER
-LIBCLASHIC_SEEDER=libcore_seeder.a
+if BUILD_CORE_SEEDER
+LIBCORE_SEEDER=libcore_seeder.a
 endif
 if ENABLE_WALLET
 LIBBITCOIN_WALLET=libbitcoin_wallet.a
@@ -61,26 +61,26 @@ EXTRA_LIBRARIES += \
   $(LIBBITCOIN_CONSENSUS) \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_CLI) \
-  $(LIBCLASHIC_SEEDER) \
+  $(LIBCORE_SEEDER) \
   $(LIBBITCOIN_WALLET) \
   $(LIBBITCOIN_ZMQ)
 
-lib_LTLIBRARIES = $(LIBCLASHICCONSENSUS)
+lib_LTLIBRARIES = $(LIBCORECONSENSUS)
 
 bin_PROGRAMS =
 noinst_PROGRAMS =
 TESTS =
 BENCHMARKS =
 
-if BUILD_CLASHICD
+if BUILD_CORED
   bin_PROGRAMS += cored
 endif
 
-if BUILD_CLASHIC_SEEDER
+if BUILD_CORE_SEEDER
   bin_PROGRAMS += core-seeder
 endif
 
-if BUILD_CLASHIC_UTILS
+if BUILD_CORE_UTILS
   bin_PROGRAMS += core-cli core-tx
 endif
 
@@ -374,7 +374,7 @@ libbitcoin_cli_a_SOURCES = \
   $(BITCOIN_CORE_H)
 
 # seeder library
-libcore_seeder_a_CPPFLAGS = $(AM_CPPFLAGS) $(PIE_FLAGS) $(CLASHIC_SEEDER_INCLUDES)
+libcore_seeder_a_CPPFLAGS = $(AM_CPPFLAGS) $(PIE_FLAGS) $(CORE_SEEDER_INCLUDES)
 libcore_seeder_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libcore_seeder_a_SOURCES = \
   seeder/bitcoin.cpp \
@@ -442,12 +442,12 @@ core_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 
 # core-seeder binary #
 core_seeder_SOURCES = seeder/main.cpp
-core_seeder_CPPFLAGS = $(AM_CPPFLAGS) $(CLASHIC_SEEDER_INCLUDES)
+core_seeder_CPPFLAGS = $(AM_CPPFLAGS) $(CORE_SEEDER_INCLUDES)
 core_seeder_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 core_seeder_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 core_seeder_LDADD = \
-  $(LIBCLASHIC_SEEDER) \
+  $(LIBCORE_SEEDER) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO)
 
@@ -476,7 +476,7 @@ core_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
 
 # coreconsensus library #
-if BUILD_CLASHIC_LIBS
+if BUILD_CORE_LIBS
 include_HEADERS = script/coreconsensus.h
 libcoreconsensus_la_SOURCES = $(crypto_libcore_crypto_a_SOURCES) $(libcore_consensus_a_SOURCES)
 

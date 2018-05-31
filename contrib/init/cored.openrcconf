@@ -1,33 +1,33 @@
 # /etc/conf.d/cored: config file for /etc/init.d/cored
 
 # Config file location
-#CLASHICD_CONFIGFILE="/etc/core/core.conf"
+#CORED_CONFIGFILE="/etc/core/core.conf"
 
-# What directory to write pidfile to?  (created and owned by $CLASHICD_USER)
-#CLASHICD_PIDDIR="/var/run/cored"
+# What directory to write pidfile to?  (created and owned by $CORED_USER)
+#CORED_PIDDIR="/var/run/cored"
 
 # What filename to give the pidfile
-#CLASHICD_PIDFILE="${CLASHICD_PIDDIR}/cored.pid"
+#CORED_PIDFILE="${CORED_PIDDIR}/cored.pid"
 
 # Where to write cored data (be mindful that the blockchain is large)
-#CLASHICD_DATADIR="/var/lib/cored"
+#CORED_DATADIR="/var/lib/cored"
 
 # User and group to own cored process
-#CLASHICD_USER="bitcoin"
-#CLASHICD_GROUP="bitcoin"
+#CORED_USER="bitcoin"
+#CORED_GROUP="bitcoin"
 
 # Path to cored executable
-#CLASHICD_BIN="/usr/bin/cored"
+#CORED_BIN="/usr/bin/cored"
 
 # Nice value to run cored under
-#CLASHICD_NICE=0
+#CORED_NICE=0
 
 # Additional options (avoid -conf and -datadir, use flags above)
-CLASHICD_OPTS="-disablewallet"
+CORED_OPTS="-disablewallet"
 
 # The timeout in seconds OpenRC will wait for cored to terminate
 # after a SIGTERM has been raised.
 # Note that this will be mapped as argument to start-stop-daemon's
 # '--retry' option, which means you can specify a retry schedule
 # here. For more information see man 8 start-stop-daemon.
-CLASHICD_SIGTERM_TIMEOUT=60
+CORED_SIGTERM_TIMEOUT=60

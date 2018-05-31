@@ -5,7 +5,7 @@ Setup
 ---------------------
 Bitcoin Core ABCD is a fork of Bitcoin Core, which is the original Bitcoin client and builds the backbone of the network. It downloads and stores the entire history of Bitcoin transactions (which is currently several GBs); depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
 
-To download Bitcoin Core ABCD, visit [bitcoincore.org](http://bitcoincore.org/).
+To download Bitcoin Core ABCD, visit [thebitcoincore.org](http://thebitcoincore.org/).
 
 Running
 ---------------------

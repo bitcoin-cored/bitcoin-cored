@@ -66,7 +66,7 @@ RAW_TEST_FILES =
 GENERATED_TEST_FILES = $(JSON_TEST_FILES:.json=.json.h) $(RAW_TEST_FILES:.raw=.raw.h)
 
 # test_core binary #
-CLASHIC_TESTS =\
+CORE_TESTS =\
   test/arith_uint256_tests.cpp \
   test/scriptnum10.h \
   test/addrman_tests.cpp \
@@ -141,7 +141,7 @@ CLASHIC_TESTS =\
   test/validation_tests.cpp
 
 if ENABLE_WALLET
-CLASHIC_TESTS += \
+CORE_TESTS += \
   wallet/test/wallet_test_fixture.cpp \
   wallet/test/wallet_test_fixture.h \
   wallet/test/accounting_tests.cpp \
@@ -149,7 +149,7 @@ CLASHIC_TESTS += \
   wallet/test/crypto_tests.cpp
 endif
 
-test_test_core_SOURCES = $(CLASHIC_TESTS) $(JSON_TEST_FILES) $(RAW_TEST_FILES)
+test_test_core_SOURCES = $(CORE_TESTS) $(JSON_TEST_FILES) $(RAW_TEST_FILES)
 test_test_core_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) -I$(builddir)/test/ $(TESTDEFS) $(EVENT_CFLAGS)
 test_test_core_LDADD = $(LIBBITCOIN_SERVER) $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CONSENSUS) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) \
   $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) $(BOOST_LIBS) $(BOOST_UNIT_TEST_FRAMEWORK_LIB) $(LIBSECP256K1) $(EVENT_LIBS)
@@ -187,7 +187,7 @@ test_test_core_fuzzy_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 
 nodist_test_test_core_SOURCES = $(GENERATED_TEST_FILES)
 
-$(CLASHIC_TESTS): $(GENERATED_TEST_FILES)
+$(CORE_TESTS): $(GENERATED_TEST_FILES)
 
 CLEAN_BITCOIN_TEST = test/*.gcda test/*.gcno $(GENERATED_TEST_FILES)
 

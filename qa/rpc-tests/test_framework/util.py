@@ -28,7 +28,7 @@ from . import coverage
 from .authproxy import AuthServiceProxy, JSONRPCException
 from .outputchecker import OutputChecker
 
-DEFAULT_CLASHICD = 'cored'
+DEFAULT_CORED = 'cored'
 COVERAGE_DIR = None
 
 logger = logging.getLogger("TestFramework.utils")
@@ -40,7 +40,7 @@ PORT_MIN = 11000
 # The number of ports to "reserve" for p2p and rpc, each
 PORT_RANGE = 5000
 
-CLASHICD_PROC_WAIT_TIMEOUT = 60
+CORED_PROC_WAIT_TIMEOUT = 60
 
 
 class PortSeed:
@@ -276,7 +276,7 @@ def initialize_chain(test_dir, num_nodes, cachedir):
         # Create cache directories, run coreds:
         for i in range(MAX_NODES):
             datadir = initialize_datadir(cachedir, i)
-            args = [os.getenv("CLASHICD", "cored"), "-server",
+            args = [os.getenv("CORED", "cored"), "-server",
                     "-keypool=1", "-datadir=" + datadir, "-discover=0"]
             if i > 0:
                 args.append("-connect=127.0.0.1:" + str(p2p_port(0)))
@@ -362,21 +362,21 @@ def locate_cored_binary():
     """
     Find cored binary if possible.
     """
-    cored_binary = os.getenv("CLASHICD", DEFAULT_CLASHICD)
+    cored_binary = os.getenv("CORED", DEFAULT_CORED)
     if os.path.exists(cored_binary):
         return cored_binary
 
-    if os.path.exists(os.path.join('src', DEFAULT_CLASHICD)):
+    if os.path.exists(os.path.join('src', DEFAULT_CORED)):
         cored_binary = os.path.abspath(
-            os.path.join('src', DEFAULT_CLASHICD))
+            os.path.join('src', DEFAULT_CORED))
     elif cored_binary == 'cored' or not os.path.exists(cored_binary):
-        # If CLASHICD was specified and exists, use it, otherwise look for source.
+        # If CORED was specified and exists, use it, otherwise look for source.
         # get_srcdir() already returns an absolute path
         src_dir_cand = get_srcdir(sys.argv[0])
         if src_dir_cand and os.path.exists(
-                os.path.join(src_dir_cand, 'src', DEFAULT_CLASHICD)):
+                os.path.join(src_dir_cand, 'src', DEFAULT_CORED)):
             cored_binary = os.path.join(
-                src_dir_cand, 'src', DEFAULT_CLASHICD)
+                src_dir_cand, 'src', DEFAULT_CORED)
         else:
             sys.stderr.write("Unable to locate cored for this test.\n")
             sys.exit(1)
@@ -456,7 +456,7 @@ def stop_node(node, i):
     except http.client.CannotSendRequest as e:
         logger.exception("Unable to stop node")
     return_code = cored_processes[i].wait(
-        timeout=CLASHICD_PROC_WAIT_TIMEOUT)
+        timeout=CORED_PROC_WAIT_TIMEOUT)
     assert_equal(return_code, 0)
     del cored_processes[i]
 

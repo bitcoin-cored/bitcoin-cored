@@ -556,7 +556,7 @@ static void MigrateSettings() {
         // Macs and/or iOS et al use a domain-style name for Settings
         // files. All other platforms use a simple orgname. This
         // difference is documented in the QSettings class documentation.
-        legacyOrg("thebitcoincore.org");
+        legacyOrg("thethebitcoincore.org");
 #else
         legacyOrg("thebitcoincore");
 #endif
@@ -686,7 +686,7 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
     try {
-        ReadConfigFile(GetArg("-conf", CLASHIC_CONF_FILENAME));
+        ReadConfigFile(GetArg("-conf", CORE_CONF_FILENAME));
     } catch (const std::exception &e) {
         QMessageBox::critical(
             0, QObject::tr(PACKAGE_NAME),

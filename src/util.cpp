@@ -102,8 +102,8 @@ namespace program_options {
 
 } // namespace boost
 
-const char *const CLASHIC_CONF_FILENAME = "core.conf";
-const char *const CLASHIC_PID_FILENAME = "cored.pid";
+const char *const CORE_CONF_FILENAME = "core.conf";
+const char *const CORE_PID_FILENAME = "cored.pid";
 
 ArgsManager gArgs;
 bool fPrintToConsole = false;
@@ -618,7 +618,7 @@ void ArgsManager::ReadConfigFile(const std::string &confPath) {
 
 #ifndef WIN32
 boost::filesystem::path GetPidFile() {
-    boost::filesystem::path pathPidFile(GetArg("-pid", CLASHIC_PID_FILENAME));
+    boost::filesystem::path pathPidFile(GetArg("-pid", CORE_PID_FILENAME));
     if (!pathPidFile.is_complete()) pathPidFile = GetDataDir() / pathPidFile;
     return pathPidFile;
 }
