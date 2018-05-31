@@ -4,7 +4,7 @@ Debian
 This directory contains files used to package clashicd/clashic-qt
 for Debian-based Linux systems. If you compile clashicd/clashic-qt yourself, there are some useful files here.
 
-## bitcoinclashic: URI support ##
+## bitcoincore: URI support ##
 
 
 clashic-qt.desktop  (Gnome / Open Desktop)
