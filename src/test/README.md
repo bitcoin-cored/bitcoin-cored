@@ -5,29 +5,29 @@ and tests weren't explicitly disabled.
 
 After configuring, they can be run with `make check`.
 
-To run the clashicd tests manually, launch `src/test/test_clashic`.
+To run the cored tests manually, launch `src/test/test_core`.
 
-To add more clashicd tests, add `BOOST_AUTO_TEST_CASE` functions to the existing
+To add more cored tests, add `BOOST_AUTO_TEST_CASE` functions to the existing
 .cpp files in the `test/` directory or add new .cpp files that
 implement new BOOST_AUTO_TEST_SUITE sections.
 
-To run the clashic-qt tests manually, launch `src/qt/test/test_clashic-qt`
+To run the core-qt tests manually, launch `src/qt/test/test_core-qt`
 
-To add more clashic-qt tests, add them to the `src/qt/test/` directory and
+To add more core-qt tests, add them to the `src/qt/test/` directory and
 the `src/qt/test/test_main.cpp` file.
 
 ### Running individual tests
 
-test_clashic has some built-in command-line arguments; for
+test_core has some built-in command-line arguments; for
 example, to run just the getarg_tests verbosely:
 
-    test_clashic --log_level=all --run_test=getarg_tests
+    test_core --log_level=all --run_test=getarg_tests
 
 ... or to run just the doubledash test:
 
-    test_clashic --run_test=getarg_tests/doubledash
+    test_core --run_test=getarg_tests/doubledash
 
-Run `test_clashic --help` for the full list.
+Run `test_core --help` for the full list.
 
 ### Note on adding test cases
 
@@ -37,9 +37,9 @@ sense to simply use this framework rather than require developers to
 configure some other framework (we want as few impediments to creating
 unit tests as possible).
 
-The build system is setup to compile an executable called `test_clashic`
+The build system is setup to compile an executable called `test_core`
 that runs all of the unit tests.  The main source file is called
-test_clashic.cpp. To add a new unit test file to our test suite you need 
+test_core.cpp. To add a new unit test file to our test suite you need 
 to add the file to `src/Makefile.test.include`. The pattern is to create 
 one test file for each class or source file for which you want to create 
 unit tests.  The file naming convention is `<source_filename>_tests.cpp` 
@@ -53,7 +53,7 @@ explaining how the boost unit test framework works:
 
 ### bitcoin-util-test.py
 
-The test directory also contains the bitcoin-util-test.py tool, which tests bitcoin utils (currently just clashic-tx). This test gets run automatically during the `make check` build process. It is also possible to run the test manually from the src directory:
+The test directory also contains the bitcoin-util-test.py tool, which tests bitcoin utils (currently just core-tx). This test gets run automatically during the `make check` build process. It is also possible to run the test manually from the src directory:
 
 ```
 test/bitcoin-util-test.py --srcdir=[current directory]

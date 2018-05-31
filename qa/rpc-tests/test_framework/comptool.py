@@ -12,7 +12,7 @@ import logging
 logger = logging.getLogger("TestFramework.comptool")
 
 '''
-This is a tool for comparing two or more clashicds to each other
+This is a tool for comparing two or more coreds to each other
 using a script provided.
 
 To use, create a class that implements get_tests(), and pass it in

@@ -1,8 +1,8 @@
-/usr/bin/clashic-cli		--	gen_context(system_u:object_r:clashic_exec_t,s0)
-/usr/sbin/clashicd		--	gen_context(system_u:object_r:clashic_exec_t,s0)
-/usr/lib(64)?/clashic/clashicd		--	gen_context(system_u:object_r:clashic_exec_t,s0)
+/usr/bin/core-cli		--	gen_context(system_u:object_r:core_exec_t,s0)
+/usr/sbin/cored		--	gen_context(system_u:object_r:core_exec_t,s0)
+/usr/lib(64)?/core/cored		--	gen_context(system_u:object_r:core_exec_t,s0)
 
-/etc/clashic(/.*)?		gen_context(system_u:object_r:clashic_conf_t,s0)
-/var/lib/clashicd(/.*)?		gen_context(system_u:object_r:clashic_var_lib_t,s0)
+/etc/core(/.*)?		gen_context(system_u:object_r:core_conf_t,s0)
+/var/lib/cored(/.*)?		gen_context(system_u:object_r:core_var_lib_t,s0)
 
-(/var)?/run/clashicd(/.*)?   gen_context(system_u:object_r:clashic_var_run_t,s0)
+(/var)?/run/cored(/.*)?   gen_context(system_u:object_r:core_var_run_t,s0)

@@ -3,7 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "netbase.h"
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 
 #include <string>
 

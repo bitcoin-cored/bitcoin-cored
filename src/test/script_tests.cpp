@@ -14,12 +14,12 @@
 #include "script/sign.h"
 #include "test/scriptflags.h"
 #include "test/sigutil.h"
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 #include "util.h"
 #include "utilstrencodings.h"
 
 #if defined(HAVE_CONSENSUS_LIB)
-#include "script/clashicconsensus.h"
+#include "script/coreconsensus.h"
 #endif
 
 #include <cstdint>

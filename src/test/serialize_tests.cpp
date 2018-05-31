@@ -5,7 +5,7 @@
 #include "serialize.h"
 #include "hash.h"
 #include "streams.h"
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 
 #include <cstdint>
 #include <limits>

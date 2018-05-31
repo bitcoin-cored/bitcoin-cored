@@ -1,13 +1,13 @@
 Shared Libraries
 ================
 
-## clashicconsensus
+## coreconsensus
 
-The purpose of this library is to make the verification functionality that is critical to Bitcoin Clashic's consensus available to other applications, e.g. to language bindings.
+The purpose of this library is to make the verification functionality that is critical to Bitcoin Core's consensus available to other applications, e.g. to language bindings.
 
 ### API
 
-The interface is defined in the C header `clashicconsensus.h` located in  `src/script/clashicconsensus.h`.
+The interface is defined in the C header `coreconsensus.h` located in  `src/script/coreconsensus.h`.
 
 #### Version
 

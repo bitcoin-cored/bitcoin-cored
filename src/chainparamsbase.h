@@ -10,7 +10,7 @@
 
 /**
  * CBaseChainParams defines the base parameters
- * (shared between clashic-cli and clashicd)
+ * (shared between core-cli and cored)
  * of a given instance of the Bitcoin ABCD system.
  */
 class CBaseChainParams {

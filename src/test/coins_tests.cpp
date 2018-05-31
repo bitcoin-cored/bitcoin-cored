@@ -5,7 +5,7 @@
 #include "coins.h"
 #include "consensus/validation.h"
 #include "script/standard.h"
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 #include "test/test_random.h"
 #include "uint256.h"
 #include "undo.h"

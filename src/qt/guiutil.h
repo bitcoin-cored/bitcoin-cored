@@ -46,7 +46,7 @@ QFont fixedPitchFont();
 void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent);
 void setupAmountWidget(QLineEdit *widget, QWidget *parent);
 
-// Parse "bitcoinclashic:" URI into recipient object, return true on successful
+// Parse "bitcoincore:" URI into recipient object, return true on successful
 // parsing
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out);
 bool parseBitcoinURI(QString uri, SendCoinsRecipient *out);

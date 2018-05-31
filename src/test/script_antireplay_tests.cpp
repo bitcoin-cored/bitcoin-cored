@@ -3,7 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "script/script.h"
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 
 #include "chainparams.h"
 #include "config.h"

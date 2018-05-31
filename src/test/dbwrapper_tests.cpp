@@ -4,7 +4,7 @@
 
 #include "dbwrapper.h"
 #include "random.h"
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 #include "uint256.h"
 
 #include <boost/assert.hpp>

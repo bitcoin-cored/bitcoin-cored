@@ -41,17 +41,17 @@ If you configure your Tor system accordingly, it is possible to make your node a
 reachable from the Tor network. Add these lines to your /etc/tor/torrc (or equivalent
 config file):
 
-	HiddenServiceDir /var/lib/tor/clashic-service/
+	HiddenServiceDir /var/lib/tor/core-service/
 	HiddenServicePort 10333 127.0.0.1:10333
 	HiddenServicePort 20333 127.0.0.1:20333
 
 The directory can be different of course, but (both) port numbers should be equal to
-your clashicd's P2P listen port (10333 by default).
+your cored's P2P listen port (10333 by default).
 
 	-externalip=X   You can tell bitcoin-abcd about its publicly reachable address using
 	                this option, and this can be a .onion address. Given the above
 	                configuration, you can find your onion address in
-	                /var/lib/tor/clashic-service/hostname. Onion addresses are given
+	                /var/lib/tor/core-service/hostname. Onion addresses are given
 	                preference for your node to advertise itself with, for connections
 	                coming from unroutable addresses (such as 127.0.0.1, where the
 	                Tor proxy typically runs).
@@ -68,18 +68,18 @@ your clashicd's P2P listen port (10333 by default).
 
 In a typical situation, where you're only reachable via Tor, this should suffice:
 
-	./clashicd -proxy=127.0.0.1:9050 -externalip=57qr3yd1nyntf5k.onion -listen
+	./cored -proxy=127.0.0.1:9050 -externalip=57qr3yd1nyntf5k.onion -listen
 
 (obviously, replace the Onion address with your own). It should be noted that you still
 listen on all devices and another node could establish a clearnet connection, when knowing
 your address. To mitigate this, additionally bind the address of your Tor proxy:
 
-	./clashicd ... -bind=127.0.0.1
+	./cored ... -bind=127.0.0.1
 
 If you don't care too much about hiding your node, and want to be reachable on IPv4
 as well, use `discover` instead:
 
-	./clashicd ... -discover
+	./cored ... -discover
 
 and open port 10333 on your firewall (or use -upnp).
 
@@ -105,12 +105,12 @@ and, if not disabled, configured using the `-torcontrol` and `-torpassword` sett
 To show verbose debugging information, pass `-debug=tor`.
 
 Connecting to Tor's control socket API requires one of two authentication methods to be 
-configured. For cookie authentication the user running clashicd must have write access 
+configured. For cookie authentication the user running cored must have write access 
 to the `CookieAuthFile` specified in Tor configuration. In some cases this is 
 preconfigured and the creation of a hidden service is automatic. If permission problems 
 are seen with `-debug=tor` they can be resolved by adding both the user running tor and 
-the user running clashicd to the same group and setting permissions appropriately. On 
-Debian-based systems the user running clashicd can be added to the debian-tor group, 
+the user running cored to the same group and setting permissions appropriately. On 
+Debian-based systems the user running cored can be added to the debian-tor group, 
 which has the appropriate permissions. An alternative authentication method is the use 
 of the `-torpassword` flag and a `hash-password` which can be enabled and specified in 
 Tor configuration.

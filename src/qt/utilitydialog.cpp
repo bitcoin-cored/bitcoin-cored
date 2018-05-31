@@ -69,7 +69,7 @@ HelpMessageDialog::HelpMessageDialog(QWidget *parent, bool about)
         ui->helpMessage->setVisible(false);
     } else {
         setWindowTitle(tr("Command-line options"));
-        QString header = tr("Usage:") + "\n" + "  clashic-qt [" +
+        QString header = tr("Usage:") + "\n" + "  core-qt [" +
                          tr("command-line options") + "]                     " +
                          "\n";
         QTextCursor cursor(ui->helpMessage->document());
@@ -78,7 +78,7 @@ HelpMessageDialog::HelpMessageDialog(QWidget *parent, bool about)
         cursor.insertText(header);
         cursor.insertBlock();
 
-        std::string strUsage = HelpMessage(HMM_CLASHIC_QT);
+        std::string strUsage = HelpMessage(HMM_CORE_QT);
         const bool showDebug = GetBoolArg("-help-debug", false);
         strUsage += HelpMessageGroup(tr("UI Options:").toStdString());
         if (showDebug) {

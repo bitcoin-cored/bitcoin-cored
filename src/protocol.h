@@ -278,7 +278,7 @@ enum ServiceFlags : uint64_t {
     // NODE_BITCOIN_CORE means the node supports Bitcoin Core and the
     // associated consensus rule changes.
     // This service bit is intended to be used prior until some time after the
-    // hardfork when the Bitcoin Clashic network has adequately separated.
+    // hardfork when the Bitcoin Core network has adequately separated.
     // TODO: remove (free up) the NODE_BITCOIN_CORE service bit once no longer
     // needed.
     NODE_BITCOIN_CORE = (1 << 6),

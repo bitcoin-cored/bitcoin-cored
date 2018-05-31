@@ -8,7 +8,7 @@
 #include "pubkey.h"
 #include "script/script.h"
 #include "script/standard.h"
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 #include "uint256.h"
 #include "validation.h"
 

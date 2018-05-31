@@ -115,13 +115,13 @@ if [ -n "$TRAVIS_NOHANG_WORKAROUND" ]; then
 # See: http://reviews.bitcoinabc.org/T44
 #      http://reviews.bitcoinabc.org/D497
 #
-# Basically for MinGW/Win32 builds test_clashic sometimes
+# Basically for MinGW/Win32 builds test_core sometimes
 # takes *forever* to run without producing any output.
 # This causes Travis's 10-minute timer to expire and
 # the build to be cancelled.  Builds in such a situation
 # do eventually complete.  As a workaround, this driver
 # permits output to stdout, so travis is happy
-# (see src/test/test_clashic.cpp) -- test_clashic prints
+# (see src/test/test_core.cpp) -- test_core prints
 # '.....' to the console as it runs.
 #
 	"$@" | tee $log_file 2>&1

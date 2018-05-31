@@ -56,7 +56,7 @@ READELF_CMD = os.getenv('READELF', '/usr/bin/readelf')
 CPPFILT_CMD = os.getenv('CPPFILT', '/usr/bin/c++filt')
 # Allowed NEEDED libraries
 ALLOWED_LIBRARIES = {
-# clashicd and clashic-qt
+# cored and core-qt
 b'libgcc_s.so.1', # GCC base support
 b'libc.so.6', # C library
 b'libpthread.so.0', # threading
@@ -65,7 +65,7 @@ b'libm.so.6', # math library
 b'librt.so.1', # real-time (clock)
 b'ld-linux-x86-64.so.2', # 64-bit dynamic linker
 b'ld-linux.so.2', # 32-bit dynamic linker
-# clashic-qt only
+# core-qt only
 b'libX11-xcb.so.1', # part of X11
 b'libX11.so.6', # part of X11
 b'libxcb.so.1', # part of X11

@@ -13,7 +13,7 @@ Construct a linear, no-fork, best version of the blockchain.
 
 ### [Qos](/contrib/qos) ###
 
-A Linux bash script that will set up traffic control (tc) to limit the outgoing bandwidth for connections to the Bitcoin Clashic network. This means one can have an always-on clashicd instance running, and another local clashicd/clashic-qt instance which connects to this node and receives blocks from it.
+A Linux bash script that will set up traffic control (tc) to limit the outgoing bandwidth for connections to the Bitcoin Core network. This means one can have an always-on cored instance running, and another local cored/core-qt instance which connects to this node and receives blocks from it.
 
 ### [Seeds](/contrib/seeds) ###
 Utility to generate the pnSeed[] array that is compiled into the client.
@@ -22,8 +22,8 @@ Build Tools and Keys
 ---------------------
 
 ### [Debian](/contrib/debian) ###
-Contains files used to package clashicd/clashic-qt
-for Debian-based Linux systems. If you compile clashicd/clashic-qt yourself, there are some useful files here.
+Contains files used to package cored/core-qt
+for Debian-based Linux systems. If you compile cored/core-qt yourself, there are some useful files here.
 
 ### [Gitian-descriptors](/contrib/gitian-descriptors) ###
 Notes on getting Gitian builds up and running using KVM.
@@ -44,7 +44,7 @@ Test and Verify Tools
 ---------------------
 
 ### [TestGen](/contrib/testgen) ###
-Utilities to generate test vectors for the data-driven Bitcoin Clashic tests.
+Utilities to generate test vectors for the data-driven Bitcoin Core tests.
 
 ### [Verify Binaries](/contrib/verifybinaries) ###
-This script attempts to download and verify the signature file SHA256SUMS.asc from bitcoinclashic.org.
+This script attempts to download and verify the signature file SHA256SUMS.asc from thebitcoincore.org.

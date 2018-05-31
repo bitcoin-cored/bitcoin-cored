@@ -1,0 +1,92 @@
+#!/sbin/runscript
+
+# backward compatibility for existing gentoo layout 
+#
+if [ -d "/var/lib/cored/.core" ]; then
+	CORED_DEFAULT_DATADIR="/var/lib/cored/.core"
+else
+	CORED_DEFAULT_DATADIR="/var/lib/cored"
+fi
+
+CORED_CONFIGFILE=${CORED_CONFIGFILE:-/etc/core/core.conf}
+CORED_PIDDIR=${CORED_PIDDIR:-/var/run/cored}
+CORED_PIDFILE=${CORED_PIDFILE:-${CORED_PIDDIR}/cored.pid}
+CORED_DATADIR=${CORED_DATADIR:-${CORED_DEFAULT_DATADIR}}
+CORED_USER=${CORED_USER:-${BITCOIN_USER:-bitcoin}}
+CORED_GROUP=${CORED_GROUP:-bitcoin}
+CORED_BIN=${CORED_BIN:-/usr/bin/cored}
+CORED_NICE=${CORED_NICE:-${NICELEVEL:-0}}
+CORED_OPTS="${CORED_OPTS:-${BITCOIN_OPTS}}"
+
+name="Bitcoin Core ABCD Daemon"
+description="Bitcoin cryptocurrency P2P network daemon"
+
+command="/usr/bin/cored"
+command_args="-pid=\"${CORED_PIDFILE}\" \
+		-conf=\"${CORED_CONFIGFILE}\" \
+		-datadir=\"${CORED_DATADIR}\" \
+		-daemon \
+		${CORED_OPTS}"
+
+required_files="${CORED_CONFIGFILE}"
+start_stop_daemon_args="-u ${CORED_USER} \
+			-N ${CORED_NICE} -w 2000"
+pidfile="${CORED_PIDFILE}"
+
+# The retry schedule to use when stopping the daemon. Could be either
+# a timeout in seconds or multiple signal/timeout pairs (like
+# "SIGKILL/180 SIGTERM/300")
+retry="${CORED_SIGTERM_TIMEOUT}"
+
+depend() {
+	need localmount net
+}
+
+# verify
+# 1) that the datadir exists and is writable (or create it)
+# 2) that a directory for the pid exists and is writable
+# 3) ownership and permissions on the config file
+start_pre() {
+	checkpath \
+	-d \
+	--mode 0750 \
+	--owner "${CORED_USER}:${CORED_GROUP}" \
+	"${CORED_DATADIR}"
+
+	checkpath \
+	-d \
+	--mode 0755 \
+	--owner "${CORED_USER}:${CORED_GROUP}" \
+	"${CORED_PIDDIR}"
+
+	checkpath -f \
+	-o ${CORED_USER}:${CORED_GROUP} \
+	-m 0660 \
+	${CORED_CONFIGFILE}
+
+	checkconfig || return 1
+}
+
+checkconfig()
+{
+	if ! grep -qs '^rpcpassword=' "${CORED_CONFIGFILE}" ; then
+		eerror ""
+		eerror "ERROR: You must set a secure rpcpassword to run cored."
+		eerror "The setting must appear in ${CORED_CONFIGFILE}"
+		eerror ""
+		eerror "This password is security critical to securing wallets "
+		eerror "and must not be the same as the rpcuser setting."
+		eerror "You can generate a suitable random password using the following"
+		eerror "command from the shell:"
+		eerror ""
+		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
+		eerror ""
+		eerror "It is also recommended that you also set alertnotify so you are "
+		eerror "notified of problems:"
+		eerror ""
+		eerror "ie: alertnotify=echo %%s | mail -s \"Bitcoin Core Alert\"" \
+			"admin@foo.com"
+		eerror ""
+		return 1
+	fi
+}

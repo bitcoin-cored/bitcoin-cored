@@ -50,9 +50,9 @@ Possible options, which apply to each individual test run:
 
 ```
   -h, --help            show this help message and exit
-  --nocleanup           Leave clashicds and test.* datadir on exit or error
-  --noshutdown          Don't stop clashicds after the test execution
-  --srcdir=SRCDIR       Source directory containing clashicd/clashic-cli
+  --nocleanup           Leave coreds and test.* datadir on exit or error
+  --noshutdown          Don't stop coreds after the test execution
+  --srcdir=SRCDIR       Source directory containing cored/core-cli
                         (default: ../../src)
   --tmpdir=TMPDIR       Root directory for datadirs
   --tracerpc            Print out all RPC calls as they are made
@@ -77,7 +77,7 @@ to recover with:
 
 ```bash
 rm -rf cache
-killall clashicd
+killall cored
 ```
 
 Writing tests

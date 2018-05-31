@@ -36,7 +36,7 @@ class RPCBindTest(BitcoinTestFramework):
         binds = ['-rpcbind=' + addr for addr in addresses]
         self.nodes = start_nodes(
             self.num_nodes, self.options.tmpdir, [base_args + binds], connect_to)
-        pid = clashicd_processes[0].pid
+        pid = cored_processes[0].pid
         assert_equal(set(get_bind_addrs(pid)), set(expected))
         stop_nodes(self.nodes)
 

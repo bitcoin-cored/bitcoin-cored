@@ -1,5 +1,5 @@
-#ifndef CLASHIC_SEEDER_UTIL_H
-#define CLASHIC_SEEDER_UTIL_H
+#ifndef CORE_SEEDER_UTIL_H
+#define CORE_SEEDER_UTIL_H
 
 #include <cstdarg>
 #include <errno.h>

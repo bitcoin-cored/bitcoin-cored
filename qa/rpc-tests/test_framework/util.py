@@ -28,7 +28,7 @@ from . import coverage
 from .authproxy import AuthServiceProxy, JSONRPCException
 from .outputchecker import OutputChecker
 
-DEFAULT_CLASHICD = 'clashicd'
+DEFAULT_CORED = 'cored'
 COVERAGE_DIR = None
 
 logger = logging.getLogger("TestFramework.utils")
@@ -40,7 +40,7 @@ PORT_MIN = 11000
 # The number of ports to "reserve" for p2p and rpc, each
 PORT_RANGE = 5000
 
-CLASHICD_PROC_WAIT_TIMEOUT = 60
+CORED_PROC_WAIT_TIMEOUT = 60
 
 
 class PortSeed:
@@ -196,7 +196,7 @@ def sync_mempools(rpc_connections, *, wait=1, timeout=60):
     raise AssertionError("Mempool sync failed")
 
 
-clashicd_processes = {}
+cored_processes = {}
 
 
 def initialize_datadir(dirname, n):
@@ -204,7 +204,7 @@ def initialize_datadir(dirname, n):
     if not os.path.isdir(datadir):
         os.makedirs(datadir)
     rpc_u, rpc_p = rpc_auth_pair(n)
-    with open(os.path.join(datadir, "clashic.conf"), 'w', encoding='utf8') as f:
+    with open(os.path.join(datadir, "core.conf"), 'w', encoding='utf8') as f:
         f.write("regtest=1\n")
         f.write("rpcuser=" + rpc_u + "\n")
         f.write("rpcpassword=" + rpc_p + "\n")
@@ -231,15 +231,15 @@ def rpc_url(i, rpchost=None):
     return "http://%s:%s@%s:%d" % (rpc_u, rpc_p, host, int(port))
 
 
-def wait_for_clashicd_start(process, url, i):
+def wait_for_cored_start(process, url, i):
     '''
-    Wait for clashicd to start. This means that RPC is accessible and fully initialized.
-    Raise an exception if clashicd exits during initialization.
+    Wait for cored to start. This means that RPC is accessible and fully initialized.
+    Raise an exception if cored exits during initialization.
     '''
     while True:
         if process.poll() is not None:
             raise Exception(
-                'clashicd exited with status %i during initialization' % process.returncode)
+                'cored exited with status %i during initialization' % process.returncode)
         try:
             rpc = get_rpc_proxy(url, i)
             blocks = rpc.getblockcount()
@@ -273,16 +273,16 @@ def initialize_chain(test_dir, num_nodes, cachedir):
             if os.path.isdir(os.path.join(cachedir, "node" + str(i))):
                 shutil.rmtree(os.path.join(cachedir, "node" + str(i)))
 
-        # Create cache directories, run clashicds:
+        # Create cache directories, run coreds:
         for i in range(MAX_NODES):
             datadir = initialize_datadir(cachedir, i)
-            args = [os.getenv("CLASHICD", "clashicd"), "-server",
+            args = [os.getenv("CORED", "cored"), "-server",
                     "-keypool=1", "-datadir=" + datadir, "-discover=0"]
             if i > 0:
                 args.append("-connect=127.0.0.1:" + str(p2p_port(0)))
-            clashicd_processes[i] = subprocess.Popen(args)
+            cored_processes[i] = subprocess.Popen(args)
             logger.debug("Creating data directories from cached datadir")
-            wait_for_clashicd_start(clashicd_processes[i], rpc_url(i), i)
+            wait_for_cored_start(cored_processes[i], rpc_url(i), i)
             logger.debug("initialize_chain: RPC successfully started")
 
         rpcs = []
@@ -324,7 +324,7 @@ def initialize_chain(test_dir, num_nodes, cachedir):
         from_dir = os.path.join(cachedir, "node" + str(i))
         to_dir = os.path.join(test_dir,  "node" + str(i))
         shutil.copytree(from_dir, to_dir)
-        # Overwrite port/rpcport in clashic.conf
+        # Overwrite port/rpcport in core.conf
         initialize_datadir(test_dir, i)
 
 
@@ -358,55 +358,55 @@ def _rpchost_to_args(rpchost):
     return rv
 
 
-def locate_clashicd_binary():
+def locate_cored_binary():
     """
-    Find clashicd binary if possible.
+    Find cored binary if possible.
     """
-    clashicd_binary = os.getenv("CLASHICD", DEFAULT_CLASHICD)
-    if os.path.exists(clashicd_binary):
-        return clashicd_binary
+    cored_binary = os.getenv("CORED", DEFAULT_CORED)
+    if os.path.exists(cored_binary):
+        return cored_binary
 
-    if os.path.exists(os.path.join('src', DEFAULT_CLASHICD)):
-        clashicd_binary = os.path.abspath(
-            os.path.join('src', DEFAULT_CLASHICD))
-    elif clashicd_binary == 'clashicd' or not os.path.exists(clashicd_binary):
-        # If CLASHICD was specified and exists, use it, otherwise look for source.
+    if os.path.exists(os.path.join('src', DEFAULT_CORED)):
+        cored_binary = os.path.abspath(
+            os.path.join('src', DEFAULT_CORED))
+    elif cored_binary == 'cored' or not os.path.exists(cored_binary):
+        # If CORED was specified and exists, use it, otherwise look for source.
         # get_srcdir() already returns an absolute path
         src_dir_cand = get_srcdir(sys.argv[0])
         if src_dir_cand and os.path.exists(
-                os.path.join(src_dir_cand, 'src', DEFAULT_CLASHICD)):
-            clashicd_binary = os.path.join(
-                src_dir_cand, 'src', DEFAULT_CLASHICD)
+                os.path.join(src_dir_cand, 'src', DEFAULT_CORED)):
+            cored_binary = os.path.join(
+                src_dir_cand, 'src', DEFAULT_CORED)
         else:
-            sys.stderr.write("Unable to locate clashicd for this test.\n")
+            sys.stderr.write("Unable to locate cored for this test.\n")
             sys.exit(1)
-    return clashicd_binary
+    return cored_binary
 
 
 def start_node(i, dirname, extra_args=None, rpchost=None, timewait=None, binary=None, stderr_checker=None):
     """
-    Start a clashicd and return RPC connection to it.
+    Start a cored and return RPC connection to it.
     If stderr_checker is provided, it must be an OutputChecker.
-    Its output_file_obj will be connected to the stderr of the clashicd process.
+    Its output_file_obj will be connected to the stderr of the cored process.
     """
     datadir = os.path.join(dirname, "node" + str(i))
     if binary is None:
-        binary = locate_clashicd_binary()
+        binary = locate_cored_binary()
     args = [binary, "-datadir=" + datadir, "-server", "-keypool=1",
             "-discover=0", "-rest", "-logtimemicros", "-debug", "-debugexclude=libevent", "-debugexclude=leveldb", "-mocktime=" + str(get_mocktime()), "-uacomment=testnode%d" % i]
     if extra_args is not None:
         args.extend(extra_args)
     if stderr_checker:
         assert(isinstance(stderr_checker, OutputChecker))
-        clashicd_processes[i] = subprocess.Popen(args,
+        cored_processes[i] = subprocess.Popen(args,
                                                  universal_newlines=True,
                                                  stderr=stderr_checker.get_connector())
     else:
-        clashicd_processes[i] = subprocess.Popen(args)
+        cored_processes[i] = subprocess.Popen(args)
     logger.debug(
-        "initialize_chain: clashicd started, waiting for RPC to come up")
+        "initialize_chain: cored started, waiting for RPC to come up")
     url = rpc_url(i, rpchost)
-    wait_for_clashicd_start(clashicd_processes[i], url, i)
+    wait_for_cored_start(cored_processes[i], url, i)
     logger.debug("initialize_chain: RPC successfully started")
     proxy = get_rpc_proxy(url, i, timeout=timewait)
 
@@ -418,7 +418,7 @@ def start_node(i, dirname, extra_args=None, rpchost=None, timewait=None, binary=
 
 def start_nodes(num_nodes, dirname, extra_args=None, rpchost=None, timewait=None, binary=None, stderr_checkers=None):
     """
-    Start multiple clashicds, return RPC connections to them
+    Start multiple coreds, return RPC connections to them
     stderr_checkers is a list which can contain OutputCheckers or None for each of the nodes.
     if a test calls start_nodes and provides an OutputChecker for a node,
     this will be connected to the stderr output of the node.
@@ -455,16 +455,16 @@ def stop_node(node, i):
         node.stop()
     except http.client.CannotSendRequest as e:
         logger.exception("Unable to stop node")
-    return_code = clashicd_processes[i].wait(
-        timeout=CLASHICD_PROC_WAIT_TIMEOUT)
+    return_code = cored_processes[i].wait(
+        timeout=CORED_PROC_WAIT_TIMEOUT)
     assert_equal(return_code, 0)
-    del clashicd_processes[i]
+    del cored_processes[i]
 
 
 def stop_nodes(nodes):
     for i, node in enumerate(nodes):
         stop_node(node, i)
-    assert not clashicd_processes.values()  # All connections must be gone now
+    assert not cored_processes.values()  # All connections must be gone now
 
 
 def set_node_times(nodes, t):

@@ -6,7 +6,7 @@
 #include "net.h"
 #include "validation.h"
 
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 
 #include <boost/signals2/signal.hpp>
 #include <boost/test/unit_test.hpp>

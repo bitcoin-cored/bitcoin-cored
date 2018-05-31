@@ -556,7 +556,7 @@ static void MigrateSettings() {
         // Macs and/or iOS et al use a domain-style name for Settings
         // files. All other platforms use a simple orgname. This
         // difference is documented in the QSettings class documentation.
-        legacyOrg("thebitcoincore.org");
+        legacyOrg("thethebitcoincore.org");
 #else
         legacyOrg("thebitcoincore");
 #endif
@@ -675,7 +675,7 @@ int main(int argc, char *argv[]) {
     /// directory. User language is set up: pick a data directory.
     if (!Intro::pickDataDirectory()) return EXIT_SUCCESS;
 
-    /// 6. Determine availability of data directory and parse clashic.conf
+    /// 6. Determine availability of data directory and parse core.conf
     /// - Do not call GetDataDir(true) before this step finishes.
     if (!boost::filesystem::is_directory(GetDataDir(false))) {
         QMessageBox::critical(
@@ -686,7 +686,7 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
     try {
-        ReadConfigFile(GetArg("-conf", CLASHIC_CONF_FILENAME));
+        ReadConfigFile(GetArg("-conf", CORE_CONF_FILENAME));
     } catch (const std::exception &e) {
         QMessageBox::critical(
             0, QObject::tr(PACKAGE_NAME),
@@ -740,7 +740,7 @@ int main(int argc, char *argv[]) {
     if (PaymentServer::ipcSendCommandLine()) exit(EXIT_SUCCESS);
 
     // Start up the payment server early, too, so impatient users that click on
-    // bitcoinclashic: links repeatedly have their payment requests routed to
+    // bitcoincore: links repeatedly have their payment requests routed to
     // this process:
     app.createPaymentServer();
 #endif

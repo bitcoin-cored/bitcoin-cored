@@ -51,8 +51,8 @@ extern bool fLogIPs;
 extern std::atomic<bool> fReopenDebugLog;
 extern CTranslationInterface translationInterface;
 
-extern const char *const CLASHIC_CONF_FILENAME;
-extern const char *const CLASHIC_PID_FILENAME;
+extern const char *const CORE_CONF_FILENAME;
+extern const char *const CORE_PID_FILENAME;
 
 extern std::atomic<uint32_t> logCategories;
 

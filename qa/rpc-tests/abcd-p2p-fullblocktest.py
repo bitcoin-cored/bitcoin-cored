@@ -29,7 +29,7 @@ class PreviousSpendableOutput(object):
         self.n = n  # the output we're spending
 
 
-# TestNode: A peer we use to send messages to clashicd, and store responses.
+# TestNode: A peer we use to send messages to cored, and store responses.
 class TestNode(SingleNodeConnCB):
 
     def __init__(self):

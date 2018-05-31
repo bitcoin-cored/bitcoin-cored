@@ -11,7 +11,7 @@
 #include "random.h"
 #include "serialize.h"
 #include "streams.h"
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 #include "uint256.h"
 #include "util.h"
 #include "utilstrencodings.h"
@@ -1078,7 +1078,7 @@ BOOST_AUTO_TEST_CASE(rolling_bloom) {
     for (int i = 0; i < 10000; i++) {
         if (rb1.contains(RandomData())) ++nHits;
     }
-    // Run test_clashic with --log_level=message to see BOOST_TEST_MESSAGEs:
+    // Run test_core with --log_level=message to see BOOST_TEST_MESSAGEs:
     BOOST_TEST_MESSAGE("RollingBloomFilter got "
                        << nHits << " false positives (~100 expected)");
 

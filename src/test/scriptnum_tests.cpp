@@ -4,7 +4,7 @@
 
 #include "script/script.h"
 #include "scriptnum10.h"
-#include "test/test_clashic.h"
+#include "test/test_core.h"
 
 #include <boost/test/unit_test.hpp>
 #include <climits>
