@@ -2,12 +2,12 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "script/script.h"
 #include "core_io.h"
 #include "key.h"
 #include "keystore.h"
 #include "policy/policy.h"
 #include "script/ismine.h"
+#include "script/script.h"
 #include "script/script_error.h"
 #include "script/sign.h"
 #include "test/test_clashic.h"
@@ -107,7 +107,8 @@ BOOST_AUTO_TEST_CASE(sign) {
     // Check to make sure signature verification fails if we use the wrong
     // ScriptSig:
     for (int i = 0; i < 8; i++) {
-        PrecomputedTransactionData txdata(CTransaction(txTo[i]));
+        CTransaction tx(txTo[i]);
+        PrecomputedTransactionData txdata(tx);
         for (int j = 0; j < 8; j++) {
             CScript sigSave = txTo[i].vin[0].scriptSig;
             txTo[i].vin[0].scriptSig = txTo[j].vin[0].scriptSig;
