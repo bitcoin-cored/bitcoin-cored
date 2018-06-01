@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_CLASHICCONSENSUS_H
-#define BITCOIN_CLASHICCONSENSUS_H
+#ifndef CLASHIC_CLASHICCONSENSUS_H
+#define CLASHIC_CLASHICCONSENSUS_H
 
 #include <cstdint>
 
@@ -91,4 +91,4 @@ EXPORT_SYMBOL unsigned int bitcoinconsensus_version();
 
 #undef EXPORT_SYMBOL
 
-#endif // BITCOIN_CLASHICCONSENSUS_H
+#endif // CLASHIC_CLASHICCONSENSUS_H
