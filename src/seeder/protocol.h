@@ -65,13 +65,14 @@ enum ServiceFlags : uint64_t {
     NODE_BLOOM = (1 << 2),
     NODE_XTHIN = (1 << 4),
     NODE_BITCOIN_CASH = (1 << 5),
+    NODE_BITCOIN_CORE = (1 << 6),
 };
 
 class CAddress : public CService {
 public:
     CAddress();
     CAddress(CService ipIn,
-             uint64_t nServicesIn = NODE_NETWORK | NODE_BITCOIN_CASH);
+             uint64_t nServicesIn = NODE_NETWORK | NODE_BITCOIN_CORE);
 
     void Init();
 

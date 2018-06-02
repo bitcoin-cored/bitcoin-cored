@@ -9,6 +9,7 @@
 #include "script/ismine.h"
 #include "script/script.h"
 #include "script/script_error.h"
+#include "script/sighashtype.h"
 #include "script/sign.h"
 #include "test/test_clashic.h"
 #include "uint256.h"
@@ -20,9 +21,9 @@ typedef std::vector<uint8_t> valtype;
 BOOST_FIXTURE_TEST_SUITE(multisig_tests, BasicTestingSetup)
 
 CScript sign_multisig(CScript scriptPubKey, std::vector<CKey> keys,
-                      CTransaction transaction, int whichIn) {
-    uint256 hash =
-        SignatureHash(scriptPubKey, transaction, whichIn, SIGHASH_ALL, 0);
+                      CMutableTransaction mutableTransaction, int whichIn) {
+    uint256 hash = SignatureHash(scriptPubKey, CTransaction(mutableTransaction),
+                                 whichIn, SigHashType(), Amount(0));
 
     CScript result;
     // CHECKMULTISIG bug workaround
@@ -41,7 +42,7 @@ BOOST_AUTO_TEST_CASE(multisig_verify) {
 
     ScriptError err;
     CKey key[4];
-    CAmount amount = 0;
+    Amount amount(0);
     for (int i = 0; i < 4; i++)
         key[i].MakeNewKey(true);
 
@@ -350,8 +351,9 @@ BOOST_AUTO_TEST_CASE(multisig_Sign) {
     }
 
     for (int i = 0; i < 3; i++) {
-        BOOST_CHECK_MESSAGE(SignSignature(keystore, txFrom, txTo[i], 0,
-                                          SIGHASH_ALL | SIGHASH_FORKID),
+        BOOST_CHECK_MESSAGE(SignSignature(keystore, CTransaction(txFrom),
+                                          txTo[i], 0,
+                                          SigHashType().withForkId()),
                             strprintf("SignSignature %d", i));
     }
 }

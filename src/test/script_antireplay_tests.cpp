@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE(test_antireplay) {
 
     // The anti replay rule start at uahfHeight and stops at
     // antiReplayOpReturnSunsetHeight.
-    const int nUAHFHeight = config.GetChainParams().GetConsensus().uahfHeight;
+    const int nUAHFHeight = params.uahfHeight;
     const int nSunsetHeight = params.antiReplayOpReturnSunsetHeight;
 
     const int64_t nUAHFStartTime = 123456;
@@ -91,22 +91,24 @@ BOOST_AUTO_TEST_CASE(test_antireplay) {
     {
         // Base transaction is valid.
         CValidationState state;
-        BOOST_CHECK(ContextualCheckTransaction(config, tx, state, params,
+        BOOST_CHECK(ContextualCheckTransaction(config, CTransaction(tx), state,
                                                nSunsetHeight, nUAHFStartTime));
     }
 
     {
         // Base transaction is still valid after sunset.
         CValidationState state;
-        BOOST_CHECK(ContextualCheckTransaction(
-            config, tx, state, params, nSunsetHeight + 1, nUAHFStartTime));
+        BOOST_CHECK(ContextualCheckTransaction(config, CTransaction(tx), state,
+                                               nSunsetHeight + 1,
+                                               nUAHFStartTime));
     }
 
     {
         // Base transaction is valid before the fork.
         CValidationState state;
-        BOOST_CHECK(ContextualCheckTransaction(
-            config, tx, state, params, nUAHFHeight - 1, nUAHFStartTime - 1));
+        BOOST_CHECK(ContextualCheckTransaction(config, CTransaction(tx), state,
+                                               nUAHFHeight - 1,
+                                               nUAHFStartTime - 1));
     }
 
     tx.vout[0].scriptPubKey = CScript() << OP_RETURN << OP_0;
@@ -114,7 +116,7 @@ BOOST_AUTO_TEST_CASE(test_antireplay) {
     {
         // Wrong commitment, still valid.
         CValidationState state;
-        BOOST_CHECK(ContextualCheckTransaction(config, tx, state, params,
+        BOOST_CHECK(ContextualCheckTransaction(config, CTransaction(tx), state,
                                                nSunsetHeight, nUAHFStartTime));
     }
 
@@ -124,7 +126,7 @@ BOOST_AUTO_TEST_CASE(test_antireplay) {
     {
         // Anti replay commitment, not valid anymore.
         CValidationState state;
-        BOOST_CHECK(!ContextualCheckTransaction(config, tx, state, params,
+        BOOST_CHECK(!ContextualCheckTransaction(config, CTransaction(tx), state,
                                                 nUAHFHeight, nUAHFStartTime));
         BOOST_CHECK_EQUAL(state.GetRejectReason(), "bad-txn-replay");
     }
@@ -132,7 +134,7 @@ BOOST_AUTO_TEST_CASE(test_antireplay) {
     {
         // Anti replay commitment, not valid anymore.
         CValidationState state;
-        BOOST_CHECK(!ContextualCheckTransaction(config, tx, state, params,
+        BOOST_CHECK(!ContextualCheckTransaction(config, CTransaction(tx), state,
                                                 nSunsetHeight, nUAHFStartTime));
         BOOST_CHECK_EQUAL(state.GetRejectReason(), "bad-txn-replay");
     }
@@ -141,14 +143,15 @@ BOOST_AUTO_TEST_CASE(test_antireplay) {
         // Anti replay commitment, disabled before start time.
         CValidationState state;
         BOOST_CHECK(ContextualCheckTransaction(
-            config, tx, state, params, nUAHFHeight - 1, nUAHFStartTime));
+            config, CTransaction(tx), state, nUAHFHeight - 1, nUAHFStartTime));
     }
 
     {
         // Anti replay commitment, disabled after sunset.
         CValidationState state;
-        BOOST_CHECK(ContextualCheckTransaction(
-            config, tx, state, params, nSunsetHeight + 1, nUAHFStartTime));
+        BOOST_CHECK(ContextualCheckTransaction(config, CTransaction(tx), state,
+                                               nSunsetHeight + 1,
+                                               nUAHFStartTime));
     }
 }
 

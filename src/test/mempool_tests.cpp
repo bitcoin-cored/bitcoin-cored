@@ -52,13 +52,13 @@ BOOST_AUTO_TEST_CASE(MempoolRemoveTest) {
 
     // Nothing in pool, remove should do nothing:
     unsigned int poolSize = testPool.size();
-    testPool.removeRecursive(txParent);
+    testPool.removeRecursive(CTransaction(txParent));
     BOOST_CHECK_EQUAL(testPool.size(), poolSize);
 
     // Just the parent:
     testPool.addUnchecked(txParent.GetId(), entry.FromTx(txParent));
     poolSize = testPool.size();
-    testPool.removeRecursive(txParent);
+    testPool.removeRecursive(CTransaction(txParent));
     BOOST_CHECK_EQUAL(testPool.size(), poolSize - 1);
 
     // Parent, children, grandchildren:
@@ -70,18 +70,18 @@ BOOST_AUTO_TEST_CASE(MempoolRemoveTest) {
     }
     // Remove Child[0], GrandChild[0] should be removed:
     poolSize = testPool.size();
-    testPool.removeRecursive(txChild[0]);
+    testPool.removeRecursive(CTransaction(txChild[0]));
     BOOST_CHECK_EQUAL(testPool.size(), poolSize - 2);
     // ... make sure grandchild and child are gone:
     poolSize = testPool.size();
-    testPool.removeRecursive(txGrandChild[0]);
+    testPool.removeRecursive(CTransaction(txGrandChild[0]));
     BOOST_CHECK_EQUAL(testPool.size(), poolSize);
     poolSize = testPool.size();
-    testPool.removeRecursive(txChild[0]);
+    testPool.removeRecursive(CTransaction(txChild[0]));
     BOOST_CHECK_EQUAL(testPool.size(), poolSize);
     // Remove parent, all children/grandchildren should go:
     poolSize = testPool.size();
-    testPool.removeRecursive(txParent);
+    testPool.removeRecursive(CTransaction(txParent));
     BOOST_CHECK_EQUAL(testPool.size(), poolSize - 5);
     BOOST_CHECK_EQUAL(testPool.size(), 0);
 
@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE(MempoolRemoveTest) {
     // Now remove the parent, as might happen if a block-re-org occurs but the
     // parent cannot be put into the mempool (maybe because it is non-standard):
     poolSize = testPool.size();
-    testPool.removeRecursive(txParent);
+    testPool.removeRecursive(CTransaction(txParent));
     BOOST_CHECK_EQUAL(testPool.size(), poolSize - 6);
     BOOST_CHECK_EQUAL(testPool.size(), 0);
 }
@@ -454,10 +454,10 @@ BOOST_AUTO_TEST_CASE(MempoolAncestorIndexingTest) {
     uint64_t tx7Size = GetTransactionSize(tx7);
 
     /* set the fee to just below tx2's feerate when including ancestor */
-    CAmount fee = (20000 / tx2Size) * (tx7Size + tx6Size) - 1;
+    Amount fee = ((20000 / tx2Size) * (tx7Size + tx6Size) - 1);
 
     // CTxMemPoolEntry entry7(tx7, fee, 2, 10.0, 1, true);
-    pool.addUnchecked(tx7.GetId(), entry.Fee(fee).FromTx(tx7));
+    pool.addUnchecked(tx7.GetId(), entry.Fee(Amount(fee)).FromTx(tx7));
     BOOST_CHECK_EQUAL(pool.size(), 7);
     sortedOrder.insert(sortedOrder.begin() + 1, tx7.GetId().ToString());
     CheckSort<ancestor_score>(pool, sortedOrder);

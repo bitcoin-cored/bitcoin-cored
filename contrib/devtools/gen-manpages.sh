@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 TOPDIR=${TOPDIR:-$(git rev-parse --show-toplevel)}
 SRCDIR=${SRCDIR:-$TOPDIR/src}
@@ -7,7 +7,7 @@ MANDIR=${MANDIR:-$TOPDIR/doc/man}
 CLASHICD=${CLASHICD:-$SRCDIR/clashicd}
 CLASHICCLI=${CLASHICCLI:-$SRCDIR/clashic-cli}
 CLASHICTX=${CLASHICTX:-$SRCDIR/clashic-tx}
-CLASHICQT=${CLASHICQT:-$SRCDIR/qt/clashic_qt}
+CLASHICQT=${CLASHICQT:-$SRCDIR/qt/clashic-qt}
 
 [ ! -x $CLASHICD ] && echo "$CLASHICD not found or not executable." && exit 1
 

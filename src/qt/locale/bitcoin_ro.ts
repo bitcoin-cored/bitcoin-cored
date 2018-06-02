@@ -142,8 +142,8 @@
         <translation>Deschide &amp;URI...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Trimite monedele către o adresă Bitcoin Clashic</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Trimite monedele către o adresă Bitcoin Core</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -167,7 +167,7 @@
     </message>
     <message>
         <source>Bitcoin</source>
-        <translation>Bitcoin</translation>
+        <translation>Bitcoin Core</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -194,12 +194,12 @@
         <translation>Criptează cheile private care aparțin portofelului tău.</translation>
     </message>
     <message>
-        <source>Sign messages with your Bitcoin addresses to prove you own them</source>
-        <translation>Semnează mesajele cu adresa ta de Bitcoin pentru a face dovada că îți aparțin.</translation>
+        <source>Sign messages with your Bitcoin Core addresses to prove you own them</source>
+        <translation>Semnează mesajele cu adresa ta de Bitcoin Core pentru a face dovada că îți aparțin.</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Bitcoin addresses</source>
-        <translation>Verifică mesajele cu scopul de a asigura faptul că au fost semnate cu adresa de Bitcoin specificată.</translation>
+        <source>Verify messages to ensure they were signed with specified Bitcoin Core addresses</source>
+        <translation>Verifică mesajele cu scopul de a asigura faptul că au fost semnate cu adresa de Bitcoin Core specificată.</translation>
     </message>
     <message>
         <source>&amp;File</source>

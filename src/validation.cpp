@@ -82,7 +82,7 @@ int64_t nMaxTipAge = DEFAULT_MAX_TIP_AGE;
 uint256 hashAssumeValid;
 
 CFeeRate minRelayTxFee = CFeeRate(DEFAULT_MIN_RELAY_TX_FEE);
-CAmount maxTxFee = DEFAULT_TRANSACTION_MAXFEE.GetSatoshis();
+Amount maxTxFee = DEFAULT_TRANSACTION_MAXFEE;
 
 CTxMemPool mempool(::minRelayTxFee);
 
@@ -226,8 +226,8 @@ static bool FlushStateToDisk(CValidationState &state, FlushStateMode mode,
                              int nManualPruneHeight = 0);
 static void FindFilesToPruneManual(std::set<int> &setFilesToPrune,
                                    int nManualPruneHeight);
-static uint32_t GetBlockScriptFlags(const CBlockIndex *pindex,
-                                    const Config &config);
+static uint32_t GetBlockScriptFlags(const Config &config,
+                                    const CBlockIndex *pChainTip);
 
 static bool IsFinalTx(const CTransaction &tx, int nBlockHeight,
                       int64_t nBlockTime) {
@@ -571,8 +571,8 @@ bool CheckRegularTransaction(const CTransaction &tx, CValidationState &state,
 void LimitMempoolSize(CTxMemPool &pool, size_t limit, unsigned long age) {
     int expired = pool.Expire(GetTime() - age);
     if (expired != 0) {
-        LogPrint("mempool", "Expired %i transactions from the memory pool\n",
-                 expired);
+        LogPrint(BCLog::MEMPOOL,
+                 "Expired %i transactions from the memory pool\n", expired);
     }
 
     std::vector<COutPoint> vNoSpendsRemaining;
@@ -617,9 +617,95 @@ bool IsUAHFenabled(const Config &config, const CBlockIndex *pindexPrev) {
     return IsUAHFenabled(config, pindexPrev->nHeight);
 }
 
-bool IsUAHFenabledForCurrentBlock(const Config &config) {
+static bool IsCoreHFEnabled(const Config &config, int64_t nMedianTimePast) {
+    return nMedianTimePast >=
+           config.GetChainParams().GetConsensus().coreHardForkActivationTime;
+}
+
+bool IsCoreHFEnabled(const Config &config, const CBlockIndex *pindexPrev) {
+    if (pindexPrev == nullptr) {
+        return false;
+    }
+
+    return IsCoreHFEnabled(config, pindexPrev->GetMedianTimePast());
+}
+
+/**
+ * Make mempool consistent after a reorg, by re-adding or recursively erasing
+ * disconnected block transactions from the mempool, and also removing any other
+ * transactions from the mempool that are no longer valid given the new
+ * tip/height.
+ *
+ * Note: we assume that disconnectpool only contains transactions that are NOT
+ * confirmed in the current chain nor already in the mempool (otherwise,
+ * in-mempool descendants of such transactions would be removed).
+ *
+ * Passing fAddToMempool=false will skip trying to add the transactions back,
+ * and instead just erase from the mempool as needed.
+ */
+void UpdateMempoolForReorg(const Config &config,
+                           DisconnectedBlockTransactions &disconnectpool,
+                           bool fAddToMempool) {
     AssertLockHeld(cs_main);
-    return IsUAHFenabled(config, chainActive.Tip());
+    std::vector<uint256> vHashUpdate;
+    // disconnectpool's insertion_order index sorts the entries from oldest to
+    // newest, but the oldest entry will be the last tx from the latest mined
+    // block that was disconnected.
+    // Iterate disconnectpool in reverse, so that we add transactions back to
+    // the mempool starting with the earliest transaction that had been
+    // previously seen in a block.
+    auto it = disconnectpool.queuedTx.get<insertion_order>().rbegin();
+    while (it != disconnectpool.queuedTx.get<insertion_order>().rend()) {
+        // ignore validation errors in resurrected transactions
+        CValidationState stateDummy;
+        if (!fAddToMempool || (*it)->IsCoinBase() ||
+            !AcceptToMemoryPool(config, mempool, stateDummy, *it, false,
+                                nullptr, nullptr, true)) {
+            // If the transaction doesn't make it in to the mempool, remove any
+            // transactions that depend on it (which would now be orphans).
+            mempool.removeRecursive(**it, MemPoolRemovalReason::REORG);
+        } else if (mempool.exists((*it)->GetHash())) {
+            vHashUpdate.push_back((*it)->GetHash());
+        }
+        ++it;
+    }
+    disconnectpool.queuedTx.clear();
+    // AcceptToMemoryPool/addUnchecked all assume that new mempool entries have
+    // no in-mempool children, which is generally not true when adding
+    // previously-confirmed transactions back to the mempool.
+    // UpdateTransactionsFromBlock finds descendants of any transactions in the
+    // disconnectpool that were added back and cleans up the mempool state.
+    mempool.UpdateTransactionsFromBlock(vHashUpdate);
+
+    // We also need to remove any now-immature transactions
+    mempool.removeForReorg(config, pcoinsTip, chainActive.Tip()->nHeight + 1,
+                           STANDARD_LOCKTIME_VERIFY_FLAGS);
+    // Re-limit mempool size, in case we added any transactions
+    LimitMempoolSize(
+        mempool, GetArg("-maxmempool", DEFAULT_MAX_MEMPOOL_SIZE) * 1000000,
+        GetArg("-mempoolexpiry", DEFAULT_MEMPOOL_EXPIRY) * 60 * 60);
+}
+
+static bool IsReplayProtectionEnabled(const Config &config,
+                                      int64_t nMedianTimePast) {
+    return nMedianTimePast >= gArgs.GetArg("-replayprotectionactivationtime",
+                                           config.GetChainParams()
+                                               .GetConsensus()
+                                               .coreHardForkActivationTime);
+}
+
+static bool IsReplayProtectionEnabled(const Config &config,
+                                      const CBlockIndex *pindexPrev) {
+    if (pindexPrev == nullptr) {
+        return false;
+    }
+
+    return IsReplayProtectionEnabled(config, pindexPrev->GetMedianTimePast());
+}
+
+static bool IsReplayProtectionEnabledForCurrentBlock(const Config &config) {
+    AssertLockHeld(cs_main);
+    return IsReplayProtectionEnabled(config, chainActive.Tip());
 }
 
 // Used to avoid mempool polluting consensus critical paths if CCoinsViewMempool
@@ -669,7 +755,7 @@ static bool AcceptToMemoryPoolWorker(
     const Config &config, CTxMemPool &pool, CValidationState &state,
     const CTransactionRef &ptx, bool fLimitFree, bool *pfMissingInputs,
     int64_t nAcceptTime, std::list<CTransactionRef> *plTxnReplaced,
-    bool fOverrideMempoolLimit, const CAmount &nAbsurdFee,
+    bool fOverrideMempoolLimit, const Amount nAbsurdFee,
     std::vector<COutPoint> &coins_to_uncache) {
     AssertLockHeld(cs_main);
 
@@ -696,8 +782,7 @@ static bool AcceptToMemoryPoolWorker(
     // be mined yet.
     CValidationState ctxState;
     if (!ContextualCheckTransactionForCurrentBlock(
-            config, tx, ctxState, config.GetChainParams().GetConsensus(),
-            STANDARD_LOCKTIME_VERIFY_FLAGS)) {
+            config, tx, ctxState, STANDARD_LOCKTIME_VERIFY_FLAGS)) {
         // We copy the state from a dummy to ensure we don't increase the
         // ban score of peer for transaction that could be valid in the future.
         return state.DoS(
@@ -805,7 +890,7 @@ static bool AcceptToMemoryPoolWorker(
         Amount nValueOut = tx.GetValueOut();
         Amount nFees = nValueIn - nValueOut;
         // nModifiedFees includes any fee deltas from PrioritiseTransaction
-        CAmount nModifiedFees = nFees.GetSatoshis();
+        Amount nModifiedFees = nFees;
         double nPriorityDummy = 0;
         pool.ApplyDeltas(txid, nPriorityDummy, nModifiedFees);
 
@@ -841,7 +926,7 @@ static bool AcceptToMemoryPoolWorker(
                              strprintf("%d", nSigOpsCount));
         }
 
-        CAmount mempoolRejectFee =
+        Amount mempoolRejectFee =
             pool.GetMinFee(GetArg("-maxmempool", DEFAULT_MAX_MEMPOOL_SIZE) *
                            1000000)
                 .GetFee(nSize)
@@ -884,12 +969,12 @@ static bool AcceptToMemoryPoolWorker(
                                  "rate limited free transaction");
             }
 
-            LogPrint("mempool", "Rate limit dFreeCount: %g => %g\n", dFreeCount,
-                     dFreeCount + nSize);
+            LogPrint(BCLog::MEMPOOL, "Rate limit dFreeCount: %g => %g\n",
+                     dFreeCount, dFreeCount + nSize);
             dFreeCount += nSize;
         }
 
-        if (nAbsurdFee && nFees > nAbsurdFee) {
+        if (nAbsurdFee != 0 && nFees > nAbsurdFee) {
             return state.Invalid(false, REJECT_HIGHFEE, "absurdly-high-fee",
                                  strprintf("%d > %d", nFees, nAbsurdFee));
         }
@@ -913,11 +998,22 @@ static bool AcceptToMemoryPoolWorker(
                              "too-long-mempool-chain", false, errString);
         }
 
-        uint32_t scriptVerifyFlags = STANDARD_SCRIPT_VERIFY_FLAGS;
-        if (!Params().RequireStandard()) {
-            scriptVerifyFlags =
-                GetArg("-promiscuousmempoolflags", scriptVerifyFlags);
+        // Set extraFlags as a set of flags that needs to be activated.
+        uint32_t extraFlags = SCRIPT_VERIFY_NONE;
+        if (IsReplayProtectionEnabledForCurrentBlock(config)) {
+            extraFlags |= SCRIPT_ENABLE_REPLAY_PROTECTION;
         }
+
+        // Check inputs based on the set of flags we activate.
+        uint32_t scriptVerifyFlags = STANDARD_SCRIPT_VERIFY_FLAGS;
+        if (!config.GetChainParams().RequireStandard()) {
+            scriptVerifyFlags =
+                SCRIPT_ENABLE_SIGHASH_FORKID |
+                gArgs.GetArg("-promiscuousmempoolflags", scriptVerifyFlags);
+        }
+
+        // Make sure whatever we need to activate is actually activated.
+        scriptVerifyFlags |= extraFlags;
 
         // Check against previous transactions. This is done last to help
         // prevent CPU exhaustion denial-of-service attacks.
@@ -944,7 +1040,7 @@ static bool AcceptToMemoryPoolWorker(
         // invalid blocks (using TestBlockValidity), however allowing such
         // transactions into the mempool can be exploited as a DoS attack.
         uint32_t currentBlockScriptVerifyFlags =
-            GetBlockScriptFlags(chainActive.Tip(), config);
+            GetBlockScriptFlags(config, chainActive.Tip());
         if (!CheckInputsFromMempoolAndCache(tx, state, view, pool,
                                             currentBlockScriptVerifyFlags, true,
                                             txdata)) {
@@ -1003,7 +1099,7 @@ static bool AcceptToMemoryPoolWithTime(
     const Config &config, CTxMemPool &pool, CValidationState &state,
     const CTransactionRef &tx, bool fLimitFree, bool *pfMissingInputs,
     int64_t nAcceptTime, std::list<CTransactionRef> *plTxnReplaced = nullptr,
-    bool fOverrideMempoolLimit = false, const CAmount nAbsurdFee = 0) {
+    bool fOverrideMempoolLimit = false, const Amount nAbsurdFee = 0) {
     std::vector<COutPoint> coins_to_uncache;
     bool res = AcceptToMemoryPoolWorker(
         config, pool, state, tx, fLimitFree, pfMissingInputs, nAcceptTime,
@@ -1025,7 +1121,7 @@ bool AcceptToMemoryPool(const Config &config, CTxMemPool &pool,
                         CValidationState &state, const CTransactionRef &tx,
                         bool fLimitFree, bool *pfMissingInputs,
                         std::list<CTransactionRef> *plTxnReplaced,
-                        bool fOverrideMempoolLimit, const CAmount nAbsurdFee) {
+                        bool fOverrideMempoolLimit, const Amount nAbsurdFee) {
     return AcceptToMemoryPoolWithTime(config, pool, state, tx, fLimitFree,
                                       pfMissingInputs, GetTime(), plTxnReplaced,
                                       fOverrideMempoolLimit, nAbsurdFee);
@@ -1157,16 +1253,15 @@ bool ReadBlockFromDisk(CBlock &block, const CBlockIndex *pindex,
     return true;
 }
 
-CAmount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
+Amount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
     int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
     // Force block reward to zero when right shift is undefined.
     if (halvings >= 64) return 0;
 
-    CAmount nSubsidy = 50 * COIN.GetSatoshis();
+    Amount nSubsidy = 50 * COIN;
     // Subsidy is cut in half every 210,000 blocks which will occur
     // approximately every 4 years.
-    nSubsidy >>= halvings;
-    return nSubsidy;
+    return Amount(nSubsidy.GetSatoshis() >> halvings);
 }
 
 bool IsInitialBlockDownload() {
@@ -1365,8 +1460,8 @@ bool CheckTxInputs(const CTransaction &tx, CValidationState &state,
         return state.Invalid(false, 0, "", "Inputs unavailable");
     }
 
-    CAmount nValueIn = 0;
-    CAmount nFees = 0;
+    Amount nValueIn = 0;
+    Amount nFees = 0;
     for (size_t i = 0; i < tx.vin.size(); i++) {
         const COutPoint &prevout = tx.vin[i].prevout;
         const Coin &coin = inputs.AccessCoin(prevout);
@@ -1399,7 +1494,7 @@ bool CheckTxInputs(const CTransaction &tx, CValidationState &state,
     }
 
     // Tally transaction fees
-    CAmount nTxFee = nValueIn - tx.GetValueOut().GetSatoshis();
+    Amount nTxFee = nValueIn - tx.GetValueOut();
     if (nTxFee < 0) {
         return state.DoS(100, false, REJECT_INVALID, "bad-txns-fee-negative");
     }
@@ -1460,7 +1555,7 @@ bool CheckInputs(const CTransaction &tx, CValidationState &state,
         // additional data in, eg, the coins being spent being checked as a part
         // of CScriptCheck.
         const CScript &scriptPubKey = coin.GetTxOut().scriptPubKey;
-        const CAmount amount = coin.GetTxOut().nValue.GetSatoshis();
+        const Amount amount = coin.GetTxOut().nValue;
 
         // Verify signature
         CScriptCheck check(scriptPubKey, amount, tx, i, flags, sigCacheStore,
@@ -1790,40 +1885,54 @@ public:
 static ThresholdConditionCache warningcache[VERSIONBITS_NUM_BITS];
 
 // Returns the script flags which should be checked for a given block
-static uint32_t GetBlockScriptFlags(const CBlockIndex *pindex,
-                                    const Config &config) {
+static uint32_t GetBlockScriptFlags(const Config &config,
+                                    const CBlockIndex *pChainTip) {
     AssertLockHeld(cs_main);
     const Consensus::Params &consensusparams =
         config.GetChainParams().GetConsensus();
 
-    // BIP16 didn't become active until Apr 1 2012
-    int64_t nBIP16SwitchTime = 1333238400;
-    bool fStrictPayToScriptHash = (pindex->GetBlockTime() >= nBIP16SwitchTime);
+    uint32_t flags = SCRIPT_VERIFY_NONE;
 
-    unsigned int flags =
-        fStrictPayToScriptHash ? SCRIPT_VERIFY_P2SH : SCRIPT_VERIFY_NONE;
+    // P2SH didn't become active until Apr 1 2012
+    if (pChainTip->GetMedianTimePast() >= P2SH_ACTIVATION_TIME) {
+        flags |= SCRIPT_VERIFY_P2SH;
+    }
 
     // Start enforcing the DERSIG (BIP66) rule
-    if (pindex->nHeight >= consensusparams.BIP66Height) {
+    if ((pChainTip->nHeight + 1) >= consensusparams.BIP66Height) {
         flags |= SCRIPT_VERIFY_DERSIG;
     }
 
     // Start enforcing CHECKLOCKTIMEVERIFY (BIP65) rule
-    if (pindex->nHeight >= consensusparams.BIP65Height) {
+    if ((pChainTip->nHeight + 1) >= consensusparams.BIP65Height) {
         flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
     }
 
     // Start enforcing BIP112 (CHECKSEQUENCEVERIFY) using versionbits logic.
-    if (VersionBitsState(pindex->pprev, consensusparams,
-                         Consensus::DEPLOYMENT_CSV,
+    if (VersionBitsState(pChainTip, consensusparams, Consensus::DEPLOYMENT_CSV,
                          versionbitscache) == THRESHOLD_ACTIVE) {
         flags |= SCRIPT_VERIFY_CHECKSEQUENCEVERIFY;
     }
 
     // If the UAHF is enabled, we start accepting replay protected txns
-    if (IsUAHFenabled(config, pindex->pprev)) {
+    if (IsUAHFenabled(config, pChainTip)) {
         flags |= SCRIPT_VERIFY_STRICTENC;
         flags |= SCRIPT_ENABLE_SIGHASH_FORKID;
+    }
+
+    // If the Core HF is enabled, we start rejecting transaction that use a high
+    // s in their signature. We also make sure that signature that are supposed
+    // to fail (for instance in multisig or other forms of smart contracts) are
+    // null.
+    //if (IsCoreHFEnabled(config, pChainTip)) {
+    //    flags |= SCRIPT_VERIFY_LOW_S;
+    //    flags |= SCRIPT_VERIFY_NULLFAIL;
+    //}
+
+    // We make sure this node will have replay protection during the next hard
+    // fork.
+    if (IsReplayProtectionEnabled(config, pChainTip)) {
+        flags |= SCRIPT_ENABLE_REPLAY_PROTECTION;
     }
 
     return flags;
@@ -1902,17 +2011,18 @@ static bool ConnectBlock(const Config &config, const CBlock &block,
                 // further back. The test against nMinimumChainWork prevents the
                 // skipping when denied access to any chain at least as good as
                 // the expected chain.
+                // TODO: Revert to 2 weeks
                 fScriptChecks =
                     (GetBlockProofEquivalentTime(
                          *pindexBestHeader, *pindex, *pindexBestHeader,
-                         chainparams.GetConsensus()) <= 60 * 60 * 24 * 7 * 2);
+                         chainparams.GetConsensus()) <= 60 * 60 * 24 * 0.5);
             }
         }
     }
 
     int64_t nTime1 = GetTimeMicros();
     nTimeCheck += nTime1 - nTimeStart;
-    LogPrint("bench", "    - Sanity checks: %.2fms [%.2fs]\n",
+    LogPrint(BCLog::BENCH, "    - Sanity checks: %.2fms [%.2fs]\n",
              0.001 * (nTime1 - nTimeStart), nTimeCheck * 0.000001);
 
     // Do not allow blocks that contain transactions which 'overwrite' older
@@ -1978,11 +2088,11 @@ static bool ConnectBlock(const Config &config, const CBlock &block,
         nLockTimeFlags |= LOCKTIME_VERIFY_SEQUENCE;
     }
 
-    uint32_t flags = GetBlockScriptFlags(pindex, config);
+    const uint32_t flags = GetBlockScriptFlags(config, pindex->pprev);
 
     int64_t nTime2 = GetTimeMicros();
     nTimeForks += nTime2 - nTime1;
-    LogPrint("bench", "    - Fork checks: %.2fms [%.2fs]\n",
+    LogPrint(BCLog::BENCH, "    - Fork checks: %.2fms [%.2fs]\n",
              0.001 * (nTime2 - nTime1), nTimeForks * 0.000001);
 
     CBlockUndo blockundo;
@@ -1991,7 +2101,7 @@ static bool ConnectBlock(const Config &config, const CBlock &block,
                                                            : nullptr);
 
     std::vector<int> prevheights;
-    CAmount nFees = 0;
+    Amount nFees = 0;
     int nInputs = 0;
 
     // Sigops counting. We need to do it again because of P2SH.
@@ -2080,14 +2190,15 @@ static bool ConnectBlock(const Config &config, const CBlock &block,
 
     int64_t nTime3 = GetTimeMicros();
     nTimeConnect += nTime3 - nTime2;
-    LogPrint("bench", "      - Connect %u transactions: %.2fms (%.3fms/tx, "
+    LogPrint(BCLog::BENCH,
+             "      - Connect %u transactions: %.2fms (%.3fms/tx, "
                       "%.3fms/txin) [%.2fs]\n",
              (unsigned)block.vtx.size(), 0.001 * (nTime3 - nTime2),
              0.001 * (nTime3 - nTime2) / block.vtx.size(),
              nInputs <= 1 ? 0 : 0.001 * (nTime3 - nTime2) / (nInputs - 1),
              nTimeConnect * 0.000001);
 
-    CAmount blockReward =
+    Amount blockReward =
         nFees + GetBlockSubsidy(pindex->nHeight, chainparams.GetConsensus());
     if (block.vtx[0]->GetValueOut() > blockReward) {
         return state.DoS(100, error("ConnectBlock(): coinbase pays too much "
@@ -2103,7 +2214,8 @@ static bool ConnectBlock(const Config &config, const CBlock &block,
 
     int64_t nTime4 = GetTimeMicros();
     nTimeVerify += nTime4 - nTime2;
-    LogPrint("bench", "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs]\n",
+    LogPrint(BCLog::BENCH,
+             "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs]\n",
              nInputs - 1, 0.001 * (nTime4 - nTime2),
              nInputs <= 1 ? 0 : 0.001 * (nTime4 - nTime2) / (nInputs - 1),
              nTimeVerify * 0.000001);
@@ -2146,7 +2258,7 @@ static bool ConnectBlock(const Config &config, const CBlock &block,
 
     int64_t nTime5 = GetTimeMicros();
     nTimeIndex += nTime5 - nTime4;
-    LogPrint("bench", "    - Index writing: %.2fms [%.2fs]\n",
+    LogPrint(BCLog::BENCH, "    - Index writing: %.2fms [%.2fs]\n",
              0.001 * (nTime5 - nTime4), nTimeIndex * 0.000001);
 
     // Watch for changes to the previous coinbase transaction.
@@ -2156,8 +2268,16 @@ static bool ConnectBlock(const Config &config, const CBlock &block,
 
     int64_t nTime6 = GetTimeMicros();
     nTimeCallbacks += nTime6 - nTime5;
-    LogPrint("bench", "    - Callbacks: %.2fms [%.2fs]\n",
+    LogPrint(BCLog::BENCH, "    - Callbacks: %.2fms [%.2fs]\n",
              0.001 * (nTime6 - nTime5), nTimeCallbacks * 0.000001);
+
+    // If we just activated the replay protection with that block, it means
+    // transaction in the mempool are now invalid. As a result, we need to clear
+    // the mempool.
+    if (IsReplayProtectionEnabled(config, pindex) &&
+        !IsReplayProtectionEnabled(config, pindex->pprev)) {
+        mempool.clear();
+    }
 
     return true;
 }
@@ -2403,12 +2523,18 @@ static void UpdateTip(const Config &config, CBlockIndex *pindexNew) {
 }
 
 /**
- * Disconnect chainActive's tip. You probably want to call
- * mempool.removeForReorg and manually re-limit mempool size after this, with
- * cs_main held.
+ * Disconnect chainActive's tip.
+ * After calling, the mempool will be in an inconsistent state, with
+ * transactions from disconnected blocks being added to disconnectpool. You
+ * should make the mempool consistent again by calling UpdateMempoolForReorg.
+ * with cs_main held.
+ *
+ * If disconnectpool is nullptr, then no disconnected transactions are added to
+ * disconnectpool (note that the caller is responsible for mempool consistency
+ * in any case).
  */
 static bool DisconnectTip(const Config &config, CValidationState &state,
-                          bool fBare = false) {
+                          DisconnectedBlockTransactions *disconnectpool) {
     const Consensus::Params &consensusParams =
         config.GetChainParams().GetConsensus();
     CBlockIndex *pindexDelete = chainActive.Tip();
@@ -2432,7 +2558,7 @@ static bool DisconnectTip(const Config &config, CValidationState &state,
         assert(flushed);
     }
 
-    LogPrint("bench", "- Disconnect block: %.2fms\n",
+    LogPrint(BCLog::BENCH, "- Disconnect block: %.2fms\n",
              (GetTimeMicros() - nStart) * 0.001);
 
     // Write the chain state to disk, if necessary.
@@ -2440,27 +2566,34 @@ static bool DisconnectTip(const Config &config, CValidationState &state,
         return false;
     }
 
-    if (!fBare) {
-        // Resurrect mempool transactions from the disconnected block.
-        std::vector<uint256> vHashUpdate;
-        for (const auto &it : block.vtx) {
-            const CTransaction &tx = *it;
-            // ignore validation errors in resurrected transactions
-            CValidationState stateDummy;
-            if (tx.IsCoinBase() ||
-                !AcceptToMemoryPool(config, mempool, stateDummy, it, false,
-                                    nullptr, nullptr, true)) {
-                mempool.removeRecursive(tx, MemPoolRemovalReason::REORG);
-            } else if (mempool.exists(tx.GetId())) {
-                vHashUpdate.push_back(tx.GetId());
-            }
+    // If this block was deactivating the replay protection, then we need to
+    // remove transactions that are replay protected from the mempool. There is
+    // no easy way to do this so we'll just discard the whole mempool and then
+    // add the transaction of the block we just disconnected back.
+    if (IsReplayProtectionEnabled(config, pindexDelete) &&
+        !IsReplayProtectionEnabled(config, pindexDelete->pprev)) {
+        mempool.clear();
+        // While not strictly necessary, clearing the disconnect pool is also
+        // beneficial so we don't try to reuse its content at the end of the
+        // reorg, which we know will fail.
+        if (disconnectpool) {
+            disconnectpool->clear();
         }
-        // AcceptToMemoryPool/addUnchecked all assume that new mempool entries
-        // have no in-mempool children, which is generally not true when adding
-        // previously-confirmed transactions back to the mempool.
-        // UpdateTransactionsFromBlock finds descendants of any transactions in
-        // this block that were added back and cleans up the mempool state.
-        mempool.UpdateTransactionsFromBlock(vHashUpdate);
+    }
+
+    if (disconnectpool) {
+        // Save transactions to re-add to mempool at end of reorg
+        for (const auto &tx : block.vtx) {
+            disconnectpool->addTransaction(tx);
+        }
+        while (disconnectpool->DynamicMemoryUsage() >
+               MAX_DISCONNECTED_TX_POOL_SIZE * 1000) {
+            // Drop the earliest entry, and remove its children from the
+            // mempool.
+            auto it = disconnectpool->queuedTx.get<insertion_order>().begin();
+            mempool.removeRecursive(**it, MemPoolRemovalReason::REORG);
+            disconnectpool->removeEntry(it);
+        }
     }
 
     // Update chainActive and related variables.
@@ -2501,7 +2634,8 @@ struct ConnectTrace {
 static bool ConnectTip(const Config &config, CValidationState &state,
                        CBlockIndex *pindexNew,
                        const std::shared_ptr<const CBlock> &pblock,
-                       ConnectTrace &connectTrace) {
+                       ConnectTrace &connectTrace,
+                       DisconnectedBlockTransactions &disconnectpool) {
     const CChainParams &chainparams = config.GetChainParams();
     assert(pindexNew->pprev == chainActive.Tip());
     // Read block from disk.
@@ -2520,12 +2654,12 @@ static bool ConnectTip(const Config &config, CValidationState &state,
     int64_t nTime2 = GetTimeMicros();
     nTimeReadFromDisk += nTime2 - nTime1;
     int64_t nTime3;
-    LogPrint("bench", "  - Load block from disk: %.2fms [%.2fs]\n",
+    LogPrint(BCLog::BENCH, "  - Load block from disk: %.2fms [%.2fs]\n",
              (nTime2 - nTime1) * 0.001, nTimeReadFromDisk * 0.000001);
     {
         CCoinsViewCache view(pcoinsTip);
         bool rv = ConnectBlock(config, blockConnecting, state, pindexNew, view,
-                               chainparams);
+                               config.GetChainParams());
         GetMainSignals().BlockChecked(blockConnecting, state);
         if (!rv) {
             if (state.IsInvalid()) {
@@ -2536,32 +2670,33 @@ static bool ConnectTip(const Config &config, CValidationState &state,
         }
         nTime3 = GetTimeMicros();
         nTimeConnectTotal += nTime3 - nTime2;
-        LogPrint("bench", "  - Connect total: %.2fms [%.2fs]\n",
+        LogPrint(BCLog::BENCH, "  - Connect total: %.2fms [%.2fs]\n",
                  (nTime3 - nTime2) * 0.001, nTimeConnectTotal * 0.000001);
         bool flushed = view.Flush();
         assert(flushed);
     }
     int64_t nTime4 = GetTimeMicros();
     nTimeFlush += nTime4 - nTime3;
-    LogPrint("bench", "  - Flush: %.2fms [%.2fs]\n", (nTime4 - nTime3) * 0.001,
-             nTimeFlush * 0.000001);
+    LogPrint(BCLog::BENCH, "  - Flush: %.2fms [%.2fs]\n",
+             (nTime4 - nTime3) * 0.001, nTimeFlush * 0.000001);
     // Write the chain state to disk, if necessary.
     if (!FlushStateToDisk(state, FLUSH_STATE_IF_NEEDED)) return false;
     int64_t nTime5 = GetTimeMicros();
     nTimeChainState += nTime5 - nTime4;
-    LogPrint("bench", "  - Writing chainstate: %.2fms [%.2fs]\n",
+    LogPrint(BCLog::BENCH, "  - Writing chainstate: %.2fms [%.2fs]\n",
              (nTime5 - nTime4) * 0.001, nTimeChainState * 0.000001);
     // Remove conflicting transactions from the mempool.;
     mempool.removeForBlock(blockConnecting.vtx, pindexNew->nHeight);
+    disconnectpool.removeForBlock(blockConnecting.vtx);
     // Update chainActive & related variables.
     UpdateTip(config, pindexNew);
 
     int64_t nTime6 = GetTimeMicros();
     nTimePostConnect += nTime6 - nTime5;
     nTimeTotal += nTime6 - nTime1;
-    LogPrint("bench", "  - Connect postprocess: %.2fms [%.2fs]\n",
+    LogPrint(BCLog::BENCH, "  - Connect postprocess: %.2fms [%.2fs]\n",
              (nTime6 - nTime5) * 0.001, nTimePostConnect * 0.000001);
-    LogPrint("bench", "- Connect block: %.2fms [%.2fs]\n",
+    LogPrint(BCLog::BENCH, "- Connect block: %.2fms [%.2fs]\n",
              (nTime6 - nTime1) * 0.001, nTimeTotal * 0.000001);
     return true;
 }
@@ -2661,8 +2796,14 @@ static bool ActivateBestChainStep(const Config &config, CValidationState &state,
 
     // Disconnect active blocks which are no longer in the best chain.
     bool fBlocksDisconnected = false;
+    DisconnectedBlockTransactions disconnectpool;
     while (chainActive.Tip() && chainActive.Tip() != pindexFork) {
-        if (!DisconnectTip(config, state)) return false;
+        if (!DisconnectTip(config, state, &disconnectpool)) {
+            // This is likely a fatal error, but keep the mempool consistent,
+            // just in case. Only remove from the mempool in this case.
+            UpdateMempoolForReorg(config, disconnectpool, false);
+            return false;
+        }
         fBlocksDisconnected = true;
     }
 
@@ -2690,7 +2831,7 @@ static bool ActivateBestChainStep(const Config &config, CValidationState &state,
                             pindexConnect == pindexMostWork
                                 ? pblock
                                 : std::shared_ptr<const CBlock>(),
-                            connectTrace)) {
+                            connectTrace, disconnectpool)) {
                 if (state.IsInvalid()) {
                     // The block violates a consensus rule.
                     if (!state.CorruptionPossible())
@@ -2705,6 +2846,9 @@ static bool ActivateBestChainStep(const Config &config, CValidationState &state,
                 } else {
                     // A system error occurred (disk space, database error,
                     // ...).
+                    // Make the mempool consistent with the current tip, just in
+                    // case any observers try to use it before shutdown.
+                    UpdateMempoolForReorg(config, disconnectpool, false);
                     return false;
                 }
             } else {
@@ -2721,12 +2865,13 @@ static bool ActivateBestChainStep(const Config &config, CValidationState &state,
     }
 
     if (fBlocksDisconnected) {
-        mempool.removeForReorg(pcoinsTip, chainActive.Tip()->nHeight + 1,
+        // If any blocks were disconnected, disconnectpool may be non empty. Add
+        // any disconnected transactions back to the mempool.
+        mempool.removeForReorg(config, pcoinsTip,
+                               chainActive.Tip()->nHeight + 1,
                                STANDARD_LOCKTIME_VERIFY_FLAGS);
-        LimitMempoolSize(
-            mempool, GetArg("-maxmempool", DEFAULT_MAX_MEMPOOL_SIZE) * 1000000,
-            GetArg("-mempoolexpiry", DEFAULT_MEMPOOL_EXPIRY) * 60 * 60);
     }
+
     mempool.check(pcoinsTip);
 
     // Callbacks/notifications for a new best chain.
@@ -2899,6 +3044,7 @@ bool InvalidateBlock(const Config &config, CValidationState &state,
     setDirtyBlockIndex.insert(pindex);
     setBlockIndexCandidates.erase(pindex);
 
+    DisconnectedBlockTransactions disconnectpool;
     while (chainActive.Contains(pindex)) {
         CBlockIndex *pindexWalk = chainActive.Tip();
         pindexWalk->nStatus |= BLOCK_FAILED_CHILD;
@@ -2906,16 +3052,19 @@ bool InvalidateBlock(const Config &config, CValidationState &state,
         setBlockIndexCandidates.erase(pindexWalk);
         // ActivateBestChain considers blocks already in chainActive
         // unconditionally valid already, so force disconnect away from it.
-        if (!DisconnectTip(config, state)) {
-            mempool.removeForReorg(pcoinsTip, chainActive.Tip()->nHeight + 1,
+        if (!DisconnectTip(config, state, &disconnectpool)) {
+            // It's probably hopeless to try to make the mempool consistent
+            // here if DisconnectTip failed, but we can try.
+            mempool.removeForReorg(config, pcoinsTip,
+                                   chainActive.Tip()->nHeight + 1,
                                    STANDARD_LOCKTIME_VERIFY_FLAGS);
             return false;
         }
     }
 
-    LimitMempoolSize(
-        mempool, GetArg("-maxmempool", DEFAULT_MAX_MEMPOOL_SIZE) * 1000000,
-        GetArg("-mempoolexpiry", DEFAULT_MEMPOOL_EXPIRY) * 60 * 60);
+    // DisconnectTip will add transactions to disconnectpool; try to add these
+    // back to the mempool.
+    UpdateMempoolForReorg(config, disconnectpool, true);
 
     // The resulting new best tip may not be in setBlockIndexCandidates anymore,
     // so add it again.
@@ -2931,7 +3080,7 @@ bool InvalidateBlock(const Config &config, CValidationState &state,
     }
 
     InvalidChainFound(pindex);
-    mempool.removeForReorg(pcoinsTip, chainActive.Tip()->nHeight + 1,
+    mempool.removeForReorg(config, pcoinsTip, chainActive.Tip()->nHeight + 1,
                            STANDARD_LOCKTIME_VERIFY_FLAGS);
     uiInterface.NotifyBlockTip(IsInitialBlockDownload(), pindex->pprev);
     return true;
@@ -3362,15 +3511,17 @@ bool ContextualCheckBlockHeader(const CBlockHeader &block,
 }
 
 bool ContextualCheckTransaction(const Config &config, const CTransaction &tx,
-                                CValidationState &state,
-                                const Consensus::Params &consensusParams,
-                                int nHeight, int64_t nLockTimeCutoff) {
+                                CValidationState &state, int nHeight,
+                                int64_t nLockTimeCutoff) {
     if (!IsFinalTx(tx, nHeight, nLockTimeCutoff)) {
         // While this is only one transaction, we use txns in the error to
         // ensure continuity with other clients.
         return state.DoS(10, false, REJECT_INVALID, "bad-txns-nonfinal", false,
                          "non-final transaction");
     }
+
+    const Consensus::Params &consensusParams =
+        config.GetChainParams().GetConsensus();
 
     if (IsUAHFenabled(config, nHeight) &&
         nHeight <= consensusParams.antiReplayOpReturnSunsetHeight) {
@@ -3386,9 +3537,10 @@ bool ContextualCheckTransaction(const Config &config, const CTransaction &tx,
     return true;
 }
 
-bool ContextualCheckTransactionForCurrentBlock(
-    const Config &config, const CTransaction &tx, CValidationState &state,
-    const Consensus::Params &consensusParams, int flags) {
+bool ContextualCheckTransactionForCurrentBlock(const Config &config,
+                                               const CTransaction &tx,
+                                               CValidationState &state,
+                                               int flags) {
     AssertLockHeld(cs_main);
 
     // By convention a negative value for flags indicates that the current
@@ -3415,8 +3567,8 @@ bool ContextualCheckTransactionForCurrentBlock(
                                         ? chainActive.Tip()->GetMedianTimePast()
                                         : GetAdjustedTime();
 
-    return ContextualCheckTransaction(config, tx, state, consensusParams,
-                                      nBlockHeight, nLockTimeCutoff);
+    return ContextualCheckTransaction(config, tx, state, nBlockHeight,
+                                      nLockTimeCutoff);
 }
 
 bool ContextualCheckBlock(const Config &config, const CBlock &block,
@@ -3441,8 +3593,8 @@ bool ContextualCheckBlock(const Config &config, const CBlock &block,
 
     // Check that all transactions are finalized
     for (const auto &tx : block.vtx) {
-        if (!ContextualCheckTransaction(config, *tx, state, consensusParams,
-                                        nHeight, nLockTimeCutoff)) {
+        if (!ContextualCheckTransaction(config, *tx, state, nHeight,
+                                        nLockTimeCutoff)) {
             // state set by ContextualCheckTransaction.
             return false;
         }
@@ -3908,7 +4060,7 @@ void FindFilesToPrune(std::set<int> &setFilesToPrune,
         }
     }
 
-    LogPrint("prune", "Prune: target=%dMiB actual=%dMiB diff=%dMiB "
+    LogPrint(BCLog::PRUNE, "Prune: target=%dMiB actual=%dMiB diff=%dMiB "
                       "max_prune_height=%d removed %d blk/rev pairs\n",
              nPruneTarget / 1024 / 1024, nCurrentUsage / 1024 / 1024,
              ((int64_t)nPruneTarget - (int64_t)nCurrentUsage) / 1024 / 1024,
@@ -4283,7 +4435,7 @@ bool RewindBlockIndex(const Config &config, const CChainParams &params) {
             // needless reindex/redownload of the blockchain).
             break;
         }
-        if (!DisconnectTip(config, state, true)) {
+        if (!DisconnectTip(config, state, nullptr)) {
             return error(
                 "RewindBlockIndex: unable to disconnect block at height %i",
                 pindex->nHeight);
@@ -4467,7 +4619,7 @@ bool LoadExternalBlockFile(const Config &config, FILE *fileIn,
                 if (hash != chainparams.GetConsensus().hashGenesisBlock &&
                     mapBlockIndex.find(block.hashPrevBlock) ==
                         mapBlockIndex.end()) {
-                    LogPrint("reindex",
+                    LogPrint(BCLog::REINDEX,
                              "%s: Out of order block %s, parent %s not known\n",
                              __func__, hash.ToString(),
                              block.hashPrevBlock.ToString());
@@ -4494,7 +4646,7 @@ bool LoadExternalBlockFile(const Config &config, FILE *fileIn,
                                chainparams.GetConsensus().hashGenesisBlock &&
                            mapBlockIndex[hash]->nHeight % 1000 == 0) {
                     LogPrint(
-                        "reindex",
+                        BCLog::REINDEX,
                         "Block Import: already had block %s at height %d\n",
                         hash.ToString(), mapBlockIndex[hash]->nHeight);
                 }
@@ -4528,7 +4680,7 @@ bool LoadExternalBlockFile(const Config &config, FILE *fileIn,
                         if (ReadBlockFromDisk(*pblockrecursive, it->second,
                                               chainparams.GetConsensus())) {
                             LogPrint(
-                                "reindex",
+                                BCLog::REINDEX,
                                 "%s: Processing out of order child %s of %s\n",
                                 __func__, pblockrecursive->GetHash().ToString(),
                                 head.ToString());
@@ -4925,8 +5077,8 @@ bool LoadMempool(const Config &config) {
             file >> nTime;
             file >> nFeeDelta;
 
-            CAmount amountdelta = nFeeDelta;
-            if (amountdelta) {
+            Amount amountdelta = nFeeDelta;
+            if (amountdelta != 0) {
                 mempool.PrioritiseTransaction(tx->GetId(),
                                               tx->GetId().ToString(),
                                               prioritydummy, amountdelta);
@@ -4946,7 +5098,7 @@ bool LoadMempool(const Config &config) {
             }
             if (ShutdownRequested()) return false;
         }
-        std::map<uint256, CAmount> mapDeltas;
+        std::map<uint256, Amount> mapDeltas;
         file >> mapDeltas;
 
         for (const auto &i : mapDeltas) {
@@ -4969,7 +5121,7 @@ bool LoadMempool(const Config &config) {
 void DumpMempool(void) {
     int64_t start = GetTimeMicros();
 
-    std::map<uint256, CAmount> mapDeltas;
+    std::map<uint256, Amount> mapDeltas;
     std::vector<TxMempoolInfo> vinfo;
 
     {

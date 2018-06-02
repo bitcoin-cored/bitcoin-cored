@@ -110,8 +110,8 @@
         <translation>Recibiendo direcciones</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Enviar monedas a una dirección Bitcoin Clashic</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Enviar monedas a una dirección Bitcoin Core</translation>
     </message>
     <message>
         <source>Change the passphrase used for wallet encryption</source>
@@ -119,7 +119,7 @@
     </message>
     <message>
         <source>Bitcoin</source>
-        <translation>Bitcoin</translation>
+        <translation>Bitcoin Core</translation>
     </message>
     <message>
         <source>Wallet</source>

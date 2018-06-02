@@ -7,7 +7,6 @@
 
 #include "chainparams.h" // for GetConsensus.
 #include "clientversion.h"
-#include "config.h"
 #include "consensus/consensus.h"
 #include "consensus/validation.h"
 #include "policy/fees.h"
@@ -34,7 +33,7 @@ CTxMemPoolEntry::CTxMemPoolEntry(const CTransactionRef &_tx, const Amount _nFee,
       lockPoints(lp) {
     nTxSize = GetTransactionSize(*tx);
     nModSize = tx->CalculateModifiedSize(GetTxSize());
-    nUsageSize = RecursiveDynamicUsage(*tx) + memusage::DynamicUsage(tx);
+    nUsageSize = RecursiveDynamicUsage(tx);
 
     nCountWithDescendants = 1;
     nSizeWithDescendants = GetTxSize();
@@ -551,7 +550,8 @@ void CTxMemPool::removeRecursive(const CTransaction &origTx,
     }
 }
 
-void CTxMemPool::removeForReorg(const CCoinsViewCache *pcoins,
+void CTxMemPool::removeForReorg(const Config &config,
+                                const CCoinsViewCache *pcoins,
                                 unsigned int nMemPoolHeight, int flags) {
     // Remove transactions spending a coinbase which are now immature and
     // no-longer-final transactions
@@ -563,11 +563,9 @@ void CTxMemPool::removeForReorg(const CCoinsViewCache *pcoins,
         LockPoints lp = it->GetLockPoints();
         bool validLP = TestLockPointValidity(&lp);
 
-        auto &config = GetConfig();
         CValidationState state;
-        if (!ContextualCheckTransactionForCurrentBlock(
-                config, tx, state, config.GetChainParams().GetConsensus(),
-                flags) ||
+        if (!ContextualCheckTransactionForCurrentBlock(config, tx, state,
+                                                       flags) ||
             !CheckSequenceLocks(tx, flags, &lp, validLP)) {
             // Note if CheckSequenceLocks fails the LockPoints may still be
             // invalid. So it's critical that we remove the tx and not depend on
@@ -673,7 +671,8 @@ void CTxMemPool::check(const CCoinsViewCache *pcoins) const {
     if (GetRand(std::numeric_limits<uint32_t>::max()) >= nCheckFrequency)
         return;
 
-    LogPrint("mempool", "Checking mempool with %u transactions and %u inputs\n",
+    LogPrint(BCLog::MEMPOOL,
+             "Checking mempool with %u transactions and %u inputs\n",
              (unsigned int)mapTx.size(), (unsigned int)mapNextTx.size());
 
     uint64_t checkTotal = 0;
@@ -992,7 +991,7 @@ void CTxMemPool::PrioritiseTransaction(const uint256 hash,
 }
 
 void CTxMemPool::ApplyDeltas(const uint256 hash, double &dPriorityDelta,
-                             Amount nFeeDelta) const {
+                             Amount &nFeeDelta) const {
     LOCK(cs);
     std::map<uint256, std::pair<double, Amount>>::const_iterator pos =
         mapDeltas.find(hash);
@@ -1206,7 +1205,7 @@ void CTxMemPool::TrimToSize(size_t sizelimit,
     }
 
     if (maxFeeRateRemoved > CFeeRate(0))
-        LogPrint("mempool",
+        LogPrint(BCLog::MEMPOOL,
                  "Removed %u txn, rolling minimum fee bumped to %s\n",
                  nTxnRemoved, maxFeeRateRemoved.ToString());
 }

@@ -15,6 +15,7 @@
 #endif
 
 #include "compat.h"
+#include "sync.h"
 #include "tinyformat.h"
 #include "utiltime.h"
 
@@ -40,7 +41,6 @@ public:
     boost::signals2::signal<std::string(const char *psz)> Translate;
 };
 
-extern const std::map<std::string, std::vector<std::string>> &mapMultiArgs;
 extern bool fDebug;
 extern bool fPrintToConsole;
 extern bool fPrintToDebugLog;
@@ -53,6 +53,8 @@ extern CTranslationInterface translationInterface;
 
 extern const char *const CLASHIC_CONF_FILENAME;
 extern const char *const CLASHIC_PID_FILENAME;
+
+extern std::atomic<uint32_t> logCategories;
 
 /**
  * Translation function: Call Translate signal on UI interface, which returns a
@@ -67,8 +69,45 @@ inline std::string _(const char *psz) {
 void SetupEnvironment();
 bool SetupNetworking();
 
+namespace BCLog {
+enum LogFlags : uint32_t {
+    NONE = 0,
+    NET = (1 << 0),
+    TOR = (1 << 1),
+    MEMPOOL = (1 << 2),
+    HTTP = (1 << 3),
+    BENCH = (1 << 4),
+    ZMQ = (1 << 5),
+    DB = (1 << 6),
+    RPC = (1 << 7),
+    ESTIMATEFEE = (1 << 8),
+    ADDRMAN = (1 << 9),
+    SELECTCOINS = (1 << 10),
+    REINDEX = (1 << 11),
+    CMPCTBLOCK = (1 << 12),
+    RAND = (1 << 13),
+    PRUNE = (1 << 14),
+    PROXY = (1 << 15),
+    MEMPOOLREJ = (1 << 16),
+    LIBEVENT = (1 << 17),
+    COINDB = (1 << 18),
+    QT = (1 << 19),
+    LEVELDB = (1 << 20),
+    ALL = ~uint32_t(0),
+};
+}
+
 /** Return true if log accepts specified category */
-bool LogAcceptCategory(const char *category);
+static inline bool LogAcceptCategory(uint32_t category) {
+    return (logCategories.load(std::memory_order_relaxed) & category) != 0;
+}
+
+/** Returns a string with the supported log categories */
+std::string ListLogCategories();
+
+/** Return true if str parses as a log category and set the flags in f */
+bool GetLogCategory(uint32_t *f, const std::string *str);
+
 /** Send a string to the log output */
 int LogPrintStr(const std::string &str);
 
@@ -90,7 +129,6 @@ template <typename... Args> bool error(const char *fmt, const Args &... args) {
 }
 
 void PrintExceptionContinue(const std::exception *pex, const char *pszThread);
-void ParseParameters(int argc, const char *const argv[]);
 void FileCommit(FILE *file);
 bool TruncateFile(FILE *file, unsigned int length);
 int RaiseFileDescriptorLimit(int nMinFD);
@@ -105,7 +143,6 @@ boost::filesystem::path GetConfigFile(const std::string &confPath);
 boost::filesystem::path GetPidFile();
 void CreatePidFile(const boost::filesystem::path &path, pid_t pid);
 #endif
-void ReadConfigFile(const std::string &confPath);
 #ifdef WIN32
 boost::filesystem::path GetSpecialFolderPath(int nFolder, bool fCreate = true);
 #endif
@@ -121,68 +158,132 @@ inline bool IsSwitchChar(char c) {
 #endif
 }
 
-/**
- * Return true if the given argument has been manually set.
- *
- * @param strArg Argument to get (e.g. "-foo")
- * @return true if the argument has been set
- */
-bool IsArgSet(const std::string &strArg);
+class ArgsManager {
+protected:
+    CCriticalSection cs_args;
+    std::map<std::string, std::string> mapArgs;
+    std::map<std::string, std::vector<std::string>> mapMultiArgs;
 
-/**
- * Return string argument or default value.
- *
- * @param strArg Argument to get (e.g. "-foo")
- * @param default (e.g. "1")
- * @return command-line argument or default value
- */
-std::string GetArg(const std::string &strArg, const std::string &strDefault);
+public:
+    void ParseParameters(int argc, const char *const argv[]);
+    void ReadConfigFile(const std::string &confPath);
+    std::vector<std::string> GetArgs(const std::string &strArg);
 
-/**
- * Return integer argument or default value.
- *
- * @param strArg Argument to get (e.g. "-foo")
- * @param default (e.g. 1)
- * @return command-line argument (0 if invalid number) or default value
- */
-int64_t GetArg(const std::string &strArg, int64_t nDefault);
+    /**
+     * Return true if the given argument has been manually set.
+     *
+     * @param strArg Argument to get (e.g. "-foo")
+     * @return true if the argument has been set
+     */
+    bool IsArgSet(const std::string &strArg);
 
-/**
- * Return boolean argument or default value.
- *
- * @param strArg Argument to get (e.g. "-foo")
- * @param default (true or false)
- * @return command-line argument or default value
- */
-bool GetBoolArg(const std::string &strArg, bool fDefault);
+    /**
+     * Return string argument or default value.
+     *
+     * @param strArg Argument to get (e.g. "-foo")
+     * @param default (e.g. "1")
+     * @return command-line argument or default value
+     */
+    std::string GetArg(const std::string &strArg,
+                        const std::string &strDefault);
 
-/**
- * Set an argument if it doesn't already have a value.
- *
- * @param strArg Argument to set (e.g. "-foo")
- * @param strValue Value (e.g. "1")
- * @return true if argument gets set, false if it already had a value
- */
-bool SoftSetArg(const std::string &strArg, const std::string &strValue);
+    /**
+     * Return integer argument or default value.
+     *
+     * @param strArg Argument to get (e.g. "-foo")
+     * @param default (e.g. 1)
+     * @return command-line argument (0 if invalid number) or default value
+     */
+    int64_t GetArg(const std::string &strArg, int64_t nDefault);
 
-/**
- * Set a boolean argument if it doesn't already have a value.
- *
- * @param strArg Argument to set (e.g. "-foo")
- * @param fValue Value (e.g. false)
- * @return true if argument gets set, false if it already had a value
- */
-bool SoftSetBoolArg(const std::string &strArg, bool fValue);
+    /**
+     * Return boolean argument or default value.
+     *
+     * @param strArg Argument to get (e.g. "-foo")
+     * @param default (true or false)
+     * @return command-line argument or default value
+     */
+    bool GetBoolArg(const std::string &strArg, bool fDefault);
 
-// Forces a arg setting, used only in testing
-void ForceSetArg(const std::string &strArg, const std::string &strValue);
+    /**
+     * Set an argument if it doesn't already have a value.
+     *
+     * @param strArg Argument to set (e.g. "-foo")
+     * @param strValue Value (e.g. "1")
+     * @return true if argument gets set, false if it already had a value
+     */
+    bool SoftSetArg(const std::string &strArg, const std::string &strValue);
 
-// Forces a multi arg setting, used only in testing
-void ForceSetMultiArg(const std::string &strArg, const std::string &strValue);
+    /**
+     * Set a boolean argument if it doesn't already have a value.
+     *
+     * @param strArg Argument to set (e.g. "-foo")
+     * @param fValue Value (e.g. false)
+     * @return true if argument gets set, false if it already had a value
+     */
+    bool SoftSetBoolArg(const std::string &strArg, bool fValue);
 
-// Remove an arg setting, used only in testing
-void ClearArg(const std::string &strArg);
+    // Forces a arg setting, used only in testing
+    void ForceSetArg(const std::string &strArg, const std::string &strValue);
 
+    // Forces a multi arg setting, used only in testing
+    void ForceSetMultiArg(const std::string &strArg,
+                          const std::string &strValue);
+
+    // Remove an arg setting, used only in testing
+    void ClearArg(const std::string &strArg);
+};
+
+extern ArgsManager gArgs;
+
+// wrappers using the global ArgsManager:
+static inline void ParseParameters(int argc, const char *const argv[]) {
+    gArgs.ParseParameters(argc, argv);
+}
+
+static inline void ReadConfigFile(const std::string &confPath) {
+    gArgs.ReadConfigFile(confPath);
+}
+
+static inline bool SoftSetArg(const std::string &strArg,
+                              const std::string &strValue) {
+    return gArgs.SoftSetArg(strArg, strValue);
+}
+
+static inline void ForceSetArg(const std::string &strArg,
+                               const std::string &strValue) {
+    gArgs.ForceSetArg(strArg, strValue);
+}
+
+static inline void ForceSetMultiArg(const std::string &strArg,
+                                    const std::string &strValue) {
+    gArgs.ForceSetMultiArg(strArg, strValue);
+}
+
+static inline void ClearArg(const std::string &strArg) {
+    gArgs.ClearArg(strArg);
+}
+
+static inline bool IsArgSet(const std::string &strArg) {
+    return gArgs.IsArgSet(strArg);
+}
+
+static inline std::string GetArg(const std::string &strArg,
+                                 const std::string &strDefault) {
+    return gArgs.GetArg(strArg, strDefault);
+}
+
+static inline int64_t GetArg(const std::string &strArg, int64_t nDefault) {
+    return gArgs.GetArg(strArg, nDefault);
+}
+
+static inline bool GetBoolArg(const std::string &strArg, bool fDefault) {
+    return gArgs.GetBoolArg(strArg, fDefault);
+}
+
+static inline bool SoftSetBoolArg(const std::string &strArg, bool fValue) {
+    return gArgs.SoftSetBoolArg(strArg, fValue);
+}
 /**
  * Format a string to be used as group of options in help messages.
  *

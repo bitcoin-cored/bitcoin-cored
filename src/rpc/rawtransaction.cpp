@@ -562,7 +562,7 @@ static UniValue createrawtransaction(const Config &config,
         }
     }
 
-    return EncodeHexTx(rawTx);
+    return EncodeHexTx(CTransaction(rawTx));
 }
 
 static UniValue decoderawtransaction(const Config &config,
@@ -976,7 +976,7 @@ static UniValue signrawtransaction(const Config &config,
     const CKeyStore &keystore = tempKeystore;
 #endif
 
-    int nHashType = SIGHASH_ALL | SIGHASH_FORKID;
+    SigHashType sigHashType = SigHashType().withForkId();
     if (request.params.size() > 3 && !request.params[3].isNull()) {
         static std::map<std::string, int> mapSigHashValues = {
             {"ALL", SIGHASH_ALL},
@@ -1000,16 +1000,12 @@ static UniValue signrawtransaction(const Config &config,
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid sighash param");
         }
 
-        nHashType = mapSigHashValues[strHashType];
-        if ((nHashType & SIGHASH_FORKID) == 0) {
+        sigHashType = SigHashType(mapSigHashValues[strHashType]);
+        if (!sigHashType.hasForkId()) {
             throw JSONRPCError(RPC_INVALID_PARAMETER,
                                "Signature must use SIGHASH_FORKID");
         }
     }
-
-    bool fHashSingle =
-        ((nHashType & ~(SIGHASH_ANYONECANPAY | SIGHASH_FORKID)) ==
-         SIGHASH_SINGLE);
 
     // Script verification errors.
     UniValue vErrors(UniValue::VARR);
@@ -1031,9 +1027,10 @@ static UniValue signrawtransaction(const Config &config,
 
         SignatureData sigdata;
         // Only sign SIGHASH_SINGLE if there's a corresponding output:
-        if (!fHashSingle || (i < mergedTx.vout.size())) {
+        if ((sigHashType.getBaseType() != BaseSigHashType::SINGLE) ||
+            (i < mergedTx.vout.size())) {
             ProduceSignature(MutableTransactionSignatureCreator(
-                                 &keystore, &mergedTx, i, amount, nHashType),
+                                 &keystore, &mergedTx, i, amount, sigHashType),
                              prevPubKey, sigdata);
         }
 
@@ -1060,7 +1057,7 @@ static UniValue signrawtransaction(const Config &config,
     bool fComplete = vErrors.empty();
 
     UniValue result(UniValue::VOBJ);
-    result.push_back(Pair("hex", EncodeHexTx(mergedTx)));
+    result.push_back(Pair("hex", EncodeHexTx(CTransaction(mergedTx))));
     result.push_back(Pair("complete", fComplete));
     if (!vErrors.empty()) {
         result.push_back(Pair("errors", vErrors));
@@ -1112,7 +1109,7 @@ static UniValue sendrawtransaction(const Config &config,
     const uint256 &txid = tx->GetId();
 
     bool fLimitFree = false;
-    CAmount nMaxRawTxFee = maxTxFee;
+    CAmount nMaxRawTxFee = maxTxFee.GetSatoshis();
     if (request.params.size() > 1 && request.params[1].get_bool()) {
         nMaxRawTxFee = 0;
     }

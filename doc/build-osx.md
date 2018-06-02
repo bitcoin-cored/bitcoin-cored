@@ -24,13 +24,13 @@ In case you want to build the disk image with `make deploy` (.dmg / optional), y
 
 NOTE: Building with Qt4 is still supported, however, could result in a broken UI. Building with Qt5 is recommended.
 
-Build Bitcoin Clashic ABCD
+Build Bitcoin Core SQ
 --------------------------
 
-1. Clone the Bitcoin Clashic ABCD source code and cd into `bitcoin-clashic`
+1. Clone the Bitcoin Core SQ source code and cd into `bitcoin-cored`
 
-        git clone github.com/Bitcoin-Clashic/bitcoin-clashic
-        cd bitcoin-clashic
+        git clone github.com/bitcoin-cored/bitcoin-cored
+        cd bitcoin-cored
 
 2.  Build bitcoin-abcd:
 
@@ -53,7 +53,7 @@ Build Bitcoin Clashic ABCD
 Running
 -------
 
-Bitcoin Clashic ABCD is now available at `./src/clashicd`
+Bitcoin Core SQ is now available at `./src/clashicd`
 
 Before running, it's recommended you create an RPC configuration file.
 

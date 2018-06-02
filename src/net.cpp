@@ -181,7 +181,7 @@ void AdvertiseLocal(CNode *pnode) {
             addrLocal.SetIP(pnode->GetAddrLocal());
         }
         if (addrLocal.IsRoutable()) {
-            LogPrint("net", "AdvertiseLocal: advertising address %s\n",
+            LogPrint(BCLog::NET, "AdvertiseLocal: advertising address %s\n",
                      addrLocal.ToString());
             FastRandomContext insecure_rand;
             pnode->PushAddress(addrLocal, insecure_rand);
@@ -342,7 +342,7 @@ CNode *CConnman::ConnectNode(CAddress addrConnect, const char *pszDest,
     }
 
     /// debug print
-    LogPrint("net", "trying connection %s lastseen=%.1fhrs\n",
+    LogPrint(BCLog::NET, "trying connection %s lastseen=%.1fhrs\n",
              pszDest ? pszDest : addrConnect.ToString(),
              pszDest ? 0.0 : (double)(GetAdjustedTime() - addrConnect.nTime) /
                                  3600.0);
@@ -421,7 +421,8 @@ void CConnman::DumpBanlist() {
         SetBannedSetDirty(false);
     }
 
-    LogPrint("net", "Flushed %d banned node ips/subnets to banlist.dat  %dms\n",
+    LogPrint(BCLog::NET,
+             "Flushed %d banned node ips/subnets to banlist.dat  %dms\n",
              banmap.size(), GetTimeMillis() - nStart);
 }
 
@@ -429,7 +430,7 @@ void CNode::CloseSocketDisconnect() {
     fDisconnect = true;
     LOCK(cs_hSocket);
     if (hSocket != INVALID_SOCKET) {
-        LogPrint("net", "disconnecting peer=%d\n", id);
+        LogPrint(BCLog::NET, "disconnecting peer=%d\n", id);
         CloseSocket(hSocket);
     }
 }
@@ -573,7 +574,7 @@ void CConnman::SweepBanned() {
         if (now > banEntry.nBanUntil) {
             setBanned.erase(it++);
             setBannedIsDirty = true;
-            LogPrint("net",
+            LogPrint(BCLog::NET,
                      "%s: Removed banned node ip/subnet from banlist.dat: %s\n",
                      __func__, subNet.ToString());
         } else {
@@ -726,7 +727,8 @@ bool CNode::ReceiveMsgBytes(const char *pch, unsigned int nBytes,
         }
 
         if (msg.in_data && msg.hdr.nMessageSize > MAX_PROTOCOL_MESSAGE_LENGTH) {
-            LogPrint("net", "Oversized message from peer=%i, disconnecting\n",
+            LogPrint(BCLog::NET,
+                     "Oversized message from peer=%i, disconnecting\n",
                      GetId());
             return false;
         }
@@ -1173,8 +1175,8 @@ void CConnman::AcceptConnection(const ListenSocket &hListenSocket) {
     if (nInbound >= nMaxInbound) {
         if (!AttemptToEvictConnection()) {
             // No connection to evict, disconnect the new connection
-            LogPrint("net", "failed to find an eviction candidate - connection "
-                            "dropped (full)\n");
+            LogPrint(BCLog::NET, "failed to find an eviction candidate - "
+                                 "connection dropped (full)\n");
             CloseSocket(hSocket);
             return;
         }
@@ -1192,7 +1194,7 @@ void CConnman::AcceptConnection(const ListenSocket &hListenSocket) {
 
     GetNodeSignals().InitializeNode(*config, pnode, *this);
 
-    LogPrint("net", "connection from %s accepted\n", addr.ToString());
+    LogPrint(BCLog::NET, "connection from %s accepted\n", addr.ToString());
 
     {
         LOCK(cs_vNodes);
@@ -1432,7 +1434,7 @@ void CConnman::ThreadSocketHandler() {
                 } else if (nBytes == 0) {
                     // socket closed gracefully
                     if (!pnode->fDisconnect) {
-                        LogPrint("net", "socket closed\n");
+                        LogPrint(BCLog::NET, "socket closed\n");
                     }
                     pnode->CloseSocketDisconnect();
                 } else if (nBytes < 0) {
@@ -1466,8 +1468,8 @@ void CConnman::ThreadSocketHandler() {
             int64_t nTime = GetSystemTimeInSeconds();
             if (nTime - pnode->nTimeConnected > 60) {
                 if (pnode->nLastRecv == 0 || pnode->nLastSend == 0) {
-                    LogPrint("net", "socket no message in first 60 seconds, %d "
-                                    "%d from %d\n",
+                    LogPrint(BCLog::NET, "socket no message in first 60 "
+                                         "seconds, %d %d from %d\n",
                              pnode->nLastRecv != 0, pnode->nLastSend != 0,
                              pnode->id);
                     pnode->fDisconnect = true;
@@ -1715,8 +1717,8 @@ void CConnman::DumpAddresses() {
     CAddrDB adb;
     adb.Write(addrman);
 
-    LogPrint("net", "Flushed %d addresses to peers.dat  %dms\n", addrman.size(),
-             GetTimeMillis() - nStart);
+    LogPrint(BCLog::NET, "Flushed %d addresses to peers.dat  %dms\n",
+             addrman.size(), GetTimeMillis() - nStart);
 }
 
 void CConnman::DumpData() {
@@ -1746,11 +1748,10 @@ void CConnman::ProcessOneShot() {
 
 void CConnman::ThreadOpenConnections() {
     // Connect to specific addresses
-    if (mapMultiArgs.count("-connect") &&
-        mapMultiArgs.at("-connect").size() > 0) {
+    if (gArgs.IsArgSet("-connect") && gArgs.GetArgs("-connect").size() > 0) {
         for (int64_t nLoop = 0;; nLoop++) {
             ProcessOneShot();
-            for (const std::string &strAddr : mapMultiArgs.at("-connect")) {
+            for (const std::string &strAddr : gArgs.GetArgs("-connect")) {
                 CAddress addr(CService(), NODE_NONE);
                 OpenNetworkConnection(addr, false, nullptr, strAddr.c_str());
                 for (int i = 0; i < 10 && i < nLoop; i++) {
@@ -1910,7 +1911,7 @@ void CConnman::ThreadOpenConnections() {
                         std::chrono::milliseconds(randsleep))) {
                     return;
                 }
-                LogPrint("net", "Making feeler connection to %s\n",
+                LogPrint(BCLog::NET, "Making feeler connection to %s\n",
                          addrConnect.ToString());
             }
 
@@ -1985,8 +1986,8 @@ std::vector<AddedNodeInfo> CConnman::GetAddedNodeInfo() {
 void CConnman::ThreadOpenAddedConnections() {
     {
         LOCK(cs_vAddedNodes);
-        if (mapMultiArgs.count("-addnode")) {
-            vAddedNodes = mapMultiArgs.at("-addnode");
+        if (gArgs.IsArgSet("-addnode")) {
+            vAddedNodes = gArgs.GetArgs("-addnode");
         }
     }
 
@@ -2299,9 +2300,7 @@ void Discover(boost::thread_group &threadGroup) {
 }
 
 void CConnman::SetNetworkActive(bool active) {
-    if (fDebug) {
-        LogPrint("net", "SetNetworkActive: %s\n", active);
-    }
+    LogPrint(BCLog::NET, "SetNetworkActive: %s\n", active);
 
     if (!active) {
         fNetworkActive = false;
@@ -2395,7 +2394,7 @@ bool CConnman::Start(CScheduler &scheduler, std::string &strNodeError,
         // sweep out unused entries
         SweepBanned();
 
-        LogPrint("net",
+        LogPrint(BCLog::NET,
                  "Loaded %d banned node ips/subnets from banlist.dat  %dms\n",
                  banmap.size(), GetTimeMillis() - nStart);
     } else {
@@ -2452,9 +2451,8 @@ bool CConnman::Start(CScheduler &scheduler, std::string &strNodeError,
                         &CConnman::ThreadOpenAddedConnections, this)));
 
     // Initiate outbound connections unless connect=0
-    if (!mapMultiArgs.count("-connect") ||
-        mapMultiArgs.at("-connect").size() != 1 ||
-        mapMultiArgs.at("-connect")[0] != "0") {
+    if (!gArgs.IsArgSet("-connect") || gArgs.GetArgs("-connect").size() != 1 ||
+        gArgs.GetArgs("-connect")[0] != "0") {
         threadOpenConnections =
             std::thread(&TraceThread<std::function<void()>>, "opencon",
                         std::function<void()>(
@@ -2859,9 +2857,9 @@ CNode::CNode(NodeId idIn, ServiceFlags nLocalServicesIn,
     mapRecvBytesPerMsgCmd[NET_MESSAGE_COMMAND_OTHER] = 0;
 
     if (fLogIPs) {
-        LogPrint("net", "Added connection to %s peer=%d\n", addrName, id);
+        LogPrint(BCLog::NET, "Added connection to %s peer=%d\n", addrName, id);
     } else {
-        LogPrint("net", "Added connection peer=%d\n", id);
+        LogPrint(BCLog::NET, "Added connection peer=%d\n", id);
     }
 }
 
@@ -2895,7 +2893,7 @@ void CNode::AskFor(const CInv &inv) {
     } else {
         nRequestTime = 0;
     }
-    LogPrint("net", "askfor %s  %d (%s) peer=%d\n", inv.ToString(),
+    LogPrint(BCLog::NET, "askfor %s  %d (%s) peer=%d\n", inv.ToString(),
              nRequestTime,
              DateTimeStrFormat("%H:%M:%S", nRequestTime / 1000000), id);
 
@@ -2923,7 +2921,7 @@ bool CConnman::NodeFullyConnected(const CNode *pnode) {
 void CConnman::PushMessage(CNode *pnode, CSerializedNetMsg &&msg) {
     size_t nMessageSize = msg.data.size();
     size_t nTotalSize = nMessageSize + CMessageHeader::HEADER_SIZE;
-    LogPrint("net", "sending %s (%d bytes) peer=%d\n",
+    LogPrint(BCLog::NET, "sending %s (%d bytes) peer=%d\n",
              SanitizeString(msg.command.c_str()), nMessageSize, pnode->id);
 
     std::vector<uint8_t> serializedHeader;
@@ -3028,8 +3026,8 @@ std::string userAgent(const Config &config) {
     uacomments.push_back("EB" + eb);
 
     // sanitize comments per BIP-0014, format user agent and check total size
-    if (mapMultiArgs.count("-uacomment")) {
-        for (const std::string &cmt : mapMultiArgs.at("-uacomment")) {
+    if (gArgs.IsArgSet("-uacomment")) {
+        for (const std::string &cmt : gArgs.GetArgs("-uacomment")) {
             if (cmt != SanitizeString(cmt, SAFE_CHARS_UA_COMMENT)) {
                 LogPrintf(
                     "User Agent comment (%s) contains unsafe characters. "

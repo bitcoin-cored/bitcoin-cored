@@ -16,7 +16,7 @@
 
 // Far into the future.
 static const std::string ANTI_REPLAY_COMMITMENT =
-    "Bitcoin: A Peer-to-Peer Electronic Cash System";
+    "Bitcoin Core: Satoshi's True Vision";
 
 static std::vector<uint8_t> GetAntiReplayCommitment() {
     return std::vector<uint8_t>(std::begin(ANTI_REPLAY_COMMITMENT),
@@ -131,20 +131,19 @@ public:
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork =
-            uint256S("0x000000000000000000000000000000000000000000796b6d5908f8d"
-                     "b26c3cf44");
+            uint256S("0x0000000000000000000000000000000000000000007cb5f207557941bd9a6096");
 
         // By default assume that the signatures in ancestors of this block are
         // valid.
         consensus.defaultAssumeValid =
-            uint256S("0x000000000000000004694d6c74b532faf99fc072181f870bfb4a6c9"
-                     "930f7440c");
+            uint256S("0x00000000000000017de31d8e9a74ba7c50557d13e10290131dfa78202799faea");
 
         // Aug, 1 hard fork
         consensus.uahfHeight = 478559;
 
-        // TVS-43 Replay Protection from Bitcoin Cash. (9) difficulty adjustments from 2018/01/30
-        consensus.TVS43Height = 544320;
+        // May, 21st hard fork. Human time (GMT): Monday, May 21, 2018 04:00:00 PM
+        // Actual fork was 5 hours later
+        consensus.coreHardForkActivationTime = 1526852960;
 
         /**
          * The message start string is designed to be unlikely to occur in
@@ -174,30 +173,22 @@ public:
 
         // Note that of those with the service bits flag, most only support a
         // subset of possible options.
-        // Bitcoin ABC seeder
-        vSeeds.push_back(
-            CDNSSeedData("bitcoinabc.org", "seed.bitcoinabc.org", true));
-        // bitcoinforks seeders
-        vSeeds.push_back(CDNSSeedData("bitcoinforks.org",
-                                      "seed-abc.bitcoinforks.org", true));
-        // BU backed seeder
-        vSeeds.push_back(CDNSSeedData("bitcoinunlimited.info",
-                                      "btccash-seeder.bitcoinunlimited.info",
-                                      true));
-        // Bitprim
-        vSeeds.push_back(CDNSSeedData("bitprim.org", "seed.bitprim.org", true));
-        // Amaury SÉCHET
-        vSeeds.push_back(
-            CDNSSeedData("deadalnix.me", "seed.deadalnix.me", true));
         // clashic.cash maintained by Clashicly
         vSeeds.push_back(
             CDNSSeedData("clashic.cash", "seeder.clashic.cash", true));
+        // bitcoincore.zone
+        vSeeds.push_back(
+            CDNSSeedData("bitcoincore.zone", "seeder.bitcoincore.zone", true));
+        // truevisionofsatoshi.com
+        vSeeds.push_back(
+            CDNSSeedData("clashic.org", "seeder-mainnet.clashic.org", true));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<uint8_t>(1, 0);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<uint8_t>(1, 5);
         base58Prefixes[SECRET_KEY] = std::vector<uint8_t>(1, 128);
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E};
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
+        coreaddrPrefix = "bitcoincore";
 
         vFixedSeeds = std::vector<SeedSpec6>(
             pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
@@ -240,7 +231,14 @@ public:
                                   "4bd9f15ff20136191a5eec")},
                 // Sept 30, 2017
                 {490000, uint256S("0x0000000000000000018ade0e75b4c21db72f05db1e"
-                                  "4fffb870c26d6c765dc6d1")}}};
+                                  "4fffb870c26d6c765dc6d1")},
+                // May 18, 2018
+                {575000, uint256S("0x000000000000000e507218030ced7824e0a6b84e6d"
+                                  "243bc76d6590930fc88c82")},
+                // May 23, 2018
+                {576720, uint256S("0x00000000000000017de31d8e9a74ba7c50557d13e1"
+                                  "0290131dfa78202799faea")}}};
+
 
         // Data as of block
         // 00000000000000000166d612d5595e2b1cd88d71d695fc580af64d8da8658c23
@@ -315,6 +313,9 @@ public:
         // Aug, 1 hard fork
         consensus.uahfHeight = 1155876;
 
+        // May, 21st hard fork
+        consensus.coreHardForkActivationTime = 1526860800;
+
         pchMessageStart[0] = 0x0b;
         pchMessageStart[1] = 0x11;
         pchMessageStart[2] = 0x09;
@@ -345,21 +346,25 @@ public:
         // bitcoinforks seeders
         vSeeds.push_back(CDNSSeedData(
             "bitcoinforks.org", "testnet-seed-abc.bitcoinforks.org", true));
-        // Bitprim
-        vSeeds.push_back(
-            CDNSSeedData("bitprim.org", "testnet-seed.bitprim.org", true));
         // Amaury SÉCHET
         vSeeds.push_back(
             CDNSSeedData("deadalnix.me", "testnet-seed.deadalnix.me", true));
-        // criptolayer.net
-        vSeeds.push_back(CDNSSeedData("criptolayer.net",
-                                      "testnet-seeder.criptolayer.net", true));
+        // truevisionofsatoshi.com
+        vSeeds.push_back(CDNSSeedData("truevisionofsatoshi.com",
+                                      "seeder-testnet.truevisionofsatoshi.com", true));
+        // clashic.cash maintained by Clashicly
+        vSeeds.push_back(
+            CDNSSeedData("clashic.cash", "testnet-seeder.clashic.cash", true));
+        // bitcoincore.zone
+        vSeeds.push_back(
+            CDNSSeedData("bitcoincore.zone", "testnet-seeder.bitcoincore.zone", true));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<uint8_t>(1, 111);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<uint8_t>(1, 196);
         base58Prefixes[SECRET_KEY] = std::vector<uint8_t>(1, 239);
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
+        coreaddrPrefix = "btcctest";
         vFixedSeeds = std::vector<SeedSpec6>(
             pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
 
@@ -434,6 +439,9 @@ public:
         // Hard fork is always enabled on regtest.
         consensus.uahfHeight = 0;
 
+        // Nov, 13 hard fork
+        consensus.coreHardForkActivationTime = 0;
+
         pchMessageStart[0] = 0xfa;
         pchMessageStart[1] = 0xbf;
         pchMessageStart[2] = 0xb5;
@@ -476,6 +484,7 @@ public:
         base58Prefixes[SECRET_KEY] = std::vector<uint8_t>(1, 239);
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
+        coreaddrPrefix = "btccreg";
     }
 
     void UpdateBIP9Parameters(Consensus::DeploymentPos d, int64_t nStartTime,

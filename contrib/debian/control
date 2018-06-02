@@ -23,19 +23,19 @@ Build-Depends: debhelper,
  libprotobuf-dev, protobuf-compiler,
  python
 Standards-Version: 3.9.2
-Homepage: http://bitcoinclashic.org/
-Vcs-Git: git://github.com/Bitcoin-Clashic/bitcoin-clashic.git
-Vcs-Browser: https://github.com/Bitcoin-Clashic/bitcoin-clashic
+Homepage: https://thebitcoincore.org/
+Vcs-Git: git://github.com/bitcoin-cored/bitcoin-cored.git
+Vcs-Browser: https://github.com/bitcoin-cored/bitcoin-cored
 
 Package: clashicd
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - daemon
  Bitcoin is an experimental new digital currency that enables instant
- payments to anyone, anywhere in the world. Bitcoin uses peer-to-peer
+ payments to anyone, anywhere in the world. Bitcoin Core uses peer-to-peer
  technology to operate with no central authority: managing transactions
  and issuing money are carried out collectively by the network. Bitcoin
- Clashic ABCD is the name of the open source software which enables the 
+ Core SQ is the name of the open source software which enables the 
  use of this currency.
  .
  This package provides the daemon, clashicd, and the CLI tool
@@ -45,11 +45,11 @@ Package: clashic-qt
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - Qt GUI
- Bitcoin Clashic is an experimental new digital currency that enables instant
- payments to anyone, anywhere in the world. Bitcoin uses peer-to-peer
+ Bitcoin Core is an experimental new digital currency that enables instant
+ payments to anyone, anywhere in the world. Bitcoin Core uses peer-to-peer
  technology to operate with no central authority: managing transactions
  and issuing money are carried out collectively by the network. Bitcoin
- Clashic ABCD is the name of the open source software which enables the
+ Core SQ is the name of the open source software which enables the
  use of this currency.
  .
  This package provides Clashic-Qt, a GUI for Bitcoin Clashic based on Qt.
@@ -58,11 +58,11 @@ Package: clashic-tx
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer digital currency - standalone transaction tool
- Bitcoin Clashic is an experimental new digital currency that enables instant
- payments to anyone, anywhere in the world. Bitcoin uses peer-to-peer
+ Bitcoin Core is an experimental new digital currency that enables instant
+ payments to anyone, anywhere in the world. Bitcoin Core uses peer-to-peer
  technology to operate with no central authority: managing transactions
  and issuing money are carried out collectively by the network. Bitcoin
- Clashic ABCD is the name of the open source software which enables the
+ Core SQ is the name of the open source software which enables the
  use of this currency.
  .
  This package provides clashic-tx, a command-line transaction creation

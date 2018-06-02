@@ -268,7 +268,7 @@ void BitcoinGUI::createActions() {
 
     sendCoinsAction = new QAction(
         platformStyle->SingleColorIcon(":/icons/send"), tr("&Send"), this);
-    sendCoinsAction->setStatusTip(tr("Send coins to a Bitcoin Clashic address"));
+    sendCoinsAction->setStatusTip(tr("Send coins to a Bitcoin Core address"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
     sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
@@ -381,13 +381,13 @@ void BitcoinGUI::createActions() {
         new QAction(platformStyle->TextColorIcon(":/icons/edit"),
                     tr("Sign &message..."), this);
     signMessageAction->setStatusTip(
-        tr("Sign messages with your Bitcoin addresses to prove you own them"));
+        tr("Sign messages with your Bitcoin Core addresses to prove you own them"));
     verifyMessageAction =
         new QAction(platformStyle->TextColorIcon(":/icons/verify"),
                     tr("&Verify message..."), this);
     verifyMessageAction->setStatusTip(
         tr("Verify messages to ensure they were signed with specified Bitcoin "
-           "addresses"));
+           "Core addresses"));
 
     openRPCConsoleAction =
         new QAction(platformStyle->TextColorIcon(":/icons/debugwindow"),
@@ -419,7 +419,7 @@ void BitcoinGUI::createActions() {
     showHelpMessageAction->setMenuRole(QAction::NoRole);
     showHelpMessageAction->setStatusTip(
         tr("Show the %1 help message to get a list with possible Bitcoin "
-           "command-line options")
+           "Core command-line options")
             .arg(tr(PACKAGE_NAME)));
 
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
@@ -777,7 +777,7 @@ void BitcoinGUI::updateNetworkState() {
     QString tooltip;
 
     if (clientModel->getNetworkActive()) {
-        tooltip = tr("%n active connection(s) to Bitcoin network", "", count) +
+        tooltip = tr("%n active connection(s) to Bitcoin Core network", "", count) +
                   QString(".<br>") + tr("Click to disable network activity.");
     } else {
         tooltip = tr("Network activity disabled.") + QString("<br>") +
@@ -925,7 +925,7 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime &blockDate,
 
 void BitcoinGUI::message(const QString &title, const QString &message,
                          unsigned int style, bool *ret) {
-    // default title
+    // default title Bitcoin gets translated "Bitcoin Core" via locale
     QString strTitle = tr("Bitcoin");
     // Default to information icon
     int nMBoxIcon = QMessageBox::Information;
@@ -951,7 +951,7 @@ void BitcoinGUI::message(const QString &title, const QString &message,
                 break;
         }
     }
-    // Append title to "Bitcoin - "
+    // Append title to "Bitcoin Core - "
     if (!msgType.isEmpty()) strTitle += " - " + msgType;
 
     // Check for error/warning icon

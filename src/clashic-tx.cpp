@@ -483,7 +483,7 @@ static const unsigned int N_SIGHASH_OPTS = 12;
 static const struct {
     const char *flagStr;
     int flags;
-} sighashOptions[N_SIGHASH_OPTS] = {
+} sigHashOptions[N_SIGHASH_OPTS] = {
     {"ALL", SIGHASH_ALL},
     {"NONE", SIGHASH_NONE},
     {"SINGLE", SIGHASH_SINGLE},
@@ -501,12 +501,13 @@ static const struct {
      SIGHASH_SINGLE | SIGHASH_FORKID | SIGHASH_ANYONECANPAY},
 };
 
-static bool findSighashFlags(int &flags, const std::string &flagStr) {
-    flags = 0;
+static bool findSigHashFlags(SigHashType &sigHashType,
+                             const std::string &flagStr) {
+    sigHashType = SigHashType();
 
     for (unsigned int i = 0; i < N_SIGHASH_OPTS; i++) {
-        if (flagStr == sighashOptions[i].flagStr) {
-            flags = sighashOptions[i].flags;
+        if (flagStr == sigHashOptions[i].flagStr) {
+            sigHashType = SigHashType(sigHashOptions[i].flags);
             return true;
         }
     }
@@ -551,14 +552,14 @@ static Amount AmountFromValue(const UniValue &value) {
 }
 
 static void MutateTxSign(CMutableTransaction &tx, const std::string &flagStr) {
-    int nHashType = SIGHASH_ALL | SIGHASH_FORKID;
+    SigHashType sigHashType = SigHashType().withForkId();
 
-    if ((flagStr.size() > 0) && !findSighashFlags(nHashType, flagStr)) {
+    if ((flagStr.size() > 0) && !findSigHashFlags(sigHashType, flagStr)) {
         throw std::runtime_error("unknown sighash flag/sign option");
     }
 
     std::vector<CTransaction> txVariants;
-    txVariants.push_back(tx);
+    txVariants.push_back(CTransaction(tx));
 
     // mergedTx will end up with all the signatures; it starts as a clone of the
     // raw tx:
@@ -655,10 +656,6 @@ static void MutateTxSign(CMutableTransaction &tx, const std::string &flagStr) {
 
     const CKeyStore &keystore = tempKeystore;
 
-    bool fHashSingle =
-        ((nHashType & ~(SIGHASH_ANYONECANPAY | SIGHASH_FORKID)) ==
-         SIGHASH_SINGLE);
-
     // Sign what we can:
     for (size_t i = 0; i < mergedTx.vin.size(); i++) {
         CTxIn &txin = mergedTx.vin[i];
@@ -673,10 +670,10 @@ static void MutateTxSign(CMutableTransaction &tx, const std::string &flagStr) {
 
         SignatureData sigdata;
         // Only sign SIGHASH_SINGLE if there's a corresponding output:
-        if (!fHashSingle || (i < mergedTx.vout.size())) {
-            ProduceSignature(
-                MutableTransactionSignatureCreator(
-                    &keystore, &mergedTx, i, amount.GetSatoshis(), nHashType),
+        if ((sigHashType.getBaseType() != BaseSigHashType::SINGLE) ||
+            (i < mergedTx.vout.size())) {
+            ProduceSignature(MutableTransactionSignatureCreator(
+                                 &keystore, &mergedTx, i, amount, sigHashType),
                 prevPubKey, sigdata);
         }
 
@@ -855,7 +852,7 @@ static int CommandLineRawTx(int argc, char *argv[]) {
             MutateTx(tx, key, value);
         }
 
-        OutputTx(tx);
+        OutputTx(CTransaction(tx));
     }
 
     catch (const boost::thread_interrupted &) {

@@ -114,8 +114,8 @@
         <translation>Reindexando bloques en el disco...</translation>
     </message>
     <message>
-        <source>Send coins to a Bitcoin Clashic address</source>
-        <translation>Enviar monedas a una dirección Bitcoin Clashic</translation>
+        <source>Send coins to a Bitcoin Core address</source>
+        <translation>Enviar monedas a una dirección Bitcoin Core</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -131,7 +131,7 @@
     </message>
     <message>
         <source>Bitcoin</source>
-        <translation>Bitcoin</translation>
+        <translation>Bitcoin Core</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -158,12 +158,12 @@
         <translation>Encriptar las llaves privadas que pertenecen a tu billetera</translation>
     </message>
     <message>
-        <source>Sign messages with your Bitcoin addresses to prove you own them</source>
-        <translation>Firma mensajes con tus direcciones Bitcoin para probar que eres dueño de ellas</translation>
+        <source>Sign messages with your Bitcoin Core addresses to prove you own them</source>
+        <translation>Firma mensajes con tus direcciones Bitcoin Core para probar que eres dueño de ellas</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Bitcoin addresses</source>
-        <translation>Verificar mensajes para asegurar que estaban firmados con direcciones Bitcoin especificas</translation>
+        <source>Verify messages to ensure they were signed with specified Bitcoin Core addresses</source>
+        <translation>Verificar mensajes para asegurar que estaban firmados con direcciones Bitcoin Core especificas</translation>
     </message>
     <message>
         <source>&amp;File</source>
