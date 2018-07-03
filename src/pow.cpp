@@ -165,22 +165,33 @@ static arith_uint256 ComputeTarget(const CBlockIndex *pindexFirst,
                                    const Consensus::Params &params) {
     assert(pindexLast->nHeight > pindexFirst->nHeight);
 
+    // Factor Target Spacing and amplitudes based on 144 or 30 period DAA
+    int64_t nTargetSpacing = params.nPowTargetSpacing;
+    uint32_t nHighAmplitude = 288;
+    uint32_t nLowAmplitude = 72;
+
+    if (pindexLast->nHeight > params.oneMinuteBlockHeight) {
+        nTargetSpacing = params.nPowTargetSpacingOneMinute;
+        nHighAmplitude = 60;
+        nLowAmplitude = 15;
+    }
+    
     /**
      * From the total work done and the time it took to produce that much work,
      * we can deduce how much work we expect to be produced in the targeted time
      * between blocks.
      */
     arith_uint256 work = pindexLast->nChainWork - pindexFirst->nChainWork;
-    work *= params.nPowTargetSpacing;
+    work *= nTargetSpacing;
 
     // In order to avoid difficulty cliffs, we bound the amplitude of the
-    // adjustement we are going to do.
+    // adjustment we are going to do.
     assert(pindexLast->nTime > pindexFirst->nTime);
     int64_t nActualTimespan = pindexLast->nTime - pindexFirst->nTime;
-    if (nActualTimespan > 288 * params.nPowTargetSpacing) {
-        nActualTimespan = 288 * params.nPowTargetSpacing;
-    } else if (nActualTimespan < 72 * params.nPowTargetSpacing) {
-        nActualTimespan = 72 * params.nPowTargetSpacing;
+    if (nActualTimespan > nHighAmplitude * nTargetSpacing) {
+        nActualTimespan = nHighAmplitude * nTargetSpacing;
+    } else if (nActualTimespan < nLowAmplitude * nTargetSpacing) {
+        nActualTimespan = nLowAmplitude * nTargetSpacing;
     }
 
     work /= nActualTimespan;
@@ -228,17 +239,30 @@ static const CBlockIndex *GetSuitableBlock(const CBlockIndex *pindex) {
 }
 
 /**
- * Compute the next required proof of work using a weighted average of the
- * estimated hashrate per block.
+ * Compute the next required proof of work using a 144-period or 30-period
+ * weighted average of the estimated hashrate per block.
  *
  * Using a weighted average ensure that the timestamp parameter cancels out in
  * most of the calculation - except for the timestamp of the first and last
  * block. Because timestamps are the least trustworthy information we have as
- * input, this ensures the algorithm is more resistant to malicious inputs.
+ * input, this ensures the algorithm is more resistant to malicious inputs.+
  */
 uint32_t GetNextCoreWorkRequired(const CBlockIndex *pindexPrev,
                                  const CBlockHeader *pblock,
                                  const Consensus::Params &params) {
+
+    // Factor Target Spacing and difficulty adjustment based on 144 or 30 period DAA
+    const uint32_t nHeight = pindexPrev->nHeight;
+    int64_t nPowTargetSpacing = params.nPowTargetSpacing;
+    int64_t nDifficultyAdjustmentInterval = params.DifficultyAdjustmentInterval();
+    uint32_t nDAAPeriods = 144;
+
+    if (nHeight > params.oneMinuteBlockHeight) {
+        nPowTargetSpacing = params.nPowTargetSpacingOneMinute;
+        nDifficultyAdjustmentInterval = params.DifficultyAdjustmentIntervalOneMinute();
+        nDAAPeriods = 30;
+    }
+
     // This cannot handle the genesis block and early blocks in general.
     assert(pindexPrev);
 
@@ -247,20 +271,19 @@ uint32_t GetNextCoreWorkRequired(const CBlockIndex *pindexPrev,
     // mining of a min-difficulty block.
     if (params.fPowAllowMinDifficultyBlocks &&
         (pblock->GetBlockTime() >
-         pindexPrev->GetBlockTime() + 2 * params.nPowTargetSpacing)) {
+         pindexPrev->GetBlockTime() + 2 * nPowTargetSpacing)) {
         return UintToArith256(params.powLimit).GetCompact();
     }
 
-    // Compute the difficulty based on the full adjustement interval.
-    const uint32_t nHeight = pindexPrev->nHeight;
-    assert(nHeight >= params.DifficultyAdjustmentInterval());
+    // Compute the difficulty based on the full adjustment interval.
+    assert(nHeight >= nDifficultyAdjustmentInterval;
 
     // Get the last suitable block of the difficulty interval.
     const CBlockIndex *pindexLast = GetSuitableBlock(pindexPrev);
     assert(pindexLast);
 
     // Get the first suitable block of the difficulty interval.
-    uint32_t nHeightFirst = nHeight - 144;
+    uint32_t nHeightFirst = nHeight - nDAAPeriods;
     const CBlockIndex *pindexFirst =
         GetSuitableBlock(pindexPrev->GetAncestor(nHeightFirst));
     assert(pindexFirst);

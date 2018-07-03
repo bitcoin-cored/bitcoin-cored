@@ -107,6 +107,8 @@ public:
         // two weeks
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60;
         consensus.nPowTargetSpacing = 10 * 60;
+        // hardfork to one min blocks
+        consensus.nPowTargetSpacingOneMinute = 60;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         // 95% of 2016
@@ -144,6 +146,21 @@ public:
         // May, 21st hard fork. Human time (GMT): Monday, May 21, 2018 04:00:00 PM
         // Actual fork was 5 hours later
         consensus.coreHardForkActivationTime = 1526852960;
+
+        // At this height we will hardfork to 1-minute blocks and 30-period DAA
+        consensus.oneMinuteBlockHeight = 584640;
+
+        // Take the amount of 10-minute blocks in this interval and add it
+        // to the number of expected 1-minute blocks left in the orginal planned
+        // interval to figure out when to cut the block subsidy. It should be more 
+        // straight forward on subsequent halvings.
+        // ie. (((584640 -(210000*2))+(((210000*3)-584640)*10)))=164640+(45360*10)
+        // so this interval would be 618240 blocks past last halving
+        // which means 12.5 / 10 / 2 block rewards at a height of 210000 * 2 + 618240
+        // or halve to 0.625 BTCC at height 1,038,240
+        consensus.nSubsidyHalvingIntervalOneMinuteAdjustment =
+            (((consensus.oneMinuteBlockHeight - (210000 * 2)) + 
+            (((210000 * 3) - consensus.oneMinuteBlockHeight) * 10)));
 
         /**
          * The message start string is designed to be unlikely to occur in
@@ -263,6 +280,7 @@ public:
     CTestNetParams() {
         strNetworkID = "test";
         consensus.nSubsidyHalvingInterval = 210000;
+        consensus.nSubsidyHalvingIntervalOneMinute = 210000 * 10;
         consensus.BIP34Height = 21111;
         consensus.BIP34Hash = uint256S("0x0000000023b3a96d3484e5abb3755c413e7d4"
                                        "1500f8e2a5c3f0dd01299cd8ef8");
@@ -277,6 +295,8 @@ public:
         // two weeks
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60;
         consensus.nPowTargetSpacing = 10 * 60;
+        // hardfork to one min blocks
+        consensus.nPowTargetSpacingOneMinute = 60;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         // 75% for testchains
@@ -315,6 +335,11 @@ public:
 
         // May, 21st hard fork
         consensus.coreHardForkActivationTime = 1526860800;
+
+        // At this height we will hardfork to 1-minute blocks and 30-period DAA
+        // @TODO bring back testnet and figure out more appropriate block height
+        // to test on
+        consensus.oneMinuteBlockHeight = 1155876;
 
         pchMessageStart[0] = 0x0b;
         pchMessageStart[1] = 0x11;
@@ -414,6 +439,8 @@ public:
         // two weeks
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60;
         consensus.nPowTargetSpacing = 10 * 60;
+        // hardfork to one min blocks
+        consensus.nPowTargetSpacingOneMinute = 60;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
         // 75% for testchains
@@ -441,6 +468,9 @@ public:
 
         // Nov, 13 hard fork
         consensus.coreHardForkActivationTime = 0;
+
+        // 1-minute blocks are always enabled on regtest
+        consensus.oneMinuteBlockHeight = 0
 
         pchMessageStart[0] = 0xfa;
         pchMessageStart[1] = 0xbf;

@@ -41,6 +41,11 @@ struct BIP9Deployment {
 struct Params {
     uint256 hashGenesisBlock;
     int nSubsidyHalvingInterval;
+    int nSubsidyHalvingIntervalOneMinute;
+    // Need to factor adjustment for changing to 1-minute blocks in the middle
+    // of halving interval so we end up with 21m coins
+    int nSubsidyHalvingIntervalOneMinuteAdjustment;
+
     /** Block height and hash at which BIP34 becomes active */
     int BIP34Height;
     uint256 BIP34Hash;
@@ -54,6 +59,9 @@ struct Params {
     int antiReplayOpReturnSunsetHeight;
     /** Committed OP_RETURN value for replay protection */
     std::vector<uint8_t> antiReplayOpReturnCommitment;
+    /** Block height at which we changed consensus to 1-minute blocks */
+    int oneMinuteBlockHeight;
+
     /**
      * Minimum blocks including miner confirmation of the total of 2016 blocks
      * in a retargeting period, (nPowTargetTimespan / nPowTargetSpacing) which
@@ -68,9 +76,13 @@ struct Params {
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     int64_t nPowTargetSpacing;
+    int64_t nPowTargetSpacingOneMinute;
     int64_t nPowTargetTimespan;
     int64_t DifficultyAdjustmentInterval() const {
         return nPowTargetTimespan / nPowTargetSpacing;
+    }
+    int64_t DifficultyAdjustmentIntervalOneMinute() const {
+        return nPowTargetTimespan / nPowTargetSpacingOneMinute;
     }
     uint256 nMinimumChainWork;
     uint256 defaultAssumeValid;
