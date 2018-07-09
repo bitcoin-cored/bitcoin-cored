@@ -252,7 +252,7 @@ uint32_t GetNextCoreWorkRequired(const CBlockIndex *pindexPrev,
                                  const Consensus::Params &params) {
 
     // Factor Target Spacing and difficulty adjustment based on 144 or 30 period DAA
-    const uint32_t nHeight = pindexPrev->nHeight;
+    const int nHeight = pindexPrev->nHeight;
     int64_t nPowTargetSpacing = params.nPowTargetSpacing;
     int64_t nDifficultyAdjustmentInterval = params.DifficultyAdjustmentInterval();
     uint32_t nDAAPeriods = 144;
@@ -276,7 +276,7 @@ uint32_t GetNextCoreWorkRequired(const CBlockIndex *pindexPrev,
     }
 
     // Compute the difficulty based on the full adjustment interval.
-    assert(nHeight >= nDifficultyAdjustmentInterval;
+    assert(nHeight >= nDifficultyAdjustmentInterval);
 
     // Get the last suitable block of the difficulty interval.
     const CBlockIndex *pindexLast = GetSuitableBlock(pindexPrev);

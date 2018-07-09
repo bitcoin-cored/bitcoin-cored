@@ -470,7 +470,7 @@ public:
         consensus.coreHardForkActivationTime = 0;
 
         // 1-minute blocks are always enabled on regtest
-        consensus.oneMinuteBlockHeight = 0
+        consensus.oneMinuteBlockHeight = 0;
 
         pchMessageStart[0] = 0xfa;
         pchMessageStart[1] = 0xbf;
