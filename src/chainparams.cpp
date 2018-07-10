@@ -388,17 +388,23 @@ public:
         fDefaultConsistencyChecks = false;
         fRequireStandard = false;
         fMineBlocksOnDemand = false;
-/*
+
         checkpointData = {
             .mapCheckpoints = {
+                // Bitcoin Core Testnet Genesis block
+                {0, uint256S("0273ed223240099a339d351d46054156fb6f3855c5db1c0"
+                               "0c0275c9b6f1d07de")},
+                // UAHF fork block
+                /*
                 {546, uint256S("000000002a936ca763904c3c35fce2f3556c559c0214345"
                                "d31b1bcebf76acb70")},
                 // UAHF fork block
                 {1155876,
                  uint256S("00000000000e38fef93ed9582a7df43815d5c2ba9fd37ef"
                           "70c9a0ea4a285b8f5")},
+                */
             }};
-*/
+
         // Data as of block
         // 00000000c2872f8f8a8935c8e3c5862be9038c97d4de2cf37ed496991166928a
         // (height 1063660)
