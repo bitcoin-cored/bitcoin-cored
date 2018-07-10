@@ -281,17 +281,17 @@ public:
         strNetworkID = "test";
         consensus.nSubsidyHalvingInterval = 210000;
         consensus.nSubsidyHalvingIntervalOneMinute = 210000 * 10;
-        consensus.BIP34Height = 21111;
+        consensus.BIP34Height = 1;
         consensus.BIP34Hash = uint256S("0x0000000023b3a96d3484e5abb3755c413e7d4"
                                        "1500f8e2a5c3f0dd01299cd8ef8");
         // 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
-        consensus.BIP65Height = 581885;
+        consensus.BIP65Height = 1;
         // 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
-        consensus.BIP66Height = 330776;
-        consensus.antiReplayOpReturnSunsetHeight = 1250000;
+        consensus.BIP66Height = 1;
+        consensus.antiReplayOpReturnSunsetHeight = 1;
         consensus.antiReplayOpReturnCommitment = GetAntiReplayCommitment();
         consensus.powLimit = uint256S(
-            "00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+            "1fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         // two weeks
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60;
         consensus.nPowTargetSpacing = 10 * 60;
@@ -321,17 +321,17 @@ public:
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork =
-            uint256S("0x0000000000000000000000000000000000000000000000288002666"
-                     "863267524");
+            uint256S("0x1ffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+                     "fffffffff");
 
         // By default assume that the signatures in ancestors of this block are
         // valid.
-        consensus.defaultAssumeValid =
-            uint256S("0x00000000ba37a638c096da8e1a843df68f4cc9754124f11034a0b61"
-                     "3bbf4ca3e");
+        //consensus.defaultAssumeValid =
+        //    uint256S("0x00000000ba37a638c096da8e1a843df68f4cc9754124f11034a0b61"
+        //             "3bbf4ca3e");
 
         // Aug, 1 hard fork
-        consensus.uahfHeight = 1155876;
+        consensus.uahfHeight = 1;
 
         // May, 21st hard fork
         consensus.coreHardForkActivationTime = 1526860800;
@@ -353,11 +353,11 @@ public:
         nPruneAfterHeight = 1000;
 
         genesis =
-            CreateGenesisBlock(1296688602, 414098458, 0x1d00ffff, 1, 50 * COIN);
+            CreateGenesisBlock(1531239140, 28, 0x20111111, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock ==
-               uint256S("0x000000000933ea01ad0ee984209779baaec3ced90fa3f4087195"
-                        "26f8d77f4943"));
+               uint256S("0x0273ed223240099a339d351d46054156fb6f3855c5db1c00c027"
+                        "5c9b6f1d07de"));
         assert(genesis.hashMerkleRoot ==
                uint256S("0x4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab212"
                         "7b7afdeda33b"));
@@ -365,15 +365,6 @@ public:
         vFixedSeeds.clear();
         vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
-        // Bitcoin ABC seeder
-        vSeeds.push_back(CDNSSeedData("bitcoinabc.org",
-                                      "testnet-seed.bitcoinabc.org", true));
-        // bitcoinforks seeders
-        vSeeds.push_back(CDNSSeedData(
-            "bitcoinforks.org", "testnet-seed-abc.bitcoinforks.org", true));
-        // Amaury SÉCHET
-        vSeeds.push_back(
-            CDNSSeedData("deadalnix.me", "testnet-seed.deadalnix.me", true));
         // truevisionofsatoshi.com
         vSeeds.push_back(CDNSSeedData("truevisionofsatoshi.com",
                                       "seeder-testnet.truevisionofsatoshi.com", true));
@@ -397,7 +388,7 @@ public:
         fDefaultConsistencyChecks = false;
         fRequireStandard = false;
         fMineBlocksOnDemand = false;
-
+/*
         checkpointData = {
             .mapCheckpoints = {
                 {546, uint256S("000000002a936ca763904c3c35fce2f3556c559c0214345"
@@ -407,7 +398,7 @@ public:
                  uint256S("00000000000e38fef93ed9582a7df43815d5c2ba9fd37ef"
                           "70c9a0ea4a285b8f5")},
             }};
-
+*/
         // Data as of block
         // 00000000c2872f8f8a8935c8e3c5862be9038c97d4de2cf37ed496991166928a
         // (height 1063660)
