@@ -282,8 +282,8 @@ public:
         consensus.nSubsidyHalvingInterval = 210000;
         consensus.nSubsidyHalvingIntervalOneMinute = 210000 * 10;
         consensus.BIP34Height = 1;
-        consensus.BIP34Hash = uint256S("0x0000000023b3a96d3484e5abb3755c413e7d4"
-                                       "1500f8e2a5c3f0dd01299cd8ef8");
+        consensus.BIP34Hash = uint256S("0x116035b35f424e6b9a9d747824fc4f7d3bcd9"
+                                       "b942cd5fa9dc5c50b346a8ba620");
         // 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
         consensus.BIP65Height = 1;
         // 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
@@ -392,8 +392,8 @@ public:
         checkpointData = {
             .mapCheckpoints = {
                 // Bitcoin Core Testnet Genesis block
-                {0, uint256S("0273ed223240099a339d351d46054156fb6f3855c5db1c0"
-                               "0c0275c9b6f1d07de")},
+                {0, uint256S("0x0273ed223240099a339d351d46054156fb6f3855c5db1c00c027"
+                             "5c9b6f1d07de")},
                 // UAHF fork block
                 /*
                 {546, uint256S("000000002a936ca763904c3c35fce2f3556c559c0214345"
