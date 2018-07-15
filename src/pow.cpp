@@ -88,9 +88,16 @@ static uint32_t GetNextEDAWorkRequired(const CBlockIndex *pindexPrev,
 uint32_t GetNextWorkRequired(const CBlockIndex *pindexPrev,
                              const CBlockHeader *pblock,
                              const Consensus::Params &params) {
+    const int nHeight = pindexPrev->nHeight;
+
     // Genesis block
     if (pindexPrev == nullptr) {
         return UintToArith256(params.powLimit).GetCompact();
+    }
+
+    // Special rule for testnet for first 421382 blocks
+    if (params.fPowAllowMinDifficultyBlocks && nHeight <= 421382) {
+        return 0x201fffff;
     }
 
     // Special rule for regtest: we never retarget.
