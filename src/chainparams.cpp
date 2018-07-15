@@ -281,13 +281,13 @@ public:
         strNetworkID = "test";
         consensus.nSubsidyHalvingInterval = 210000;
         consensus.nSubsidyHalvingIntervalOneMinute = 210000 * 10;
-        consensus.BIP34Height = 1;
-        consensus.BIP34Hash = uint256S("0x116035b35f424e6b9a9d747824fc4f7d3bcd9"
-                                       "b942cd5fa9dc5c50b346a8ba620");
+        consensus.BIP34Height = 0;
+        consensus.BIP34Hash = uint256S("0x0273ed223240099a339d351d46054156fb6f3"
+                                       "855c5db1c00c0275c9b6f1d07de");
         // 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
-        consensus.BIP65Height = 1;
+        consensus.BIP65Height = 0;
         // 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
-        consensus.BIP66Height = 1;
+        consensus.BIP66Height = 0;
         consensus.antiReplayOpReturnSunsetHeight = 1;
         consensus.antiReplayOpReturnCommitment = GetAntiReplayCommitment();
         consensus.powLimit = uint256S(
@@ -321,14 +321,14 @@ public:
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork =
-            uint256S("0x1ffffffffffffffffffffffffffffffffffffffffffffffffffffff"
-                     "fffffffff");
+            uint256S("0x0000000000000000000000000000000000000000000000000000000"
+                     "00033703f");
 
         // By default assume that the signatures in ancestors of this block are
         // valid.
-        //consensus.defaultAssumeValid =
-        //    uint256S("0x00000000ba37a638c096da8e1a843df68f4cc9754124f11034a0b61"
-        //             "3bbf4ca3e");
+        consensus.defaultAssumeValid =
+            uint256S("0x02b4614f9a5ddb8937835e4b871fccda4bcdd9741f349005444e8c8"
+                     "4a8cfbcc8");
 
         // Aug, 1 hard fork
         consensus.uahfHeight = 1;
@@ -394,21 +394,15 @@ public:
                 // Bitcoin Core Testnet Genesis block
                 {0, uint256S("0x0273ed223240099a339d351d46054156fb6f3855c5db1c00c027"
                              "5c9b6f1d07de")},
-                // UAHF fork block
-                /*
-                {546, uint256S("000000002a936ca763904c3c35fce2f3556c559c0214345"
-                               "d31b1bcebf76acb70")},
-                // UAHF fork block
-                {1155876,
-                 uint256S("00000000000e38fef93ed9582a7df43815d5c2ba9fd37ef"
-                          "70c9a0ea4a285b8f5")},
-                */
+                // Just past 2nd new testnet halving
+                {421382, uint256S("0x02b4614f9a5ddb8937835e4b871fccda4bcdd9741f34900"
+                             "5444e8c84a8cfbcc8")},
             }};
 
         // Data as of block
-        // 00000000c2872f8f8a8935c8e3c5862be9038c97d4de2cf37ed496991166928a
-        // (height 1063660)
-        chainTxData = ChainTxData{1483546230, 12834668, 0.15};
+        // 02b4614f9a5ddb8937835e4b871fccda4bcdd9741f349005444e8c84a8cfbcc8
+        // (height 421382)
+        chainTxData = ChainTxData{1531625001, 421382, 1.09};
     }
 };
 static CTestNetParams testNetParams;
