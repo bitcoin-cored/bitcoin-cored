@@ -148,16 +148,16 @@ public:
         consensus.coreHardForkActivationTime = 1526852960;
 
         // At this height we will hardfork to 1-minute blocks and 30-period DAA
-        consensus.oneMinuteBlockHeight = 584640;
+        consensus.oneMinuteBlockHeight = 586656;
 
         // Take the amount of 10-minute blocks in this interval and add it
         // to the number of expected 1-minute blocks left in the orginal planned
         // interval to figure out when to cut the block subsidy. It should be more 
         // straight forward on subsequent halvings.
-        // ie. (((584640 -(210000*2))+(((210000*3)-584640)*10)))=164640+(45360*10)
-        // so this interval would be 618240 blocks past last halving
-        // which means 12.5 / 10 / 2 block rewards at a height of 210000 * 2 + 618240
-        // or halve to 0.625 BTCC at height 1,038,240
+        // ie. (((586656 -(210000*2))+(((210000*3)-586656)*10)))=166656+(43344*10)
+        // so this interval would be 600096 blocks past last halving
+        // which means 12.5 / 10 / 2 block rewards at a height of 210000 * 2 + 600096
+        // or halve to 0.625 BTCC at height 1,020,096
         consensus.nSubsidyHalvingIntervalOneMinuteAdjustment =
             (((consensus.oneMinuteBlockHeight - (210000 * 2)) + 
             (((210000 * 3) - consensus.oneMinuteBlockHeight) * 10)));
@@ -337,9 +337,7 @@ public:
         consensus.coreHardForkActivationTime = 1526860800;
 
         // At this height we will hardfork to 1-minute blocks and 30-period DAA
-        // @TODO bring back testnet and figure out more appropriate block height
-        // to test on
-        consensus.oneMinuteBlockHeight = 1155876;
+        consensus.oneMinuteBlockHeight = 423535;
 
         pchMessageStart[0] = 0x0b;
         pchMessageStart[1] = 0x11;

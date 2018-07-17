@@ -1263,18 +1263,21 @@ Amount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
         /** 
          * Block subsidies for 1-minute blocks
          * Account for the mid-cycle consensus rule change pre-third halving
-         * Third halving should occur at height 1038240 given fork height 0f 584640
+         * Third halving should occur at height 1020096 given fork height 0f 586656
          * Each subsequent halving should occur every 2,100,000 blocks thereafter.
+         * 
+         * reweightInterimHalvingBlockPreOneMin = The number of 1-min blocks from 
+         * 1-min fork height to 3rd halving
          *
          * (((currentHeight - forkHeight + reweightInterimHalvingBlockPreOneMin) 
          *  / newHalvingInterval)) + halvingsToDate
          *
          *   Tests:
-         *  ((584649 - 584640 + ((584640 - 420000) * 10)) / 210000 * 10) + 2
-         *  ((584649 - 584640 + 1646400) / 2100000) + 2 = 2.784    // no halving past 2 original
-         *  ((1038240 - 584640 + 1646400) / 2100000) + 2 = 3       // one halving past two original
-         *  ((1938240 - 584640 + 1646400) / 2100000) + 2 = 3.42857 // one halving past two original
-         *  ((3188240 - 584640 + 1646400) / 2100000) + 2 = 4.0238  // two halvings past two original
+         *  ((586665 - 586656 + ((586656 - 420000) * 10)) / 210000 * 10) + 2
+         *  ((586665 - 586656 + 1666560) / 2100000) + 2 = 2.7936   // no halving past 2 original
+         *  ((1020096 - 586656 + 1666560) / 2100000) + 2 = 3       // one halving past two original
+         *  ((1938240 - 586656 + 1666560) / 2100000) + 2 = 3.43721 // one halving past two original
+         *  ((3188240 - 586656 + 1666560) / 2100000) + 2 = 4.32449 // two halvings past two original
          */
 
         halvings = ((nHeight - consensusParams.oneMinuteBlockHeight +
