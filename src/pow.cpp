@@ -282,7 +282,8 @@ uint32_t GetNextCoreWorkRequired(const CBlockIndex *pindexPrev,
             (pblock->GetBlockTime() >
              pindexPrev->GetBlockTime() + 2 * nPowTargetSpacing)) {
                  return UintToArith256(params.powLimit).GetCompact();
-        } else if ((pblock->GetBlockTime() >
+        } else if ((nHeight > 424484) &&
+            (pblock->GetBlockTime() >
             pindexPrev->GetBlockTime() + 240 * nPowTargetSpacing)) {
                 return UintToArith256(params.powLimit).GetCompact();
         }
