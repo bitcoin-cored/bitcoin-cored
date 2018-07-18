@@ -274,17 +274,17 @@ uint32_t GetNextCoreWorkRequired(const CBlockIndex *pindexPrev,
     assert(pindexPrev);
 
     // Special difficulty rule for testnet:
-    // If the new block's timestamp is more than 2 * DifficultyAdjustmentInterval then 
-    // allow mining of a min-difficulty block, when under Height 424484, after use
-    // 240 * DifficultyAdjustmentInterval.
     if (params.fPowAllowMinDifficultyBlocks) {
-        if ((nHeight <= 424484) &&
-            (pblock->GetBlockTime() >
-             pindexPrev->GetBlockTime() + 2 * nPowTargetSpacing)) {
-                 return UintToArith256(params.powLimit).GetCompact();
-        } else if ((nHeight > 424484) &&
-            (pblock->GetBlockTime() >
-            pindexPrev->GetBlockTime() + 240 * nPowTargetSpacing)) {
+        // If block > 424484 and its been more than 4 hours, reset to  min-difficulty
+        if (nHeight > 424484) {
+            if (pblock->GetBlockTime() >
+                pindexPrev->GetBlockTime() + 240 * nPowTargetSpacing) {
+                return UintToArith256(params.powLimit).GetCompact();
+            }
+        // For original blocks, default behavior after 2 periods
+        // allow mining of a min-difficulty block
+        } else if (pblock->GetBlockTime() >
+            pindexPrev->GetBlockTime() + 2 * nPowTargetSpacing) {
                 return UintToArith256(params.powLimit).GetCompact();
         }
     }
