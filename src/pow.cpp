@@ -275,8 +275,8 @@ uint32_t GetNextCoreWorkRequired(const CBlockIndex *pindexPrev,
 
     // Special difficulty rule for testnet:
     if (params.fPowAllowMinDifficultyBlocks) {
-        // If block > 424484 and its been more than 4 hours, reset to  min-difficulty
-        if (nHeight > 424484) {
+        // If block > 424698 and its been more than 4 hours, reset to  min-difficulty
+        if (nHeight > 424698) {
             if (pblock->GetBlockTime() >
                 pindexPrev->GetBlockTime() + 240 * nPowTargetSpacing) {
                 return UintToArith256(params.powLimit).GetCompact();
