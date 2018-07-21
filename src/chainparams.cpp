@@ -322,7 +322,7 @@ public:
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork =
             uint256S("0x0000000000000000000000000000000000000000000000000000000"
-                     "00033703f");
+                     "00000032f");
 
         // By default assume that the signatures in ancestors of this block are
         // valid.
@@ -393,8 +393,8 @@ public:
                 {0, uint256S("0x0273ed223240099a339d351d46054156fb6f3855c5db1c00c027"
                              "5c9b6f1d07de")},
                 // Just past 2nd new testnet halving
-                {421382, uint256S("0x02b4614f9a5ddb8937835e4b871fccda4bcdd9741f34900"
-                             "5444e8c84a8cfbcc8")},
+                {100, uint256S("0x16420994c95bcf9afa2fab4a45af3cfb5dc6ac6103a40e2"
+                               "ffa48e7d327bdd7f")},
             }};
 
         // Data as of block
