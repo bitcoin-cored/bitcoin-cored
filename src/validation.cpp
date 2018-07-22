@@ -1280,10 +1280,13 @@ Amount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
          *  ((3188240 - 586656 + 1666560) / 2100000) + 2 = 4.32449 // two halvings past two original
          */
 
+        int halvingsBeforeOneMinuteBlockHeight =
+            floor(consensusParams.oneMinuteBlockHeight / consensusParams.nSubsidyHalvingInterval);
+
         halvings = ((nHeight - consensusParams.oneMinuteBlockHeight +
             ((consensusParams.oneMinuteBlockHeight - 
-            (consensusParams.nSubsidyHalvingInterval * 2)) * 10)) /
-            consensusParams.nSubsidyHalvingIntervalOneMinute) + 2;
+            (consensusParams.nSubsidyHalvingInterval * halvingsBeforeOneMinuteBlockHeight)) * 10)) /
+            consensusParams.nSubsidyHalvingIntervalOneMinute) + halvingsBeforeOneMinuteBlockHeight;
 
         // Subsidy should start at 1/10th of original subsidy, but account for halvings to date.
         nSubsidy = 5 * COIN;
