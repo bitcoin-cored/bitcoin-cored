@@ -95,8 +95,8 @@ uint32_t GetNextWorkRequired(const CBlockIndex *pindexPrev,
         return UintToArith256(params.powLimit).GetCompact();
     }
 
-    // Special rule for testnet for first 421382 blocks
-    if (params.fPowAllowMinDifficultyBlocks && nHeight <= 421382) {
+    // Special rule for testnet for first 150 blocks
+    if (params.fPowAllowMinDifficultyBlocks && nHeight <= 150) {
         return 0x201fffff;
     }
 
@@ -178,7 +178,6 @@ static arith_uint256 ComputeTarget(const CBlockIndex *pindexFirst,
      * between blocks.
      */
     arith_uint256 work = pindexLast->nChainWork - pindexFirst->nChainWork;
-    work *= params.nPowTargetSpacing;
 
     // In order to avoid difficulty cliffs, we bound the amplitude of the
     // adjustment we are going to do.
@@ -187,11 +186,15 @@ static arith_uint256 ComputeTarget(const CBlockIndex *pindexFirst,
 
     // Don't dampen the DAA adjustments on mainnet after 1-min fork
     if (pindexLast->nHeight < params.oneMinuteBlockHeight) {
+        work *= params.nPowTargetSpacing;
+
         if (nActualTimespan > 288 * params.nPowTargetSpacing) {
             nActualTimespan = 288 * params.nPowTargetSpacing;
         } else if (nActualTimespan < 72 * params.nPowTargetSpacing) {
             nActualTimespan = 72 * params.nPowTargetSpacing;
         }
+    } else {
+        work *= params.nPowTargetSpacingOneMinute;
     }
 
     work /= nActualTimespan;
