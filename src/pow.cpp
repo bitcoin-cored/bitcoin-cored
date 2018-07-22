@@ -269,9 +269,6 @@ uint32_t GetNextCoreWorkRequired(const CBlockIndex *pindexPrev,
     // This cannot handle the genesis block and early blocks in general.
     assert(pindexPrev);
 
-    // Compute the difficulty based on the full adjustment interval.
-    assert(nHeight >= nDifficultyAdjustmentInterval);
-
     // Get the last suitable block of the difficulty interval.
     const CBlockIndex *pindexLast = GetSuitableBlock(pindexPrev);
     assert(pindexLast);
