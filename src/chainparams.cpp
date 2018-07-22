@@ -337,7 +337,7 @@ public:
         consensus.coreHardForkActivationTime = 1526860800;
 
         // At this height we will hardfork to 1-minute blocks and 30-period DAA
-        consensus.oneMinuteBlockHeight = 423535;
+        consensus.oneMinuteBlockHeight = 160;
 
         pchMessageStart[0] = 0x0b;
         pchMessageStart[1] = 0x11;
