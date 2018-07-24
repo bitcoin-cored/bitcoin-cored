@@ -257,12 +257,10 @@ uint32_t GetNextCoreWorkRequired(const CBlockIndex *pindexPrev,
     // Factor Target Spacing and difficulty adjustment based on 144 or 30 period DAA
     const int nHeight = pindexPrev->nHeight;
     int64_t nPowTargetSpacing = params.nPowTargetSpacing;
-    int64_t nDifficultyAdjustmentInterval = params.DifficultyAdjustmentInterval();
     uint32_t nDAAPeriods = 144;
 
     if (nHeight > params.oneMinuteBlockHeight) {
         nPowTargetSpacing = params.nPowTargetSpacingOneMinute;
-        nDifficultyAdjustmentInterval = params.DifficultyAdjustmentIntervalOneMinute();
         nDAAPeriods = 30;
     }
 
