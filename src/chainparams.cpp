@@ -336,6 +336,9 @@ public:
         // May, 21st hard fork
         consensus.coreHardForkActivationTime = 1526860800;
 
+        // Reject PROTOCOL_VERSION 70015 Time
+        consensus.enforceProtocolVersion80030Time = 1532574000;
+ 
         // At this height we will hardfork to 1-minute blocks and 30-period DAA
         consensus.oneMinuteBlockHeight = 160;
 

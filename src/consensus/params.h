@@ -89,6 +89,9 @@ struct Params {
 
     /** Activation time at which the core HF kicks in. */
     int64_t coreHardForkActivationTime;
+
+    /** Enforce PROTOCOL_VERSION=80030, reject  PROTOCOL_VERSION=70015. */
+    int64_t enforceProtocolVersion80030Time;
 };
 } // namespace Consensus
 
