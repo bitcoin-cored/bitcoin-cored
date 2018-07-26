@@ -1,9 +1,9 @@
-Contributing to Bitcoin Clashic ABCD
+Contributing to Bitcoin Core Sq
 ====================================
 
-The Bitcoin Clashic ABCD project welcomes contributors!
+The Bitcoin Core Sq project welcomes contributors!
 
-To contribute, checkout http://bitcoinclashic.org
+To contribute, checkout https://thebitcoincore.org
 
 
 Copyright
