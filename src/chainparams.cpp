@@ -136,9 +136,9 @@ public:
             uint256S("0x0000000000000000000000000000000000000000007cb5f207557941bd9a6096");
 
         // By default assume that the signatures in ancestors of this block are
-        // valid.
+        // valid. Block height 576700 (2 past Bitcoin Core Hardfork from Bitcoin Clashic
         consensus.defaultAssumeValid =
-            uint256S("0x00000000000000017de31d8e9a74ba7c50557d13e10290131dfa78202799faea");
+            uint256S("0x000000000000001069e7110054b96cf100c2d29e6084290d4b2820ac410b5e44");
 
         // Aug, 1 hard fork
         consensus.uahfHeight = 478559;
@@ -259,7 +259,10 @@ public:
                                   "243bc76d6590930fc88c82")},
                 // May 23, 2018
                 {576720, uint256S("0x00000000000000017de31d8e9a74ba7c50557d13e1"
-                                  "0290131dfa78202799faea")}}};
+                                  "0290131dfa78202799faea")},
+                // July 26, 2018
+                {585550, uint256S("0x0000000000000004fb959c2bbabb38609bbe44fa4b"
+                                  "b206b1a81849f9b10414cd")}}};
 
 
         // Data as of block
