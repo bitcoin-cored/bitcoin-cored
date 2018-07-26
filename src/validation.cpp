@@ -1273,13 +1273,16 @@ Amount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
          *  / newHalvingInterval)) + halvingsToDate
          *
          *   Tests:
-         *  ((586665 - 586656 + ((586656 - 420000) * 10)) / 210000 * 10) + 2
-         *  ((586665 - 586656 + 1666560) / 2100000) + 2 = 2.7936   // no halving past 2 original
-         *  ((1020096 - 586656 + 1666560) / 2100000) + 2 = 3       // one halving past two original
-         *  ((1938240 - 586656 + 1666560) / 2100000) + 2 = 3.43721 // one halving past two original
-         *  ((3188240 - 586656 + 1666560) / 2100000) + 2 = 4.32449 // two halvings past two original
+         *  ((588681 - 588672 + ((588672 - 420000) * 10)) / 210000 * 10) + 2
+         *  ((588681 - 588672 + 1686720) / 2100000) + 2 = 2.8032   // no halving past 2 original
+         *  ((1001952 - 588672 + 1686720) / 2100000) + 2 = 3       // one halving past two original
+         *  EACH SUBSEQUENT HALVING SHOULD OCCUR EVERY 2,100,000 blocks past 1001952
+         *  ((1938240 - 588672 + 1686720) / 2100000) + 2 = 3.44585 // one halving past two original
+         *  ((3188240 - 588672 + 1686720) / 2100000) + 2 = 4.04108 // two halvings past two original
          */
 
+        // We don't hard code halvings because mainnet may have activated at a different halving
+        // interval than testnet or regtest.
         int halvingsBeforeOneMinuteBlockHeight =
             floor(consensusParams.oneMinuteBlockHeight / consensusParams.nSubsidyHalvingInterval);
 

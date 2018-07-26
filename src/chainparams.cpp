@@ -147,17 +147,22 @@ public:
         // Actual fork was 5 hours later
         consensus.coreHardForkActivationTime = 1526852960;
 
+        // Reject PROTOCOL_VERSION 70015 Time
+        // Aug 11, 2018 14:00:00 GMT Enforce PROTOCOL_VERSION=80030
+        consensus.enforceProtocolVersion80030Time = 1533996000;
+
         // At this height we will hardfork to 1-minute blocks and 30-period DAA
-        consensus.oneMinuteBlockHeight = 586656;
+        consensus.oneMinuteBlockHeight = 588672;
 
         // Take the amount of 10-minute blocks in this interval and add it
         // to the number of expected 1-minute blocks left in the orginal planned
         // interval to figure out when to cut the block subsidy. It should be more 
         // straight forward on subsequent halvings.
+        // ie. (((588672 -(210000*2))+(((210000*3)-588672)*10)))=168672+(41328*10)
         // ie. (((586656 -(210000*2))+(((210000*3)-586656)*10)))=166656+(43344*10)
-        // so this interval would be 600096 blocks past last halving
-        // which means 12.5 / 10 / 2 block rewards at a height of 210000 * 2 + 600096
-        // or halve to 0.625 BTCC at height 1,020,096
+        // so this interval would be 581952 blocks past last halving
+        // which means 12.5 / 10 / 2 block rewards at a height of 210000 * 2 + 581952
+        // or halve to 0.625 BTCC at height 1,001,952
         consensus.nSubsidyHalvingIntervalOneMinuteAdjustment =
             (((consensus.oneMinuteBlockHeight - (210000 * 2)) + 
             (((210000 * 3) - consensus.oneMinuteBlockHeight) * 10)));
