@@ -199,11 +199,11 @@ static arith_uint256 ComputeTarget(const CBlockIndex *pindexFirst,
         int64_t nActualTimespan5 = pindexLast->nTime - pindex5->nTime;
         int64_t nAdjustedSpacing = params.nPowTargetSpacingOneMinute;
 
-        // If 5 blocks happened slower than 3x expected, target 20% faster next block.
+        // If 5 blocks happened slower than 3x expected, target 100% faster next block.
         // ie. 5 blocks took >= 15-min
         if (nActualTimespan5 >= (5 * 3 * params.nPowTargetSpacingOneMinute)) {
             nAdjustedSpacing /= 2;
-        // Else if  5 blocks happened faster than 3x expected, target 20% slower next.
+        // Else if  5 blocks happened faster than 3x expected, target 50% slower next.
         // ie. 5 blocks took <= 1-min 40-sec
         } else if (nActualTimespan5 <= ( 5 / 3 * params.nPowTargetSpacingOneMinute)) {
             nAdjustedSpacing *= 2;
