@@ -8,7 +8,7 @@
 /**
  * network protocol versioning
  */
-static const int PROTOCOL_VERSION = 70015;
+static const int PROTOCOL_VERSION = 80030;
 
 //! initial proto version, to be increased after version/verack negotiation
 static const int INIT_PROTO_VERSION = 209;
@@ -46,5 +46,9 @@ static const int SHORT_IDS_BLOCKS_VERSION = 70014;
 
 //! not banning for invalid compact blocks starts with this version
 static const int INVALID_CB_NO_BAN_VERSION = 70015;
+
+//! This version reduces block time from 10-mins to 1-min
+//! And replaces 144-period DAA with 30-period DAA
+static const int ONE_MINUTE_BLOCKS_VERSION = 80030;
 
 #endif // BITCOIN_VERSION_H

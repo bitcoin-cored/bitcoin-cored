@@ -30,7 +30,7 @@ Drag bitcoin-abcd to your applications folder, and then run bitcoin-abcd.
 
 * See the documentation at the [Bitcoin Wiki](https://en.bitcoin.it/wiki/Main_Page)
 for help and more information.
-* Ask for help on the [Bitcoin ABC Subreddit](https://www.reddit.com/r/BitcoinABC/).
+* Ask for help on the [Bitcoin Core Discord](https://discordapp.com/invite/qUaQBN2).
 
 Building
 ---------------------

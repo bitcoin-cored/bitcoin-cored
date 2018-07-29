@@ -88,9 +88,16 @@ static uint32_t GetNextEDAWorkRequired(const CBlockIndex *pindexPrev,
 uint32_t GetNextWorkRequired(const CBlockIndex *pindexPrev,
                              const CBlockHeader *pblock,
                              const Consensus::Params &params) {
+    const int nHeight = pindexPrev->nHeight;
+
     // Genesis block
     if (pindexPrev == nullptr) {
         return UintToArith256(params.powLimit).GetCompact();
+    }
+
+    // Special rule for testnet for first 150 blocks
+    if (params.fPowAllowMinDifficultyBlocks && nHeight <= 150) {
+        return 0x201fffff;
     }
 
     // Special rule for regtest: we never retarget.
@@ -171,16 +178,38 @@ static arith_uint256 ComputeTarget(const CBlockIndex *pindexFirst,
      * between blocks.
      */
     arith_uint256 work = pindexLast->nChainWork - pindexFirst->nChainWork;
-    work *= params.nPowTargetSpacing;
 
     // In order to avoid difficulty cliffs, we bound the amplitude of the
-    // adjustement we are going to do.
+    // adjustment we are going to do.
     assert(pindexLast->nTime > pindexFirst->nTime);
     int64_t nActualTimespan = pindexLast->nTime - pindexFirst->nTime;
-    if (nActualTimespan > 288 * params.nPowTargetSpacing) {
-        nActualTimespan = 288 * params.nPowTargetSpacing;
-    } else if (nActualTimespan < 72 * params.nPowTargetSpacing) {
-        nActualTimespan = 72 * params.nPowTargetSpacing;
+
+    // Don't dampen the DAA adjustments on mainnet after 1-min fork
+    if (pindexLast->nHeight < params.oneMinuteBlockHeight) {
+        work *= params.nPowTargetSpacing;
+
+        if (nActualTimespan > 288 * params.nPowTargetSpacing) {
+            nActualTimespan = 288 * params.nPowTargetSpacing;
+        } else if (nActualTimespan < 72 * params.nPowTargetSpacing) {
+            nActualTimespan = 72 * params.nPowTargetSpacing;
+        }
+    } else {
+        const CBlockIndex *pindex5 = pindexLast->GetAncestor(pindexLast->nHeight - 5);
+        assert(pindex5);
+        int64_t nActualTimespan5 = pindexLast->nTime - pindex5->nTime;
+        int64_t nAdjustedSpacing = params.nPowTargetSpacingOneMinute;
+
+        // If 5 blocks happened slower than 3x expected, target 100% faster next block.
+        // ie. 5 blocks took >= 15-min
+        if (nActualTimespan5 >= (5 * 3 * params.nPowTargetSpacingOneMinute)) {
+            nAdjustedSpacing /= 2;
+        // Else if  5 blocks happened faster than 3x expected, target 50% slower next.
+        // ie. 5 blocks took <= 1-min 40-sec
+        } else if (nActualTimespan5 <= ( 5 / 3 * params.nPowTargetSpacingOneMinute)) {
+            nAdjustedSpacing *= 2;
+        }
+
+        work *= nAdjustedSpacing;
     }
 
     work /= nActualTimespan;
@@ -228,42 +257,52 @@ static const CBlockIndex *GetSuitableBlock(const CBlockIndex *pindex) {
 }
 
 /**
- * Compute the next required proof of work using a weighted average of the
- * estimated hashrate per block.
+ * Compute the next required proof of work using a 144-period or 30-period
+ * weighted average of the estimated hashrate per block.
  *
  * Using a weighted average ensure that the timestamp parameter cancels out in
  * most of the calculation - except for the timestamp of the first and last
  * block. Because timestamps are the least trustworthy information we have as
- * input, this ensures the algorithm is more resistant to malicious inputs.
+ * input, this ensures the algorithm is more resistant to malicious inputs.+
  */
 uint32_t GetNextCoreWorkRequired(const CBlockIndex *pindexPrev,
                                  const CBlockHeader *pblock,
                                  const Consensus::Params &params) {
-    // This cannot handle the genesis block and early blocks in general.
-    assert(pindexPrev);
 
-    // Special difficulty rule for testnet:
-    // If the new block's timestamp is more than 2* 10 minutes then allow
-    // mining of a min-difficulty block.
-    if (params.fPowAllowMinDifficultyBlocks &&
-        (pblock->GetBlockTime() >
-         pindexPrev->GetBlockTime() + 2 * params.nPowTargetSpacing)) {
-        return UintToArith256(params.powLimit).GetCompact();
+    // Factor Target Spacing and difficulty adjustment based on 144 or 30 period DAA
+    const int nHeight = pindexPrev->nHeight;
+    int64_t nPowTargetSpacing = params.nPowTargetSpacing;
+    uint32_t nDAAPeriods = 144;
+
+    if (nHeight > params.oneMinuteBlockHeight) {
+        nPowTargetSpacing = params.nPowTargetSpacingOneMinute;
+        nDAAPeriods = 30;
     }
 
-    // Compute the difficulty based on the full adjustement interval.
-    const uint32_t nHeight = pindexPrev->nHeight;
-    assert(nHeight >= params.DifficultyAdjustmentInterval());
+    // This cannot handle the genesis block and early blocks in general.
+    assert(pindexPrev);
 
     // Get the last suitable block of the difficulty interval.
     const CBlockIndex *pindexLast = GetSuitableBlock(pindexPrev);
     assert(pindexLast);
 
     // Get the first suitable block of the difficulty interval.
-    uint32_t nHeightFirst = nHeight - 144;
+    uint32_t nHeightFirst = nHeight - nDAAPeriods;
     const CBlockIndex *pindexFirst =
         GetSuitableBlock(pindexPrev->GetAncestor(nHeightFirst));
     assert(pindexFirst);
+
+    // Special difficulty rule for testnet:
+    // If the last 30 blocks took 4 hours on testnet instead of 30-min,
+    // then allow mining of a min-difficulty block.
+    int64_t nActualThirtyBlocksDurationSeconds =
+        pindexLast->GetBlockTime() - pindexFirst->GetBlockTime();
+
+    if (params.fPowAllowMinDifficultyBlocks &&
+        (nActualThirtyBlocksDurationSeconds >
+         pindexLast->GetBlockTime() + 240 * nPowTargetSpacing)) {
+        return UintToArith256(params.powLimit).GetCompact();
+    }
 
     // Compute the target based on time and work done during the interval.
     const arith_uint256 nextTarget =

@@ -447,9 +447,8 @@ static const std::string mainnet_seeds[] = {
     "seeder.clashic.cash", "seeder.bitcoincore.zone", "seeder-mainnet.truevisionofsatoshi.com",
     "",   "",    ""};
 static const std::string testnet_seeds[] = {
-    "testnet-seed.bitcoinabc.org",    "testnet-seed-abc.bitcoinforks.org",
-    "seeder-testnet.truevisionofsatoshi.com",       "testnet-seed.deadalnix.me",
-    "testnet-seeder.clashic.cash", "testnet-seeder.bitcoincore.zone"};
+    "testnet-seeder.clashic.cash", "testnet-seeder.bitcoincore.zone",
+    "seeder-testnet.truevisionofsatoshi.com", "", "", ""};
 static const std::string *seeds = mainnet_seeds;
 
 extern "C" void *ThreadSeeder(void *) {

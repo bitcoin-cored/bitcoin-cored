@@ -28,7 +28,8 @@ uint32_t CalculateNextWorkRequired(const CBlockIndex *pindexPrev,
 bool CheckProofOfWork(uint256 hash, uint32_t nBits, const Consensus::Params &);
 
 /**
- * Bitcoin Core's difficulty adjustment mechanism.
+ * Bitcoin Core's original 10-minute difficulty adjustment mechanism. With added
+ * capability for handling 1-minute difficulty adjustments at a given height.
  */
 uint32_t GetNextCoreWorkRequired(const CBlockIndex *pindexPrev,
                                  const CBlockHeader *pblock,

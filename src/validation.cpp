@@ -1254,12 +1254,52 @@ bool ReadBlockFromDisk(CBlock &block, const CBlockIndex *pindex,
 }
 
 Amount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
-    int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
+    int halvings = 0;
+    Amount nSubsidy = 50 * COIN;
+
+    if (nHeight <= consensusParams.oneMinuteBlockHeight) {
+        halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
+    } else {
+        /** 
+         * Block subsidies for 1-minute blocks
+         * Account for the mid-cycle consensus rule change pre-third halving
+         * Third halving should occur at height 1020096 given fork height 0f 586656
+         * Each subsequent halving should occur every 2,100,000 blocks thereafter.
+         * 
+         * reweightInterimHalvingBlockPreOneMin = The number of 1-min blocks from 
+         * 1-min fork height to 3rd halving
+         *
+         * (((currentHeight - forkHeight + reweightInterimHalvingBlockPreOneMin) 
+         *  / newHalvingInterval)) + halvingsToDate
+         *
+         *   Tests:
+         *  ((588681 - 588672 + ((588672 - 420000) * 10)) / 210000 * 10) + 2
+         *  ((588681 - 588672 + 1686720) / 2100000) + 2 = 2.8032   // no halving past 2 original
+         *  ((1001952 - 588672 + 1686720) / 2100000) + 2 = 3       // one halving past two original
+         *  EACH SUBSEQUENT HALVING SHOULD OCCUR EVERY 2,100,000 blocks past 1001952
+         *  ((1938240 - 588672 + 1686720) / 2100000) + 2 = 3.44585 // one halving past two original
+         *  ((3188240 - 588672 + 1686720) / 2100000) + 2 = 4.04108 // two halvings past two original
+         */
+
+        // We don't hard code halvings because mainnet may have activated at a different halving
+        // interval than testnet or regtest.
+        int halvingsBeforeOneMinuteBlockHeight =
+            floor(consensusParams.oneMinuteBlockHeight / consensusParams.nSubsidyHalvingInterval);
+
+        halvings = ((nHeight - consensusParams.oneMinuteBlockHeight +
+            ((consensusParams.oneMinuteBlockHeight - 
+            (consensusParams.nSubsidyHalvingInterval * halvingsBeforeOneMinuteBlockHeight)) * 10)) /
+            consensusParams.nSubsidyHalvingIntervalOneMinute) + halvingsBeforeOneMinuteBlockHeight;
+
+        // Subsidy should start at 1/10th of original subsidy, but account for halvings to date.
+        nSubsidy = 5 * COIN;
+    }
+
     // Force block reward to zero when right shift is undefined.
     if (halvings >= 64) return 0;
 
-    Amount nSubsidy = 50 * COIN;
-    // Subsidy is cut in half every 210,000 blocks which will occur
+    // Subsidy is cut in half every 210,000 blocks or 10-minute blocks or
+    // 2,100,000 blocks for 1-minute blocks which will occur
     // approximately every 4 years.
     return Amount(nSubsidy.GetSatoshis() >> halvings);
 }

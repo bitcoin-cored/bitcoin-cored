@@ -107,6 +107,8 @@ public:
         // two weeks
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60;
         consensus.nPowTargetSpacing = 10 * 60;
+        // hardfork to one min blocks
+        consensus.nPowTargetSpacingOneMinute = 60;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         // 95% of 2016
@@ -134,9 +136,9 @@ public:
             uint256S("0x0000000000000000000000000000000000000000007cb5f207557941bd9a6096");
 
         // By default assume that the signatures in ancestors of this block are
-        // valid.
+        // valid. Block height 576700 (2 past Bitcoin Core Hardfork from Bitcoin Clashic
         consensus.defaultAssumeValid =
-            uint256S("0x00000000000000017de31d8e9a74ba7c50557d13e10290131dfa78202799faea");
+            uint256S("0x000000000000001069e7110054b96cf100c2d29e6084290d4b2820ac410b5e44");
 
         // Aug, 1 hard fork
         consensus.uahfHeight = 478559;
@@ -144,6 +146,26 @@ public:
         // May, 21st hard fork. Human time (GMT): Monday, May 21, 2018 04:00:00 PM
         // Actual fork was 5 hours later
         consensus.coreHardForkActivationTime = 1526852960;
+
+        // Reject PROTOCOL_VERSION 70015 Time
+        // Aug 11, 2018 14:00:00 GMT Enforce PROTOCOL_VERSION=80030
+        consensus.enforceProtocolVersion80030Time = 1533996000;
+
+        // At this height we will hardfork to 1-minute blocks and 30-period DAA
+        consensus.oneMinuteBlockHeight = 588672;
+
+        // Take the amount of 10-minute blocks in this interval and add it
+        // to the number of expected 1-minute blocks left in the orginal planned
+        // interval to figure out when to cut the block subsidy. It should be more 
+        // straight forward on subsequent halvings.
+        // ie. (((588672 -(210000*2))+(((210000*3)-588672)*10)))=168672+(41328*10)
+        // ie. (((586656 -(210000*2))+(((210000*3)-586656)*10)))=166656+(43344*10)
+        // so this interval would be 581952 blocks past last halving
+        // which means 12.5 / 10 / 2 block rewards at a height of 210000 * 2 + 581952
+        // or halve to 0.625 BTCC at height 1,001,952
+        consensus.nSubsidyHalvingIntervalOneMinuteAdjustment =
+            (((consensus.oneMinuteBlockHeight - (210000 * 2)) + 
+            (((210000 * 3) - consensus.oneMinuteBlockHeight) * 10)));
 
         /**
          * The message start string is designed to be unlikely to occur in
@@ -237,7 +259,10 @@ public:
                                   "243bc76d6590930fc88c82")},
                 // May 23, 2018
                 {576720, uint256S("0x00000000000000017de31d8e9a74ba7c50557d13e1"
-                                  "0290131dfa78202799faea")}}};
+                                  "0290131dfa78202799faea")},
+                // July 26, 2018
+                {585550, uint256S("0x0000000000000004fb959c2bbabb38609bbe44fa4b"
+                                  "b206b1a81849f9b10414cd")}}};
 
 
         // Data as of block
@@ -263,20 +288,23 @@ public:
     CTestNetParams() {
         strNetworkID = "test";
         consensus.nSubsidyHalvingInterval = 210000;
-        consensus.BIP34Height = 21111;
-        consensus.BIP34Hash = uint256S("0x0000000023b3a96d3484e5abb3755c413e7d4"
-                                       "1500f8e2a5c3f0dd01299cd8ef8");
+        consensus.nSubsidyHalvingIntervalOneMinute = 210000 * 10;
+        consensus.BIP34Height = 0;
+        consensus.BIP34Hash = uint256S("0x0273ed223240099a339d351d46054156fb6f3"
+                                       "855c5db1c00c0275c9b6f1d07de");
         // 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
-        consensus.BIP65Height = 581885;
+        consensus.BIP65Height = 0;
         // 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
-        consensus.BIP66Height = 330776;
-        consensus.antiReplayOpReturnSunsetHeight = 1250000;
+        consensus.BIP66Height = 0;
+        consensus.antiReplayOpReturnSunsetHeight = 1;
         consensus.antiReplayOpReturnCommitment = GetAntiReplayCommitment();
         consensus.powLimit = uint256S(
-            "00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+            "1fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         // two weeks
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60;
         consensus.nPowTargetSpacing = 10 * 60;
+        // hardfork to one min blocks
+        consensus.nPowTargetSpacingOneMinute = 60;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         // 75% for testchains
@@ -301,20 +329,26 @@ public:
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork =
-            uint256S("0x0000000000000000000000000000000000000000000000288002666"
-                     "863267524");
+            uint256S("0x0000000000000000000000000000000000000000000000000000000"
+                     "00000032f");
 
         // By default assume that the signatures in ancestors of this block are
         // valid.
         consensus.defaultAssumeValid =
-            uint256S("0x00000000ba37a638c096da8e1a843df68f4cc9754124f11034a0b61"
-                     "3bbf4ca3e");
+            uint256S("0x02b4614f9a5ddb8937835e4b871fccda4bcdd9741f349005444e8c8"
+                     "4a8cfbcc8");
 
         // Aug, 1 hard fork
-        consensus.uahfHeight = 1155876;
+        consensus.uahfHeight = 1;
 
         // May, 21st hard fork
         consensus.coreHardForkActivationTime = 1526860800;
+
+        // Reject PROTOCOL_VERSION 70015 Time
+        consensus.enforceProtocolVersion80030Time = 1532581620;
+ 
+        // At this height we will hardfork to 1-minute blocks and 30-period DAA
+        consensus.oneMinuteBlockHeight = 160;
 
         pchMessageStart[0] = 0x0b;
         pchMessageStart[1] = 0x11;
@@ -328,11 +362,11 @@ public:
         nPruneAfterHeight = 1000;
 
         genesis =
-            CreateGenesisBlock(1296688602, 414098458, 0x1d00ffff, 1, 50 * COIN);
+            CreateGenesisBlock(1531239140, 28, 0x20111111, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock ==
-               uint256S("0x000000000933ea01ad0ee984209779baaec3ced90fa3f4087195"
-                        "26f8d77f4943"));
+               uint256S("0x0273ed223240099a339d351d46054156fb6f3855c5db1c00c027"
+                        "5c9b6f1d07de"));
         assert(genesis.hashMerkleRoot ==
                uint256S("0x4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab212"
                         "7b7afdeda33b"));
@@ -340,15 +374,6 @@ public:
         vFixedSeeds.clear();
         vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
-        // Bitcoin ABC seeder
-        vSeeds.push_back(CDNSSeedData("bitcoinabc.org",
-                                      "testnet-seed.bitcoinabc.org", true));
-        // bitcoinforks seeders
-        vSeeds.push_back(CDNSSeedData(
-            "bitcoinforks.org", "testnet-seed-abc.bitcoinforks.org", true));
-        // Amaury SÉCHET
-        vSeeds.push_back(
-            CDNSSeedData("deadalnix.me", "testnet-seed.deadalnix.me", true));
         // truevisionofsatoshi.com
         vSeeds.push_back(CDNSSeedData("truevisionofsatoshi.com",
                                       "seeder-testnet.truevisionofsatoshi.com", true));
@@ -375,18 +400,18 @@ public:
 
         checkpointData = {
             .mapCheckpoints = {
-                {546, uint256S("000000002a936ca763904c3c35fce2f3556c559c0214345"
-                               "d31b1bcebf76acb70")},
-                // UAHF fork block
-                {1155876,
-                 uint256S("00000000000e38fef93ed9582a7df43815d5c2ba9fd37ef"
-                          "70c9a0ea4a285b8f5")},
+                // Bitcoin Core Testnet Genesis block
+                {0, uint256S("0x0273ed223240099a339d351d46054156fb6f3855c5db1c00c027"
+                             "5c9b6f1d07de")},
+                // Just past 2nd new testnet halving
+                {100, uint256S("0x16420994c95bcf9afa2fab4a45af3cfb5dc6ac6103a40e2"
+                               "ffa48e7d327bdd7f")},
             }};
 
         // Data as of block
-        // 00000000c2872f8f8a8935c8e3c5862be9038c97d4de2cf37ed496991166928a
-        // (height 1063660)
-        chainTxData = ChainTxData{1483546230, 12834668, 0.15};
+        // 02b4614f9a5ddb8937835e4b871fccda4bcdd9741f349005444e8c84a8cfbcc8
+        // (height 421382)
+        chainTxData = ChainTxData{1531625001, 421382, 1.09};
     }
 };
 static CTestNetParams testNetParams;
@@ -414,6 +439,8 @@ public:
         // two weeks
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60;
         consensus.nPowTargetSpacing = 10 * 60;
+        // hardfork to one min blocks
+        consensus.nPowTargetSpacingOneMinute = 60;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
         // 75% for testchains
@@ -441,6 +468,9 @@ public:
 
         // Nov, 13 hard fork
         consensus.coreHardForkActivationTime = 0;
+
+        // 1-minute blocks are always enabled on regtest
+        consensus.oneMinuteBlockHeight = 0;
 
         pchMessageStart[0] = 0xfa;
         pchMessageStart[1] = 0xbf;
