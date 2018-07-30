@@ -478,7 +478,7 @@ clashic_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 # clashicconsensus library #
 if BUILD_CLASHIC_LIBS
 include_HEADERS = script/clashicconsensus.h
-libclashicconsensus_la_SOURCES = $(crypto_libclashic_crypto_a_SOURCES) $(libclashic_consensus_a_SOURCES)
+libclashicconsensus_la_SOURCES = $(crypto_libbitcoin_crypto_a_SOURCES) $(libclashic_consensus_a_SOURCES)
 
 if GLIBC_BACK_COMPAT
   libclashicconsensus_la_SOURCES += compat/glibc_compat.cpp
