@@ -2051,11 +2051,10 @@ static bool ConnectBlock(const Config &config, const CBlock &block,
                 // further back. The test against nMinimumChainWork prevents the
                 // skipping when denied access to any chain at least as good as
                 // the expected chain.
-                // TODO: Revert to 2 weeks
                 fScriptChecks =
                     (GetBlockProofEquivalentTime(
                          *pindexBestHeader, *pindex, *pindexBestHeader,
-                         chainparams.GetConsensus()) <= 60 * 60 * 24 * 0.5);
+                         chainparams.GetConsensus()) <= 60 * 60 * 24 * 7 * 2);
             }
         }
     }
@@ -2907,9 +2906,7 @@ static bool ActivateBestChainStep(const Config &config, CValidationState &state,
     if (fBlocksDisconnected) {
         // If any blocks were disconnected, disconnectpool may be non empty. Add
         // any disconnected transactions back to the mempool.
-        mempool.removeForReorg(config, pcoinsTip,
-                               chainActive.Tip()->nHeight + 1,
-                               STANDARD_LOCKTIME_VERIFY_FLAGS);
+        UpdateMempoolForReorg(config, disconnectpool, true);
     }
 
     mempool.check(pcoinsTip);
@@ -3095,9 +3092,7 @@ bool InvalidateBlock(const Config &config, CValidationState &state,
         if (!DisconnectTip(config, state, &disconnectpool)) {
             // It's probably hopeless to try to make the mempool consistent
             // here if DisconnectTip failed, but we can try.
-            mempool.removeForReorg(config, pcoinsTip,
-                                   chainActive.Tip()->nHeight + 1,
-                                   STANDARD_LOCKTIME_VERIFY_FLAGS);
+            UpdateMempoolForReorg(config, disconnectpool, false);
             return false;
         }
     }
@@ -3120,8 +3115,6 @@ bool InvalidateBlock(const Config &config, CValidationState &state,
     }
 
     InvalidChainFound(pindex);
-    mempool.removeForReorg(config, pcoinsTip, chainActive.Tip()->nHeight + 1,
-                           STANDARD_LOCKTIME_VERIFY_FLAGS);
     uiInterface.NotifyBlockTip(IsInitialBlockDownload(), pindex->pprev);
     return true;
 }
