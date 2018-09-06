@@ -137,9 +137,9 @@ public:
             uint256S("0x0000000000000000000000000000000000000000007cb5f207557941bd9a6096");
 
         // By default assume that the signatures in ancestors of this block are
-        // valid. Block height 576700 (2 past Bitcoin Core Hardfork from Bitcoin Clashic
+        // valid. Block Height #615,385
         consensus.defaultAssumeValid =
-            uint256S("0x000000000000001069e7110054b96cf100c2d29e6084290d4b2820ac410b5e44");
+            uint256S("0x000000000000000f61a5f419643ce6c15a579f49289d6fd1b1ed521f899d44ee");
 
         // Aug, 1 hard fork
         consensus.uahfHeight = 478559;
@@ -263,20 +263,23 @@ public:
                                   "0290131dfa78202799faea")},
                 // July 26, 2018
                 {585550, uint256S("0x0000000000000004fb959c2bbabb38609bbe44fa4b"
-                                  "b206b1a81849f9b10414cd")}}};
+                                  "b206b1a81849f9b10414cd")},
+                // Sept 5, 2018
+                {615385, uint256S("0x000000000000000f61a5f419643ce6c15a579f4928"
+                                  "9d6fd1b1ed521f899d44ee")}}};
 
 
         // Data as of block
-        // 00000000000000000166d612d5595e2b1cd88d71d695fc580af64d8da8658c23
-        // (height 446482).
+        // 000000000000000f61a5f419643ce6c15a579f49289d6fd1b1ed521f899d44ee
+        // (height 615385).
         chainTxData = ChainTxData{
             // UNIX timestamp of last known number of transactions.
-            1483472411,
+            1536198411,
             // Total number of transactions between genesis and that timestamp
             // (the tx=... number in the SetBestChain debug.log lines)
-            184495391,
+            245734254,
             // Estimated number of transactions per second after that timestamp.
-            3.2};
+            0.01};
     }
 };
 static CMainParams mainParams;
