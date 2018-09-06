@@ -2907,9 +2907,7 @@ static bool ActivateBestChainStep(const Config &config, CValidationState &state,
     if (fBlocksDisconnected) {
         // If any blocks were disconnected, disconnectpool may be non empty. Add
         // any disconnected transactions back to the mempool.
-        mempool.removeForReorg(config, pcoinsTip,
-                               chainActive.Tip()->nHeight + 1,
-                               STANDARD_LOCKTIME_VERIFY_FLAGS);
+        UpdateMempoolForReorg(config, disconnectpool, true);
     }
 
     mempool.check(pcoinsTip);
@@ -3095,9 +3093,7 @@ bool InvalidateBlock(const Config &config, CValidationState &state,
         if (!DisconnectTip(config, state, &disconnectpool)) {
             // It's probably hopeless to try to make the mempool consistent
             // here if DisconnectTip failed, but we can try.
-            mempool.removeForReorg(config, pcoinsTip,
-                                   chainActive.Tip()->nHeight + 1,
-                                   STANDARD_LOCKTIME_VERIFY_FLAGS);
+            UpdateMempoolForReorg(config, disconnectpool, false);
             return false;
         }
     }
@@ -3120,8 +3116,6 @@ bool InvalidateBlock(const Config &config, CValidationState &state,
     }
 
     InvalidChainFound(pindex);
-    mempool.removeForReorg(config, pcoinsTip, chainActive.Tip()->nHeight + 1,
-                           STANDARD_LOCKTIME_VERIFY_FLAGS);
     uiInterface.NotifyBlockTip(IsInitialBlockDownload(), pindex->pprev);
     return true;
 }
