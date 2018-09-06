@@ -2051,11 +2051,10 @@ static bool ConnectBlock(const Config &config, const CBlock &block,
                 // further back. The test against nMinimumChainWork prevents the
                 // skipping when denied access to any chain at least as good as
                 // the expected chain.
-                // TODO: Revert to 2 weeks
                 fScriptChecks =
                     (GetBlockProofEquivalentTime(
                          *pindexBestHeader, *pindex, *pindexBestHeader,
-                         chainparams.GetConsensus()) <= 60 * 60 * 24 * 0.5);
+                         chainparams.GetConsensus()) <= 60 * 60 * 24 * 7 * 2);
             }
         }
     }
