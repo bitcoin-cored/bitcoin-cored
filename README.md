@@ -1,6 +1,14 @@
 Bitcoin Core Squared
 ====================
 
+IMPORTANT UPDATE:
+-----------------
+The Bitcoin Core $BTCC brand will be sunset.
+Going forward this project is called Title Network.
+Follow updates on https://twitter.com/title_network
+New client will be available before June 1, 2019 via https://github.com/title-network/title-network
+Please continue to use v0.16.2.2 until then. There will be a PoW change 3 weeks after new client is released.
+
 https://thebitcoincore.org/
 
 What is Bitcoin?
