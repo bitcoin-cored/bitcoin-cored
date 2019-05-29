@@ -1,13 +1,19 @@
 Bitcoin Core Squared
 ====================
 
-IMPORTANT UPDATE:
------------------
-The Bitcoin Core $BTCC brand will be sunset.
+IMPORTANT UPDATE - THIS REPO HAS NOW BEEN DEPRECATED:
+-----------------------------------------------------
+The Bitcoin Core $BTCC brand has been sunset.
+
 Going forward this project is called Title Network.
+
 Follow updates on https://twitter.com/title_network
+
 New client will be available before June 1, 2019 via https://github.com/title-network/title-network
-Please continue to use v0.16.2.2 until then. There will be a PoW change 3 weeks after new client is released.
+
+Use v0.16.2.2 until June 1st 2019. PROTOCOL_VERSION 80030 will be shunned on June 2nd 2019.
+
+There will be a PoW change at Height 836750.
 
 ~~https://thebitcoincore.org/~~
 https://title.network
